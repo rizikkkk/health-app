@@ -51,49 +51,63 @@
     </div>
 
     <script>
-        // Инициализация
-        const tg = window?.Telegram?.WebApp;
-        
-        if (tg) {
-            tg.ready(); // Сообщаем ТГ, что мы тут
-            tg.expand(); // Разворачиваем
-        }
+// Переменная для хранения воды
+let water = 0;
 
-        let water = 0;
+// Функция для обновления цифры на экране
+function updateWaterDisplay(value) {
+    water = value;
+    const waterDisplay = document.getElementById('water-count');
+    if (waterDisplay) {
+        waterDisplay.innerText = water;
+    }
+}
 
-        // Пытаемся вытащить воду из локальной памяти устройства (самый надежный способ)
-        try {
-            const savedWater = localStorage.getItem('water_today');
-            if (savedWater) {
-                water = parseInt(savedWater, 10);
-                document.getElementById('water-count').innerText = water;
-            }
-        } catch (e) {
-            alert("Ошибка чтения памяти: " + e);
-        }
+// Загружаем сохраненную воду сразу при старте страницы
+try {
+    const savedWater = localStorage.getItem('water_today');
+    if (savedWater) {
+        updateWaterDisplay(parseInt(savedWater, 10));
+    }
+} catch (e) {
+    console.log("Ошибка чтения памяти:", e);
+}
 
-        function addWater() {
-            water += 250;
-            document.getElementById('water-count').innerText = water;
-            
-            // Сохраняем в локальную память смартфона
-            try {
-                localStorage.setItem('water_today', water.toString());
-            } catch (e) {
-                alert("Ошибка записи в память: " + e);
-            }
+// Функция, которая сработает, когда Telegram полностью загрузит свой интерфейс
+function initTelegram() {
+    const tg = window?.Telegram?.WebApp;
+    if (tg) {
+        tg.ready();
+        tg.expand();
+    }
+}
 
-            // Пробуем вызвать вибрацию всеми доступными в ТГ способами
-            if (tg && tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('heavy'); // Поменял на heavy (сильный отклик)
-            } else {
-                alert("Telegram Haptic не найден!");
-            }
-        }
+// Слушаем сигнал от Telegram о полной готовности
+window.addEventListener('DOMContentLoaded', initTelegram);
 
-        function showWorkout() {
-            alert("1. Лодочка (3 подхода)\n2. Растяжка у стены. Расправь плечи!");
-        }
+// Функция добавления воды
+function addWater() {
+    water += 250;
+    updateWaterDisplay(water);
+    
+    // Сохраняем в память смартфона
+    try {
+        localStorage.setItem('water_today', water.toString());
+    } catch (e) {
+        console.log("Ошибка записи в память:", e);
+    }
+
+    // Пробуем вызвать вибрацию аккуратно, без всплывающих окон
+    const tg = window?.Telegram?.WebApp;
+    if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('heavy'); 
+    }
+}
+
+function showWorkout() {
+    alert("Бро, твой план на сегодня:\n1. Лодочка (3 подхода)\n2. Растяжка грудного отдела у стены.\n\nРасправь плечи прямо сейчас! 🧘‍♂️");
+}
+
     </script>
 </body>
 </html>
