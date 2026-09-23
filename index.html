@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бро Фитнес Курс</title>
+    <title>Бро Фитнес</title>
     <script src="https://telegram.org"></script>
     <style>
         body { font-family: sans-serif; background: var(--tg-theme-bg-color, #17212b); color: var(--tg-theme-text-color, #f5f6f7); margin: 0; padding: 20px 20px 90px 20px; }
@@ -18,14 +18,12 @@
         .result-box { margin-top: 15px; padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.05); display: none; font-weight: bold; text-align: center; }
         .app-screen { display: none; }
         .app-screen.active { display: block; }
-        
-        /* Стили интерактивного режима тренировки */
         .workout-player { display: none; text-align: center; }
         .ex-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #e5a93b; }
         .ex-target { font-size: 28px; font-weight: bold; margin: 15px 0; color: var(--tg-theme-button-color, #5288c1); }
         .round-badge { font-size: 16px; font-weight: bold; color: #888; margin-bottom: 15px; text-transform: uppercase; }
-        
         .timer-display { font-size: 48px; font-weight: bold; margin: 15px 0; color: #4caf50; display: none; }
+        .timer-box { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); text-align: center; border: 2px dashed var(--tg-theme-button-color, #5288c1); }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--tg-theme-secondary-bg-color, #202b36); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; }
         .nav-item { background: none; border: none; color: var(--tg-theme-text-color, #f5f6f7); opacity: 0.5; font-size: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; width: auto; margin: 0; padding: 5px; }
         .nav-item .icon { font-size: 20px; margin-bottom: 3px; }
@@ -34,9 +32,9 @@
 </head>
 <body>
 
-    <!-- ЭКРАН 1: ГЛАВНАЯ -->
+    <!-- ЭКРАН 1 -->
     <div id="screen-main" class="app-screen active">
-        <h1>Твой день, Бро 🦾</h1>
+        <h1>Твой day, Бро 🦾</h1>
         <div class="card">
             <h3>💧 Трекер воды</h3>
             <p>Выпито за сегодня: <strong id="water-count" style="font-size: 20px; color: #5288c1;">0</strong> мл</p>
@@ -48,7 +46,7 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 2: ПАРАМЕТРЫ -->
+    <!-- ЭКРАН 2 -->
     <div id="screen-bmi" class="app-screen">
         <h2>Твои параметры</h2>
         <div class="card">
@@ -65,19 +63,17 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 3: ТРЕНИРОВКИ -->
+    <!-- ЭКРАН 3 -->
     <div id="screen-workout" class="app-screen">
         <h2>Домашний Фитнес-Курс 🏠</h2>
-        
-        <!-- Меню выбора программы -->
         <div id="workout-setup-card" class="card">
             <div class="input-group">
                 <label>Выбери цель курса:</label>
                 <select id="workout-category" onchange="togglePostureSub()">
                     <option value="none">-- Выбрать направление --</option>
-                    <option value="posture">🧘‍♂️ Коррекция осанки (Интенсивный курс)</option>
-                    <option value="fatburn">🔥 Похудение и Жиросжигание (Курс по нарастающей)</option>
-                    <option value="power">💪 Прокачка мышц дома (Собственный вес)</option>
+                    <option value="posture">🧘‍♂️ Коррекция осанки (Интенсив)</option>
+                    <option value="fatburn">🔥 Похудение и Жиросжигание</option>
+                    <option value="power">💪 Прокачка мышц дома</option>
                 </select>
             </div>
             <div class="input-group" id="sub-posture-group" style="display: none;">
@@ -91,25 +87,19 @@
             <button class="btn-success" onclick="startWorkoutSession()">🚀 Начать курс тренировки</button>
         </div>
 
-        <!-- ИНТЕРАКТИВНЫЙ ПЛЕЕР ТРЕНИРОВКИ -->
         <div id="workout-player-container" class="card workout-player">
-            <div class="round-badge" id="player-round-info">ПОДХОД 1 ИЗ 3</div>
+            <div class="round-badge" id="player-round-info">КРУГ 1 ИЗ 3</div>
             <div class="ex-title" id="player-ex-name">Упражнение</div>
-            <p id="player-ex-desc">Описание техники</p>
+            <p id="player-ex-desc">Описание</p>
             <div class="ex-target" id="player-ex-target">15 РАЗ</div>
-            
-            <!-- Цифровой таймер (показывается только для статики) -->
             <div class="timer-display" id="player-timer-digits">00:45</div>
-            
-            <!-- Кнопки управления шагами -->
             <div id="player-controls">
                 <button id="btn-action" class="btn-success" onclick="handleActionClick()">Выполнено</button>
-                <button class="btn-stop" onclick="exitWorkoutSession()" style="margin-top:15px;">🛑 Прервать тренировку</button>
+                <button class="btn-stop" onclick="exitWorkoutSession()" style="margin-top:15px;">🛑 Прервать</button>
             </div>
         </div>
     </div>
 
-    <!-- НАВИГАЦИЯ -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchScreen('screen-main', this)">
             <span class="icon">🏠</span><span>Главная</span>
@@ -123,10 +113,9 @@
     </nav>
 
     <script>
-           const tg = window?.Telegram?.WebApp;
+        const tg = window?.Telegram?.WebApp;
         if (tg) { tg.ready(); tg.expand(); }
 
-        // БАЗА ДАННЫХ ИНТЕНСИВНЫХ КУРСОВ
         const courseDatabase = {
             posture: {
                 kyphosis: [
@@ -135,8 +124,8 @@
                     { name: "Статическая планка для спины", type: "time", target: 45, desc: "Держи тело ровно. Пресс напряжен, лопатки разведены." }
                 ],
                 slouch: [
-                    { name: "Y-T-W подъемы рук на животе", type: "reps", target: 12, desc: "Последовательно поднимай руки вверх, разводя их буквами Y, T и W." },
-                    { name: "Вращение плечами у стены", type: "reps", target: 20, desc: "Прижмись спиной к стене, выполняй круговые вращения плечами назад." }
+                    { name: "Y-T-W подъемы рук на животе", type: "reps", target: 12, desc: "Поднимай руки вверх, разводя их буквами Y, T и W." },
+                    { name: "Вращение плечами у стены", type: "reps", target: 20, desc: "Прижмись спиной к стене, выполняй вращения плечами назад." }
                 ],
                 scoli: [
                     { name: "Боковая планка (Левая сторона)", type: "time", target: 30, desc: "Стабилизация косых мышц. Держи таз высоко." },
@@ -144,8 +133,8 @@
                 ]
             },
             fatburn: [
-                { name: "Взрывные Берпи", type: "reps", target: 12, desc: "Упор лежа, отжимание, прыжок вверх с хлопком. Разгон жиросжигания!" },
-                { name: "Приседания с выпрыгиванием", type: "reps", target: 15, desc: "Опускайся до параллели с полом и мощно выталкивай тело вверх." },
+                { name: "Взрывные Берпи", type: "reps", target: 12, desc: "Упор лежа, отжимание, прыжок вверх с хлопком." },
+                { name: "Приседания с выпрыгиванием", type: "reps", target: 15, desc: "Опускайся до параллели с полом и мощно выпрыгивай вверх." },
                 { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро поочередно подтягивай колени к груди." }
             ],
             power: [
@@ -184,7 +173,7 @@
             else { txt = "Избыточный вес"; col = "#f44336"; }
             res.style.display = 'block'; res.style.color = col;
             res.innerHTML = `ИМТ: ${bmi}<br><span style="font-size:13px;">${txt}</span>`;
-            document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}). Курс тренировок готов к запуску.`;
+            document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}). Курс тренировок готов.`;
         }
 
         function togglePostureSub() {
@@ -192,138 +181,76 @@
             document.getElementById('sub-posture-group').style.display = (cat === 'posture') ? 'block' : 'none';
         }
 
-        // --- ДВИЖОК КРУГОВОЙ ТРЕНИРОВКИ (УМНЫЙ КРОССФИТ) ---
-        let currentExercises = []; 
-        let exIndex = 0;           // Индекс упражнения ВНУТРИ текущего круга
-        let totalRounds = 3;       // Всего кругов тренировки
-        let currentRound = 1;      // Текущий круг по счету
-        let timerInterval;         
-        let isTimerRunning = false;
+        let currentExercises = [], exIndex = 0, totalRounds = 3, currentRound = 1, timerInterval, isTimerRunning = false;
 
         function startWorkoutSession() {
             const cat = document.getElementById('workout-category').value;
             if (cat === 'none') { alert("Бро, выбери сначала цель тренировки!"); return; }
-
-            if (cat === 'posture') {
-                const type = document.getElementById('posture-type').value;
-                currentExercises = courseDatabase.posture[type];
-            } else {
-                currentExercises = courseDatabase[cat];
-            }
-
+            currentExercises = (cat === 'posture') ? courseDatabase.posture[document.getElementById('posture-type').value] : courseDatabase[cat];
             if (!currentExercises || currentExercises.length === 0) return;
-
-            // Инициализация под круговую схему
-            exIndex = 0;
-            currentRound = 1;
-            isTimerRunning = false;
-            clearInterval(timerInterval);
-
+            exIndex = 0; currentRound = 1; isTimerRunning = false; clearInterval(timerInterval);
             document.getElementById('workout-setup-card').style.display = 'none';
             document.getElementById('workout-player-container').style.display = 'block';
-
             showCurrentStep();
         }
 
         function showCurrentStep() {
             const ex = currentExercises[exIndex];
-            const roundBadge = document.getElementById('player-round-info');
-            const exName = document.getElementById('player-ex-name');
-            const exDesc = document.getElementById('player-ex-desc');
-            const exTarget = document.getElementById('player-ex-target');
-            const timerDigits = document.getElementById('player-timer-digits');
             const btnAction = document.getElementById('btn-action');
-
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-
-            // Пишем текущий круг тренировки
-            roundBadge.innerText = `КРУГ ${currentRound} ИЗ ${totalRounds}`;
-            exName.innerText = ex.name;
-            exDesc.innerText = ex.desc;
-
+            clearInterval(timerInterval); isTimerRunning = false;
+            document.getElementById('player-round-info').innerText = `КРУГ ${currentRound} ИЗ ${totalRounds}`;
+            document.getElementById('player-ex-name').innerText = ex.name;
+            document.getElementById('player-ex-desc').innerText = ex.desc;
             if (ex.type === "reps") {
-                exTarget.innerText = `${ex.target} РАЗ`;
-                timerDigits.style.display = 'none';
-                btnAction.innerText = "Выполнено! К следующему упражнению";
-                btnAction.className = "btn-success";
+                document.getElementById('player-ex-target').innerText = `${ex.target} РАЗ`;
+                document.getElementById('player-timer-digits').style.display = 'none';
+                btnAction.innerText = "Выполнено! Далее"; btnAction.className = "btn-success";
             } else {
-                exTarget.innerText = `ДЕРЖИМ ВРЕМЯ`;
-                timerDigits.style.display = 'block';
-                timerDigits.innerText = `00:${ex.target}`;
-                btnAction.innerText = "🟢 Запустить таймер упражнения";
-                btnAction.className = "btn-success";
+                document.getElementById('player-ex-target').innerText = `ДЕРЖИМ ВРЕМЯ`;
+                document.getElementById('player-timer-digits').style.display = 'block';
+                document.getElementById('player-timer-digits').innerText = `00:${ex.target}`;
+                btnAction.innerText = "🟢 Запустить таймер"; btnAction.className = "btn-success";
             }
         }
 
         function handleActionClick() {
             const ex = currentExercises[exIndex];
-            if (ex.type === "reps") {
-                goToNextExercise();
-            } else {
-                if (!isTimerRunning) {
-                    startExerciseTimer(ex.target);
-                } else {
-                    goToNextExercise();
-                }
-            }
+            if (ex.type === "reps") { goToNextExercise(); } 
+            else { if (!isTimerRunning) { startExerciseTimer(ex.target); } else { goToNextExercise(); } }
         }
 
         function startExerciseTimer(seconds) {
-            isTimerRunning = true;
-            let timeLeft = seconds;
-            const timerDigits = document.getElementById('player-timer-digits');
+            isTimerRunning = true; let timeLeft = seconds;
             const btnAction = document.getElementById('btn-action');
-
-            btnAction.innerText = "Пропустить время";
-            btnAction.className = "btn-stop";
-
+            btnAction.innerText = "Пропустить время"; btnAction.className = "btn-stop";
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-
             timerInterval = setInterval(() => {
                 timeLeft--;
-                timerDigits.innerText = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`;
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
-                    goToNextExercise();
-                }
+                document.getElementById('player-timer-digits').innerText = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`;
+                if (timeLeft <= 0) { clearInterval(timerInterval); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); goToNextExercise(); }
             }, 1000);
         }
 
-        // ЛОГИКА КРУГОВОГО ПЕРЕКЛЮЧЕНИЯ
         function goToNextExercise() {
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-
-            // Проверяем, есть ли еще упражнения в ЭТОМ круге
             if (exIndex < currentExercises.length - 1) {
-                // Идем к следующему упражнению внутри текущего круга
                 exIndex++;
                 showCurrentStep();
             } else {
-                // Если упражнения в текущем круге кончились, проверяем круги
                 if (currentRound < totalRounds) {
-                    // Переходим на следующий КРУГ и сбрасываем индекс упражнений на первое!
                     currentRound++;
                     exIndex = 0;
-                    alert(`👊 Круг выполнен! Начинаем КРУГ №${currentRound}! Приготовься к первому упражнению.`);
+                    alert(`👊 Круг выполнен! Приготовиться к КРУГУ №${currentRound}! Начинаем с первого упражнения.`);
                     showCurrentStep();
                 } else {
-                    // Если кончились и упражнения, и все 3 круга — финиш!
                     exitWorkoutSession();
                     if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
-                    alert("Бро, поздравляю! Ты прошел все 3 КРУГА тренировки подряд! Мега-жиросжигание выполнено! Отдыхай! 🔥🦾");
+                    alert("Бро, поздравляю! Ты прошел все 3 КРУГА тренировки подряд! Мега-жиросжигание выполнено! 🔥🦾");
                 }
             }
         }
 
-        function exitWorkoutSession() {
-            clearInterval(timerInterval);
-            document.getElementById('workout-player-container').style.display = 'none';
-                       document.getElementById('workout-player-container').style.display = 'none';
-            document.getElementById('workout-setup-card').style.display = 'block';
-        }
+        function exitWorkoutSession() { clearInterval(timerInterval); document.getElementById('workout-player-container').style.display = 'none'; document.getElementById('workout-setup-card').style.display = 'block'; }
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('bmi-height').value = localStorage.getItem('user_height') || '';
