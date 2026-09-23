@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Трекер Здоровья</title>
+    <!-- Подключаем официальный скрипт Telegram -->
+    <script src="https://telegram.org"></script>
+    <style>
+        /* Простые стили для красивого отображения */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #f0f2f5);
+            color: var(--tg-theme-text-color, #222);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #248bcf;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:active {
+            background-color: #1a6b9e;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Бро, привет! Набираем форму 🦾</h1>
+
+    <!-- Блок Воды -->
+    <div class="card">
+        <h3>💧 Трекер воды</h3>
+        <p>Выпито за сегодня: <strong id="water-count">0</strong> мл</p>
+        <button onclick="addWater()">Выпить 250 мл</button>
+    </div>
+
+    <!-- Блок Осанки -->
+    <div class="card">
+        <h3>🧘‍♂️ Борьба с кифозом</h3>
+        <p>Следующая разминка: <strong>Каждые 2 часа</strong></p>
+        <button onclick="showWorkout()">Открыть план упражнений</button>
+    </div>
+
+    <script>
+   // Инициализируем Telegram Web App безопасным способом
+const tg = window?.Telegram?.WebApp;
+
+// Если мы открылись внутри Telegram, разворачиваем на весь экран
+if (tg && typeof tg.expand === 'function') {
+    tg.expand(); 
+}
+
+// Логика для счетчика воды
+let water = 0;
+
+function addWater() {
+    water += 250;
+    
+    // Находим на странице текст с цифрой и меняем его
+    const waterDisplay = document.getElementById('water-count');
+    if (waterDisplay) {
+        waterDisplay.innerText = water;
+    }
+    
+    // Если мы в Telegram — делаем вибрацию. Если в браузере — просто пишем в консоль
+    if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('medium');
+    } else {
+        console.log("Выпито воды: " + water + " мл (Вибрация доступна только на телефоне)");
+    }
+}
+
+// Логика для тренировки
+function showWorkout() {
+    alert("Бро, твой план на сегодня:\n1. Лодочка (3 подхода)\n2. Растяжка грудного отдела у стены.\n\nРасправь плечи прямо сейчас! 🧘‍♂️");
+}
+
+    </script>
+</body>
+</html>
