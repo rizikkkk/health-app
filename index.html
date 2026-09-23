@@ -20,7 +20,21 @@
         .round-badge { font-size: 16px; font-weight: bold; color: #888; margin-bottom: 15px; text-transform: uppercase; }
         .timer-display { font-size: 48px; font-weight: bold; margin: 15px 0; color: #4caf50; display: none; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--tg-theme-secondary-bg-color, #202b36); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; }
-        .nav-item { background: none; border: none; color: var(--tg-theme-text-color, #f5f6f7); opacity: 0.5; font-size: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; width: auto; margin: 0; padding: 5px; }
+                .nav-item { 
+            background: none; 
+            border: none; 
+            color: var(--tg-theme-text-color, #f5f6f7); 
+            opacity: 0.5; 
+            font-size: 12px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            cursor: pointer; 
+            flex: 1; /* РАСПРЕДЕЛЯЕТ КНОПКИ ПОРОВНУ */
+            margin: 0; 
+            padding: 5px; 
+        }
+
         .nav-item .icon { font-size: 20px; margin-bottom: 3px; } .nav-item.active { opacity: 1; color: var(--tg-theme-button-color, #5288c1); }
         .macro-grid { display: flex; justify-content: space-between; margin-top: 10px; font-size: 13px; opacity: 0.9; }
         .macro-item { text-align: center; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 8px; flex: 1; margin: 0 4px; }
