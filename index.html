@@ -83,6 +83,25 @@
             </div>
             <div id="bmi-result" class="result-box"></div>
         </div>
+                <!-- БЛОК ВЫБОРА ЦЕЛЕЙ КУРСА -->
+        <div class="card">
+            <h3>🎯 Мой Фокус (Выбор планов)</h3>
+            <p style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">Отметь галочками курсы, которые ты хочешь проходить. Календарь подстроится сам.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 16px;">
+                    <input type="checkbox" id="goal-posture" checked onchange="saveGoals(); updateWorkoutMenu(); renderTableCalendar();" style="width: 22px; height: 22px; margin: 0;">
+                    <span>🧘‍♂️ Коррекция осанки</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 16px;">
+                    <input type="checkbox" id="goal-fatburn" onchange="saveGoals(); updateWorkoutMenu(); renderTableCalendar();" style="width: 22px; height: 22px; margin: 0;">
+                    <span>🔥 Похудение и жиросжигание</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 16px;">
+                    <input type="checkbox" id="goal-power" onchange="saveGoals(); updateWorkoutMenu(); renderTableCalendar();" style="width: 22px; height: 22px; margin: 0;">
+                    <span>💪 Прокачка мышц дома</span>
+                </label>
+            </div>
     </div>
 
     <!-- ЭКРАН 3 -->
@@ -122,6 +141,17 @@
         </div>
     </div>
 
+         <!-- ЭКРАН 4: КАЛЕНДАРЬ-ТАБЛИЦА -->
+    <div id="screen-calendar" class="app-screen">
+        <h2>Календарь Успеха 📅</h2>
+        <div class="card" style="padding: 15px;">
+            <p style="font-size: 13px; opacity: 0.8; margin-bottom: 15px; text-align: center;">Здесь отображаются только выбранные тобой направления.</p>
+            
+            <!-- Сюда JavaScript будет динамически выводить горизонтальные ленты дней -->
+            <div id="calendar-table-container" style="display: flex; flex-direction: column; gap: 20px;"></div>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchScreen('screen-main', this)">
             <span class="icon">🏠</span><span>Главная</span>
@@ -131,6 +161,9 @@
         </button>
         <button class="nav-item" onclick="switchScreen('screen-workout', this)">
             <span class="icon">🏋️‍♂️</span><span>Курс</span>
+        </button>
+        <button class="nav-item" onclick="switchScreen('screen-calendar', this); renderTableCalendar();">
+            <span class="icon">📅</span><span>Календарь</span>
         </button>
     </nav>
 
@@ -326,26 +359,143 @@
                 if (timeLeft <= 0) { clearInterval(timerInterval); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); goToNextExercise(); }
             }, 1000);
         }
-
+        // НАСТОЯЩАЯ КРУГОВАЯ ЛОГИКА (Переключение упражнений по цепочке)
         function goToNextExercise() {
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            if (exIndex < currentExercises.length - 1) { exIndex++; showCurrentStep(); } 
-            else {
-                if (currentRound < totalRounds) { currentRound++; exIndex = 0; alert(`👊 Круг выполнен! Приготовиться к КРУГУ №${currentRound}!`); showCurrentStep(); } 
-                else { exitWorkoutSession(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); alert("Бро, поздравляю! Ты прошел все 3 КРУГА тренировки подряд! 🔥🦾"); }
+            
+            // Сначала двигаемся строго к следующему упражнению в списке
+            if (exIndex < currentExercises.length - 1) {
+                exIndex++; // Было Упражнение 1 -> Стало Упражнение 2
+                showCurrentStep();
+            } else {
+                // Если мы дошли до САМОГО КОНЦА списка упражнений (сделали Упражнение 3)
+                if (currentRound < totalRounds) {
+                    currentRound++; // Закрываем круг и переходим на следующий
+                    exIndex = 0;    // СБРАСЫВАЕМ индекс на Упражнение №1
+                    alert(`👊 Круг выполнен! Приготовиться к КРУГУ №${currentRound}! Начинаем с первого упражнения.`);
+                    showCurrentStep();
+                } else {
+                    // ЕСЛИ КОНЧИЛИСЬ ВСЕ КРУГИ — СНАЧАЛА ЗАПИСЫВАЕМ УСПЕХ В КАЛЕНДАРЬ!
+                    const currentCat = document.getElementById('workout-category').value;
+                    const currentToday = new Date().getDate();
+                    localStorage.setItem(`done_${currentCat}_day_${currentToday}`, 'true');
+
+                    // Теперь завершаем сессию и поздравляем бро
+                    exitWorkoutSession();
+                    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+                    alert("Бро, поздравляю! Ты прошел все 3 КРУГА тренировки подряд! Мега-жиросжигание выполнено! 🔥🦾");
+                }
             }
         }
 
+
         function exitWorkoutSession() { clearInterval(timerInterval); document.getElementById('workout-player-container').style.display = 'none'; document.getElementById('workout-setup-card').style.display = 'block'; }
 
+                // --- ЛОГИКА АДАПТИВНОГО КАЛЕНДАРЯ-ТАБЛИЦЫ ---
+        
+        // Сохраняем выбор целей в память телефона
+        function saveGoals() {
+            localStorage.setItem('goal_posture', document.getElementById('goal-posture').checked);
+            localStorage.setItem('goal_fatburn', document.getElementById('goal-fatburn').checked);
+            localStorage.setItem('goal_power', document.getElementById('goal-power').checked);
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        }
+
+        // Прячем или показываем пункты в меню выбора тренировки на лету
+        function updateWorkoutMenu() {
+            const select = document.getElementById('workout-category');
+            if (!select) return;
+
+            const showPosture = document.getElementById('goal-posture').checked;
+            const showFatburn = document.getElementById('goal-fatburn').checked;
+            const showPower = document.getElementById('goal-power').checked;
+
+            // Если галочка снята, убираем курс из выбора, чтобы не мозолил глаза
+            select.options[1].style.display = showPosture ? 'block' : 'none';
+            select.options[2].style.display = showFatburn ? 'block' : 'none';
+            select.options[3].style.display = showPower ? 'block' : 'none';
+            
+            // Если выбран скрытый пункт, сбрасываем меню на дефолт
+            if (select.value === 'posture' && !showPosture) select.value = 'none';
+            if (select.value === 'fatburn' && !showFatburn) select.value = 'none';
+            if (select.value === 'power' && !showPower) select.value = 'none';
+            togglePostureSub();
+        }
+
+        // Рисуем независимые горизонтальные ленты дней
+        function renderTableCalendar() {
+            const container = document.getElementById('calendar-table-container');
+            if (!container) return;
+            container.innerHTML = ""; // Очищаем старый календарь
+
+            const goals = [
+                { id: 'posture', name: '🧘‍♂️ Коррекция осанки', checked: document.getElementById('goal-posture').checked },
+                { id: 'fatburn', name: '🔥 Похудение и жиросжигание', checked: document.getElementById('goal-fatburn').checked },
+                { id: 'power', name: '💪 Прокачка мышц дома', checked: document.getElementById('goal-power').checked }
+            ];
+
+            const today = new Date().getDate(); // Получаем сегодняшнее число (например, 23)
+
+            goals.forEach(goal => {
+                // Если галочка курса нажата — выводим для него отдельную строчку в календарь!
+                if (goal.checked) {
+                    let rowHtml = `
+                        <div class="calendar-row">
+                            <div class="calendar-row-title">${goal.name}</div>
+                            <div class="calendar-days-line">
+                    `;
+
+                    // Генерируем 7 дней недели (или можно сделать 14/30 дней)
+                    for (let day = 1; day <= 7; day++) {
+                        // Ключ для хранения в памяти: например, 'done_posture_day_23'
+                        const storageKey = `done_${goal.id}_day_${day}`;
+                        const isDone = localStorage.getItem(storageKey) === 'true';
+                        
+                        let dayClass = "calendar-box-day";
+                        if (isDone) dayClass += " day-done";
+                        if (day === today) dayClass += " day-today-border";
+
+                        rowHtml += `
+                            <div class="${dayClass}" onclick="toggleDayManual('${goal.id}', ${day})">
+                                <span style="font-size:10px; opacity:0.6;">день</span>
+                                <strong>${day}</strong>
+                            </div>
+                        `;
+                    }
+
+                    rowHtml += `</div></div>`;
+                    container.innerHTML += rowHtml;
+                }
+            });
+        }
+
+        // Возможность кликнуть на квадратик и вручную поставить/снять галочку (для удобства тестирования)
+        function toggleDayManual(goalId, day) {
+            const storageKey = `done_${goalId}_day_${day}`;
+            const currentState = localStorage.getItem(storageKey) === 'true';
+            localStorage.setItem(storageKey, !currentState);
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            renderTableCalendar();
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            // Загружаем сохраненный рост и вес
             document.getElementById('bmi-height').value = localStorage.getItem('user_height') || '';
             document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
             document.getElementById('calories-current').innerText = caloriesCurrent;
             document.getElementById('calories-target').innerText = caloriesTarget;
+            
+            // Загружаем галочки выбранных целей
+            document.getElementById('goal-posture').checked = localStorage.getItem('goal_posture') !== 'false';
+            document.getElementById('goal-fatburn').checked = localStorage.getItem('goal_fatburn') === 'true';
+            document.getElementById('goal-power').checked = localStorage.getItem('goal_power') === 'true';
+            
             calculateBMI();
             checkCaloriesColor();
+            updateWorkoutMenu(); // Обновляем выпадающий список тренировок
+            renderTableCalendar(); // Рисуем Календарь-Таблицу
         });
+
     </script>
 </body>
 </html>
