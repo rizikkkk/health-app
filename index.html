@@ -51,6 +51,20 @@
                 <input type="number" id="input-add-calories" placeholder="Введите ккал (например, 350)" style="width: 70%; display: inline-block;">
                 <button onclick="addCalories()" style="width: 26%; display: inline-block; margin-top: 0; margin-left: 3%; padding: 12px 0;">+</button>
             </div>
+                        <div class="input-group" style="margin-top: 10px;">
+                <input type="number" id="input-add-calories" placeholder="Введите ккал (например, 350)" style="width: 70%; display: inline-block;">
+                <button onclick="addCalories()" style="width: 26%; display: inline-block; margin-top: 0; margin-left: 3%; padding: 12px 0;">+</button>
+            </div>
+
+            <!-- ВОТ СЮДА СЕЛИ НАШИ КНОПКИ БЫСТРОГО ВВОДА КАЛОРИЙ -->
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button onclick="quickAddCalories(100)" style="margin-top: 0; padding: 8px; font-size: 13px; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">+100</button>
+                <button onclick="quickAddCalories(300)" style="margin-top: 0; padding: 8px; font-size: 13px; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">+300</button>
+                <button onclick="quickAddCalories(500)" style="margin-top: 0; padding: 8px; font-size: 13px; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">+500</button>
+            </div>
+
+            <button onclick="resetCalories()" class="btn-stop" style="padding: 8px; font-size: 12px; margin-top: 10px; width: auto;">Сбросить еду</button>
+
             <button onclick="resetCalories()" class="btn-stop" style="padding: 8px; font-size: 12px; margin-top: 10px; width: auto;">Сбросить еду</button>
         </div>
 
@@ -142,6 +156,12 @@
             document.getElementById('calories-current').innerText = caloriesCurrent;
             localStorage.setItem('calories_current', caloriesCurrent.toString());
             input.value = "";
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        }
+        function quickAddCalories(amount) {
+            caloriesCurrent += amount;
+            document.getElementById('calories-current').innerText = caloriesCurrent;
+            localStorage.setItem('calories_current', caloriesCurrent.toString());
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
 
