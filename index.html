@@ -19,35 +19,9 @@
         .ex-target { font-size: 28px; font-weight: bold; margin: 15px 0; color: var(--tg-theme-button-color, #5288c1); }
         .round-badge { font-size: 16px; font-weight: bold; color: #888; margin-bottom: 15px; text-transform: uppercase; }
         .timer-display { font-size: 48px; font-weight: bold; margin: 15px 0; color: #4caf50; display: none; }
-               .bottom-nav {
-            position: fixed;
-            bottom: 0; left: 0; right: 0; height: 65px;
-            background: var(--tg-theme-secondary-bg-color, #202b36);
-            display: flex !important; 
-            flex-direction: row !important; 
-            justify-content: space-around !important; 
-            align-items: center !important;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            z-index: 1000;
-            box-sizing: border-box;
-        }
-        .nav-item { 
-            background: none !important; 
-            border: none !important; 
-            color: var(--tg-theme-text-color, #f5f6f7) !important; 
-            opacity: 0.5; 
-            font-size: 12px !important; 
-            display: flex !important; 
-            flex-direction: column !important; 
-            align-items: center !important; 
-            cursor: pointer !important; 
-            width: 25% !important; /* Принудительно делим экран на 4 равные части */
-            margin: 0 !important; 
-            padding: 5px !important; 
-            box-sizing: border-box;
-        }
-
-        .nav-item .icon { font-size: 20px; margin-bottom: 3px; } .nav-item.active { opacity: 1; color: var(--tg-theme-button-color, #5288c1); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--tg-theme-secondary-bg-color, #202b36); display: flex !important; flex-direction: row !important; justify-content: space-around !important; align-items: center !important; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; box-sizing: border-box; }
+        .nav-item { background: none !important; border: none !important; color: var(--tg-theme-text-color, #f5f6f7) !important; opacity: 0.5; font-size: 12px !important; display: flex !important; flex-direction: column !important; align-items: center !important; cursor: pointer !important; width: 23% !important; margin: 0 !important; padding: 5px !important; box-sizing: border-box; float: left !important; }
+        .nav-item .icon { font-size: 20px; margin-bottom: 3px; } .nav-item.active { opacity: 1 !important; color: var(--tg-theme-button-color, #5288c1) !important; }
         .macro-grid { display: flex; justify-content: space-between; margin-top: 10px; font-size: 13px; opacity: 0.9; }
         .macro-item { text-align: center; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 8px; flex: 1; margin: 0 4px; }
         .calendar-row { display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
@@ -59,7 +33,7 @@
     </style>
 </head>
 <body>
-    <!-- ЭКРАН 1 -->
+    <!-- ЭКРАН 1: ГЛАВНАЯ -->
     <div id="screen-main" class="app-screen active">
         <h1>Твой day, Бро 🦾</h1>
         <div class="card">
@@ -83,7 +57,8 @@
         </div>
         <div class="card"><h3>📊 Текущий статус</h3><p id="status-text">Заполни параметры.</p></div>
     </div>
-    <!-- ЭКРАН 2 -->
+
+    <!-- ЭКРАН 2: ПАРАМЕТРЫ -->
     <div id="screen-bmi" class="app-screen">
         <h2>Твои параметры</h2>
         <div class="card">
@@ -102,7 +77,8 @@
             </div>
         </div>
     </div>
-    <!-- ЭКРАН 3 -->
+
+    <!-- ЭКРАН 3: ТРЕНИРОВКИ -->
     <div id="screen-workout" class="app-screen">
         <h2>Домашний Фитнес-Курс 🏠</h2>
         <div id="workout-setup-card" class="card">
@@ -120,29 +96,23 @@
             <div id="player-controls"><button id="btn-action" class="btn-success" onclick="handleActionClick()">Выполнено</button><button class="btn-stop" onclick="exitWorkoutSession()" style="margin-top:15px;">🛑 Прервать</button></div>
         </div>
     </div>
-    <!-- ЭКРАН 4 -->
+
+    <!-- ЭКРАН 4: КАЛЕНДАРЬ -->
     <div id="screen-calendar" class="app-screen">
         <h2>Календарь Успеха 📅</h2>
         <div class="card" style="padding: 15px;"><p style="font-size:13px; opacity:0.8; margin-bottom:15px; text-align:center;">Только выбранные направления.</p><div id="calendar-table-container" style="display:flex; flex-direction:column; gap:20px;"></div></div>
     </div>
-     <!-- НАВИГАЦИЯ (ПРИНУДИТЕЛЬНЫЙ РЯД СЕТКИ) -->
-    <nav class="bottom-nav" style="display: flex !important; flex-direction: row !important; justify-content: space-around !important; align-items: center !important;">
-        <button class="nav-item active" onclick="switchScreen('screen-main', this)" style="width: 25% !important; display: flex !important; flex-direction: column !important; align-items: center !important;">
-            <span class="icon">🏠</span><span>Главная</span>
-        </button>
-        <button class="nav-item" onclick="switchScreen('screen-bmi', this)" style="width: 25% !important; display: flex !important; flex-direction: column !important; align-items: center !important;">
-            <span class="icon">📊</span><span>Параметры</span>
-        </button>
-        <button class="nav-item" onclick="switchScreen('screen-workout', this)" style="width: 25% !important; display: flex !important; flex-direction: column !important; align-items: center !important;">
-            <span class="icon">🏋️‍♂️</span><span>Курс</span>
-        </button>
-        <button class="nav-item" onclick="switchScreen('screen-calendar', this); renderTableCalendar();" style="width: 25% !important; display: flex !important; flex-direction: column !important; align-items: center !important;">
-            <span class="icon">📅</span><span>Календарь</span>
-        </button>
+
+    <!-- ПАНЕЛЬ НАВИГАЦИИ -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchScreen('screen-main', this)"><span class="icon">🏠</span><span>Главная</span></button>
+        <button class="nav-item" onclick="switchScreen('screen-bmi', this)"><span class="icon">📊</span><span>Параметры</span></button>
+        <button class="nav-item" onclick="switchScreen('screen-workout', this)"><span class="icon">🏋️‍♂️</span><span>Курс</span></button>
+        <button class="nav-item" onclick="switchScreen('screen-calendar', this); renderTableCalendar();"><span class="icon">📅</span><span>Календарь</span></button>
     </nav>
 
-<script>
-            const tg = window?.Telegram?.WebApp; if (tg) { tg.ready(); tg.expand(); }
+    <script>
+        const tg = window?.Telegram?.WebApp; if (tg) { tg.ready(); tg.expand(); }
         const courseDatabase = {
             posture: {
                 kyphosis: [{ name: "Лодочка со сведением лопаток", type: "reps", target: 15, desc: "Лежа на животе, плавно своди лопатки." }, { name: "Упражнение 'Кобра'", type: "reps", target: 12, desc: "Лежа на животе, плавно вытяни грудной отдел вверх." }, { name: "Статическая планка для спины", type: "time", target: 45, desc: "Держи тело ровно. Пресс напряжен." }],
@@ -151,11 +121,6 @@
             }, fatburn: [{ name: "Взрывные Берпи", type: "reps", target: 12, desc: "Упор лежа, отжимание, прыжок вверх." }, { name: "Приседания с выпрыгиванием", type: "reps", target: 15, desc: "Опускайся до параллели и выпрыгивай вверх." }, { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро подтягивай колени к груди." }],
             power: [{ name: "Отжимания широким хватом", type: "reps", target: 12, desc: "Глубокие отжимания от пола." }, { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Опора руками на край стула сзади." }, { name: "Выпады назад попеременно", type: "reps", target: 16, desc: "Шаг назад, угол в коленях 90 градусов." }]
         };
-        function switchScreen(id, btn) {
-            document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-            if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
-        }
         let water = parseInt(localStorage.getItem('water_today') || '0', 10); document.getElementById('water-count').innerText = water;
         function addWater() { water += 250; document.getElementById('water-count').innerText = water; localStorage.setItem('water_today', water.toString()); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); }
         let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10); let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
@@ -163,6 +128,11 @@
         function addCalories() { const i = document.getElementById('input-add-calories'); const v = parseInt(i.value, 10); if (!v || v <= 0) return; caloriesCurrent += v; document.getElementById('calories-current').innerText = caloriesCurrent; localStorage.setItem('calories_current', caloriesCurrent.toString()); i.value = ""; checkCaloriesColor(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); }
         function quickAddCalories(amount) { caloriesCurrent += amount; document.getElementById('calories-current').innerText = caloriesCurrent; localStorage.setItem('calories_current', caloriesCurrent.toString()); checkCaloriesColor(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); }
         function resetCalories() { caloriesCurrent = 0; document.getElementById('calories-current').innerText = "0"; localStorage.setItem('calories_current', "0"); checkCaloriesColor(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); }
+        function switchScreen(id, btn) {
+            document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+            if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+        }
         let bmiCat = localStorage.getItem('bmi_category') || 'normal';
         function calculateBMI() {
             const h = parseFloat(document.getElementById('bmi-height').value); const w = parseFloat(document.getElementById('bmi-weight').value); const res = document.getElementById('bmi-result'); if (!h || !w) { res.style.display = 'none'; return; }
@@ -207,7 +177,7 @@
         function updateWorkoutMenu() {
             const select = document.getElementById('workout-category'); if (!select) return;
             const showPosture = document.getElementById('goal-posture').checked; const showFatburn = document.getElementById('goal-fatburn').checked; const showPower = document.getElementById('goal-power').checked;
-            select.options.style.display = showPosture ? 'block' : 'none'; select.options.style.display = showFatburn ? 'block' : 'none'; select.options.style.display = showPower ? 'block' : 'none';
+            select.options[1].style.display = showPosture ? 'block' : 'none'; select.options[2].style.display = showFatburn ? 'block' : 'none'; select.options[3].style.display = showPower ? 'block' : 'none';
             if (select.value === 'posture' && !showPosture) select.value = 'none'; if (select.value === 'fatburn' && !showFatburn) select.value = 'none'; if (select.value === 'power' && !showPower) select.value = 'none'; togglePostureSub();
         }
         function renderTableCalendar() {
@@ -227,12 +197,15 @@
         }
         function toggleDayManual(goalId, day) { const storageKey = `done_${goalId}_day_${day}`; const currentState = localStorage.getItem(storageKey) === 'true'; localStorage.setItem(storageKey, !currentState); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); renderTableCalendar(); }
         window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('bmi-height').value = localStorage.getItem('user_height') || ''; document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
-            document.getElementById('calories-current').innerText = caloriesCurrent; document.getElementById('calories-target').innerText = caloriesTarget;
-            document.getElementById('goal-posture').checked = localStorage.getItem('goal_posture') !== 'false'; document.getElementById('goal-fatburn').checked = localStorage.getItem('goal_fatburn') === 'true'; document.getElementById('goal-power').checked = localStorage.getItem('goal_power') === 'true';
+            document.getElementById('bmi-height').value = localStorage.getItem('user_height') || ''; 
+            document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
+            document.getElementById('calories-current').innerText = caloriesCurrent; 
+            document.getElementById('calories-target').innerText = caloriesTarget;
+            document.getElementById('goal-posture').checked = localStorage.getItem('goal_posture') !== 'false'; 
+            document.getElementById('goal-fatburn').checked = localStorage.getItem('goal_fatburn') === 'true'; 
+            document.getElementById('goal-power').checked = localStorage.getItem('goal_power') === 'true';
             calculateBMI(); checkCaloriesColor(); updateWorkoutMenu(); renderTableCalendar();
         });
     </script>
 </body>
 </html>
-
