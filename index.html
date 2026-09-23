@@ -125,9 +125,22 @@
         <h2>Календарь Успеха 📅</h2>
         <div class="card" style="padding: 15px;"><p style="font-size:13px; opacity:0.8; margin-bottom:15px; text-align:center;">Только выбранные направления.</p><div id="calendar-table-container" style="display:flex; flex-direction:column; gap:20px;"></div></div>
     </div>
-    <!-- НАВИГАЦИЯ -->
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchScreen('screen-main', this)"><span class="icon">🏠</span><span>Главная</span></button>
+     <!-- НАВИГАЦИЯ (ПРИНУДИТЕЛЬНЫЙ РЯД СЕТКИ) -->
+    <nav class="bottom-nav" style="display: flex !important; flex-direction: row !important; justify-content: space-around !important; align-items: center !important;">
+        <button class="nav-item active" onclick="switchScreen('screen-main', this)" style="width: 25% !important; display: flex !important; flex-direction: column !important; align-items: center !important;">
+            <span class="icon">🏠</span><span>Главная</span>
+        </button>
+        <button class="nav-item" onclick="switchScreen('screen-bmi', this)" style="width: 25% !important; display: flex !important; flex-direction: column !important; align-items: center !important;">
+            <span class="icon">📊</span><span>Параметры</span>
+        </button>
+        <button class="nav-item" onclick="switchScreen('screen-workout', this)" style="width: 25% !important; display: flex !important; flex-direction: column !important; align-items: center !important;">
+            <span class="icon">🏋️‍♂️</span><span>Курс</span>
+        </button>
+        <button class="nav-item" onclick="switchScreen('screen-calendar', this); renderTableCalendar();" style="width: 25% !important; display: flex !important; flex-direction: column !important; align-items: center !important;">
+            <span class="icon">📅</span><span>Календарь</span>
+        </button>
+    </nav>
+
 <script>
             const tg = window?.Telegram?.WebApp; if (tg) { tg.ready(); tg.expand(); }
         const courseDatabase = {
