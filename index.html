@@ -134,54 +134,9 @@
         </button>
     </nav>
 
-    <script>
+      <script>
         const tg = window?.Telegram?.WebApp;
         if (tg) { tg.ready(); tg.expand(); }
-        // Переменные дневника питания
-        let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10);
-        let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
-
-        // Умная функция проверки цвета калорий
-        function checkCaloriesColor() {
-            const calDisplay = document.getElementById('calories-current');
-            if (!calDisplay) return;
-            
-            if (caloriesCurrent > caloriesTarget) {
-                calDisplay.style.color = '#f44336'; // Красный цвет при превышении лимита
-            } else {
-                calDisplay.style.color = '#4caf50'; // Зеленый цвет, если норма не превышена
-            }
-        }
-
-        function addCalories() {
-            const input = document.getElementById('input-add-calories');
-            const val = parseInt(input.value, 10);
-            if (!val || val <= 0) return;
-
-            caloriesCurrent += val;
-            document.getElementById('calories-current').innerText = caloriesCurrent;
-            localStorage.setItem('calories_current', caloriesCurrent.toString());
-            input.value = "";
-            checkCaloriesColor(); // Проверяем цвет
-            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-        }
-
-        function quickAddCalories(amount) {
-            caloriesCurrent += amount;
-            document.getElementById('calories-current').innerText = caloriesCurrent;
-            localStorage.setItem('calories_current', caloriesCurrent.toString());
-            checkCaloriesColor(); // Проверяем цвет
-            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-        }
-
-        function resetCalories() {
-            caloriesCurrent = 0;
-            document.getElementById('calories-current').innerText = "0";
-            localStorage.setItem('calories_current', "0");
-            checkCaloriesColor(); // Возвращаем зеленый цвет
-            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
-        }
-
 
         const courseDatabase = {
             posture: {
@@ -226,6 +181,49 @@
             localStorage.setItem('water_today', water.toString());
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
+
+        let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10);
+        let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
+
+        // Функция проверки лимита калорий и окрашивания цифры
+        function checkCaloriesColor() {
+            const calDisplay = document.getElementById('calories-current');
+            if (!calDisplay) return;
+            if (caloriesCurrent > caloriesTarget) {
+                calDisplay.style.setProperty('color', '#f44336', 'important'); // Принудительный красный
+            } else {
+                calDisplay.style.setProperty('color', '#4caf50', 'important'); // Принудительный зеленый
+            }
+        }
+
+        function addCalories() {
+            const input = document.getElementById('input-add-calories');
+            const val = parseInt(input.value, 10);
+            if (!val || val <= 0) return;
+            caloriesCurrent += val;
+            document.getElementById('calories-current').innerText = caloriesCurrent;
+            localStorage.setItem('calories_current', caloriesCurrent.toString());
+            input.value = "";
+            checkCaloriesColor();
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        function quickAddCalories(amount) {
+            caloriesCurrent += amount;
+            document.getElementById('calories-current').innerText = caloriesCurrent;
+            localStorage.setItem('calories_current', caloriesCurrent.toString());
+            checkCaloriesColor();
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        function resetCalories() {
+            caloriesCurrent = 0;
+            document.getElementById('calories-current').innerText = "0";
+            localStorage.setItem('calories_current', "0");
+            checkCaloriesColor();
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+        }
+
         let bmiCat = localStorage.getItem('bmi_category') || 'normal';
 
         function calculateBMI() {
@@ -236,10 +234,8 @@
             
             localStorage.setItem('user_height', h); localStorage.setItem('user_weight', w);
             const bmi = (w / ((h/100) * (h/100))).toFixed(1);
-            
             let txt = "", col = "#5288c1";
             
-            // Расчет базового обмена веществ (Формула Миффлина-Сан Жеора)
             let bmr = Math.round((10 * w) + (6.25 * h) - (5 * 25) + 5); 
             let normCalories = Math.round(bmr * 1.375); 
             let targetCal = normCalories;
@@ -247,15 +243,15 @@
 
             if (bmi < 18.5) { 
                 txt = "Дефицит массы"; col = "#e5a93b"; bmiCat = "deficit"; 
-                targetCal = Math.round(normCalories + 400); // НАБОР МАССЫ (Профицит)
+                targetCal = Math.round(normCalories + 400); 
                 p = Math.round(w * 2); f = Math.round(w * 1.1); c = Math.round((targetCal - (p*4 + f*9)) / 4);
             } else if (bmi >= 18.5 && bmi < 25) { 
                 txt = "Нормальный вес"; col = "#4caf50"; bmiCat = "normal"; 
-                targetCal = normCalories; // ПОДДЕРЖАНИЕ ФОРМЫ
+                targetCal = normCalories; 
                 p = Math.round(w * 1.6); f = Math.round(w * 1.0); c = Math.round((targetCal - (p*4 + f*9)) / 4);
             } else { 
                 txt = "Избыточный вес"; col = "#f44336"; bmiCat = "excess"; 
-                targetCal = Math.round(normCalories - 450); // ПОХУДЕНИЕ (Дефицит)
+                targetCal = Math.round(normCalories - 450); 
                 p = Math.round(w * 1.8); f = Math.round(w * 0.8); c = Math.round((targetCal - (p*4 + f*9)) / 4);
             }
 
@@ -310,8 +306,6 @@
             } else {
                 document.getElementById('player-ex-target').innerText = `ДЕРЖИМ ВРЕМЯ`;
                 document.getElementById('player-timer-digits').style.display = 'block';
-                document.getElementById('player-timer-digits').innerText = `00:${ex.target}`;
-                btnAction.innerText = "🟢 Запустить таймер"; btnAction.className = "btn-success";
             }
         }
 
@@ -335,20 +329,10 @@
 
         function goToNextExercise() {
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            if (exIndex < currentExercises.length - 1) {
-                exIndex++;
-                showCurrentStep();
-            } else {
-                if (currentRound < totalRounds) {
-                    currentRound++;
-                    exIndex = 0;
-                    alert(`👊 Круг выполнен! Приготовиться к КРУГУ №${currentRound}! Начинаем с первого упражнения.`);
-                    showCurrentStep();
-                } else {
-                    exitWorkoutSession();
-                    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
-                    alert("Бро, поздравляю! Ты прошел все 3 КРУГА тренировки подряд! Мега-жиросжигание выполнено! 🔥🦾");
-                }
+            if (exIndex < currentExercises.length - 1) { exIndex++; showCurrentStep(); } 
+            else {
+                if (currentRound < totalRounds) { currentRound++; exIndex = 0; alert(`👊 Круг выполнен! Приготовиться к КРУГУ №${currentRound}!`); showCurrentStep(); } 
+                else { exitWorkoutSession(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); alert("Бро, поздравляю! Ты прошел все 3 КРУГА тренировки подряд! 🔥🦾"); }
             }
         }
 
@@ -360,8 +344,9 @@
             document.getElementById('calories-current').innerText = caloriesCurrent;
             document.getElementById('calories-target').innerText = caloriesTarget;
             calculateBMI();
-            checkCaloriesColor(); // Проверяем цвет при самом старте
+            checkCaloriesColor();
         });
     </script>
 </body>
 </html>
+
