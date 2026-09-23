@@ -140,7 +140,19 @@
         // Переменные дневника питания
         let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10);
         let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
-        
+
+        // Умная функция проверки цвета калорий
+        function checkCaloriesColor() {
+            const calDisplay = document.getElementById('calories-current');
+            if (!calDisplay) return;
+            
+            if (caloriesCurrent > caloriesTarget) {
+                calDisplay.style.color = '#f44336'; // Красный цвет при превышении лимита
+            } else {
+                calDisplay.style.color = '#4caf50'; // Зеленый цвет, если норма не превышена
+            }
+        }
+
         function addCalories() {
             const input = document.getElementById('input-add-calories');
             const val = parseInt(input.value, 10);
@@ -150,12 +162,15 @@
             document.getElementById('calories-current').innerText = caloriesCurrent;
             localStorage.setItem('calories_current', caloriesCurrent.toString());
             input.value = "";
+            checkCaloriesColor(); // Проверяем цвет
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
+
         function quickAddCalories(amount) {
             caloriesCurrent += amount;
             document.getElementById('calories-current').innerText = caloriesCurrent;
             localStorage.setItem('calories_current', caloriesCurrent.toString());
+            checkCaloriesColor(); // Проверяем цвет
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
 
@@ -163,8 +178,10 @@
             caloriesCurrent = 0;
             document.getElementById('calories-current').innerText = "0";
             localStorage.setItem('calories_current', "0");
+            checkCaloriesColor(); // Возвращаем зеленый цвет
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
         }
+
 
         const courseDatabase = {
             posture: {
