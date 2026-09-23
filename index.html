@@ -19,20 +19,32 @@
         .ex-target { font-size: 28px; font-weight: bold; margin: 15px 0; color: var(--tg-theme-button-color, #5288c1); }
         .round-badge { font-size: 16px; font-weight: bold; color: #888; margin-bottom: 15px; text-transform: uppercase; }
         .timer-display { font-size: 48px; font-weight: bold; margin: 15px 0; color: #4caf50; display: none; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--tg-theme-secondary-bg-color, #202b36); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; }
-                .nav-item { 
-            background: none; 
-            border: none; 
-            color: var(--tg-theme-text-color, #f5f6f7); 
+               .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0; height: 65px;
+            background: var(--tg-theme-secondary-bg-color, #202b36);
+            display: flex !important; 
+            flex-direction: row !important; 
+            justify-content: space-around !important; 
+            align-items: center !important;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+        .nav-item { 
+            background: none !important; 
+            border: none !important; 
+            color: var(--tg-theme-text-color, #f5f6f7) !important; 
             opacity: 0.5; 
-            font-size: 12px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            cursor: pointer; 
-            flex: 1; /* РАСПРЕДЕЛЯЕТ КНОПКИ ПОРОВНУ */
-            margin: 0; 
-            padding: 5px; 
+            font-size: 12px !important; 
+            display: flex !important; 
+            flex-direction: column !important; 
+            align-items: center !important; 
+            cursor: pointer !important; 
+            width: 25% !important; /* Принудительно делим экран на 4 равные части */
+            margin: 0 !important; 
+            padding: 5px !important; 
+            box-sizing: border-box;
         }
 
         .nav-item .icon { font-size: 20px; margin-bottom: 3px; } .nav-item.active { opacity: 1; color: var(--tg-theme-button-color, #5288c1); }
