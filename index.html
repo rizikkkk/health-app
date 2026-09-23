@@ -58,31 +58,52 @@
     </div>
 
     <script>
-   // Инициализируем Telegram Web App безопасным способом
+   // Инициализируем Telegram Web App
 const tg = window?.Telegram?.WebApp;
 
-// Если мы открылись внутри Telegram, разворачиваем на весь экран
 if (tg && typeof tg.expand === 'function') {
     tg.expand(); 
 }
 
-// Логика для счетчика воды
+// Переменная для хранения воды
 let water = 0;
 
+// Функция, которая запускается САМОЙ ПЕРВОЙ при открытии приложения
+function initApp() {
+    // Проверяем, поддерживает ли Telegram встроенную память (DeviceStorage)
+    if (tg && tg.DeviceStorage) {
+        // Просим Telegram выдать нам сохраненное значение по ключу 'water_today'
+        tg.DeviceStorage.getItem('water_today', (error, value) => {
+            if (!error && value) {
+                water = parseInt(value, 10); // Превращаем текст в цифру
+                document.getElementById('water-count').innerText = water; // Выводим на экран
+            }
+        });
+    }
+}
+
+// Запускаем инициализацию
+initApp();
+
+// Функция добавления воды
 function addWater() {
     water += 250;
     
-    // Находим на странице текст с цифрой и меняем его
     const waterDisplay = document.getElementById('water-count');
     if (waterDisplay) {
         waterDisplay.innerText = water;
     }
     
-    // Если мы в Telegram — делаем вибрацию. Если в браузере — просто пишем в консоль
+    // Сохраняем новое значение в память телефона через Telegram
+    if (tg && tg.DeviceStorage) {
+        tg.DeviceStorage.setItem('water_today', water.toString(), (error, success) => {
+            if (error) console.error("Ошибка сохранения:", error);
+        });
+    }
+    
+    // Вибрация
     if (tg && tg.HapticFeedback) {
         tg.HapticFeedback.impactOccurred('medium');
-    } else {
-        console.log("Выпито воды: " + water + " мл (Вибрация доступна только на телефоне)");
     }
 }
 
