@@ -26,7 +26,7 @@
 </head>
 <body>
 
-    <!-- ЭКРАН 1: ГЛАВНАЯ -->
+    <!-- ЭКРАН 1 -->
     <div id="screen-main" class="app-screen active">
         <h1>Твой день, Бро 🦾</h1>
         <div class="card">
@@ -40,41 +40,49 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 2: ПАРАМЕТРЫ -->
+    <!-- ЭКРАН 2 -->
     <div id="screen-bmi" class="app-screen">
         <h2>Твои параметры</h2>
         <div class="card">
             <h3>📊 Расчет ИМТ</h3>
             <div class="input-group">
                 <label>Рост (см):</label>
-                <input type="number" id="bmi-height" placeholder="Например, 178" oninput="calculateBMI()">
+                <input type="number" id="bmi-height" placeholder="178" oninput="calculateBMI()">
             </div>
             <div class="input-group">
                 <label>Вес (кг):</label>
-                <input type="number" id="bmi-weight" placeholder="Например, 80" oninput="calculateBMI()">
+                <input type="number" id="bmi-weight" placeholder="80" oninput="calculateBMI()">
             </div>
             <div id="bmi-result" class="result-box"></div>
         </div>
     </div>
 
-    <!-- ЭКРАН 3: ТРЕНИРОВКИ -->
+    <!-- ЭКРАН 3 -->
     <div id="screen-workout" class="app-screen">
-        <h2>Коррекция осанки 🏠</h2>
+        <h2>Домашний Фитнес 🏠</h2>
         <div class="card">
             <div class="input-group">
-                <label>Выбери тип нарушения:</label>
+                <label>Выбери направление:</label>
+                <select id="workout-category" onchange="generateProgram()">
+                    <option value="none">-- Выбрать цель --</option>
+                    <option value="posture">🧘‍♂️ Коррекция осанки (Спина)</option>
+                    <option value="fatburn">🔥 Похудение и Жиросжигание</option>
+                    <option value="power">💪 Силовые тренировки (Мышцы)</option>
+                </select>
+            </div>
+            <div class="input-group" id="sub-posture-group" style="display: none;">
+                <label>Тип нарушения осанки:</label>
                 <select id="posture-type" onchange="generateProgram()">
-                    <option value="none">-- Выбрать --</option>
-                    <option value="kyphosis">🧘‍♂️ Кифоз (Грудной отдел)</option>
-                    <option value="slouch">🧍‍♂️ Сутулость (Плечи)</option>
-                    <option value="scoli">📐 Сколиоз (Искривление)</option>
+                    <option value="kyphosis">Кифоз (Грудной отдел)</option>
+                    <option value="slouch">Сутулость (Плечи)</option>
+                    <option value="scoli">Сколиоз (Искривление)</option>
                 </select>
             </div>
         </div>
         <div id="workout-program-container"></div>
     </div>
 
-    <!-- МЕНЮ НАВИГАЦИИ -->
+    <!-- НАВИГАЦИЯ -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchScreen('screen-main', this)">
             <span class="icon">🏠</span><span>Главная</span>
@@ -83,31 +91,13 @@
             <span class="icon">📊</span><span>Параметры</span>
         </button>
         <button class="nav-item" onclick="switchScreen('screen-workout', this)">
-            <span class="icon">🏋️‍♂️</span><span>Осанка</span>
+            <span class="icon">🏋️‍♂️</span><span>Тренировки</span>
         </button>
     </nav>
 
     <script>
         const tg = window?.Telegram?.WebApp;
         if (tg) { tg.ready(); tg.expand(); }
-
-        const db = {
-            kyphosis: {
-                deficit: { title: "💪 Силовое раскрытие (Масса)", ex: [{ n: "Лодочка статическая", m: "3х20 сек", d: "Лежа на животе, оторви грудь и ноги." }, { n: "Отжимания Дельфин", m: "3х10 раз", d: "Раскрывает грудь без весов." }] },
-                normal: { title: "🧘‍♂️ Мобильность позвоночника", ex: [{ n: "Кобра", m: "3х12 раз", d: "Плавный прогиб в грудном отделе." }, { n: "Ангелы у стены", m: "3х15 раз", d: "Прижмись спиной к стене, двигай руки вверх." }] },
-                excess: { title: "🔥 Разгрузка спины (Безопасно)", ex: [{ n: "Кошка-Корова", m: "4х15 раз", d: "Мягко выгибай спину на четвереньках." }, { n: "Планка с колен", m: "3х30 сек", d: "Укрепляет кор без давления на диски." }] }
-            },
-            slouch: {
-                deficit: { title: "💪 Закачка задней дельты", ex: [{ n: "Подъемы рук назад", m: "3х15", d: "Лежа на животе, поднимай руки назад." }] },
-                normal: { title: "🧍‍♂️ Раскрытие плеч", ex: [{ n: "Замок за спиной", m: "3х30 сек", d: "Соединяй пальцы рук за спиной." }] },
-                excess: { title: "🔥 Тонус осанки стоя", ex: [{ n: "Вращение плечами", m: "3х20 раз", d: "Прижмись к стене, вращай плечи назад." }] }
-            },
-            scoli: {
-                deficit: { title: "📐 Симметричный корсет", ex: [{ n: "Боковая планка", m: "3х20 сек", d: "Укрепляет косые мышцы живота." }] },
-                normal: { title: "📐 Выравнивание", ex: [{ n: "Поза ребенка с уклоном", m: "3х45 sec", d: "Тянись руками по диагонали." }] },
-                excess: { title: "📐 Стабилизация", ex: [{ n: "Наклоны колен лежа", m: "3х12 раз", d: "Плавно наклоняй колени влево-вправо." }] }
-            }
-        };
 
         function switchScreen(id, btn) {
             document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
@@ -152,28 +142,42 @@
         }
 
         function generateProgram() {
-            const post = document.getElementById('posture-type').value;
+            const cat = document.getElementById('workout-category').value;
+            const sub = document.getElementById('sub-posture-group');
             const comp = document.getElementById('workout-program-container');
-            if (post === 'none') { comp.innerHTML = ""; return; }
-            
-            const prog = db[post][bmiCat];
-            if (!prog) return;
+            if (cat === 'none') { sub.style.display = 'none'; comp.innerHTML = ""; return; }
 
-            let html = `<div class="card"><h3>${prog.title}</h3><div style="margin-top:10px;">`;
-            prog.ex.forEach(e => {
-                html += `<div class="exercise-item"><strong>${e.n}</strong><p style="margin:4px 0; font-size:13px; opacity:0.7;">${e.d}</p><div class="exercise-meta">⏱ ${e.m}</div></div>`;
-            });
-            html += `</div><button onclick="startTrigger()">🦾 Начать</button></div>`;
-            comp.innerHTML = html;
+            let title = "", exList = [];
+            sub.style.display = (cat === 'posture') ? 'block' : 'none';
+
+            if (cat === 'posture') {
+                const type = document.getElementById('posture-type').value;
+                if (type === 'kyphosis') { title = "🧘‍♂️ Комплекс Анти-Кифоз"; exList = [{n:"Лодочка статическая", m:"3х20 сек", d:"Лежа на животе, своди лопатки."}, {n:"Кобра", m:"3х12 раз", d:"Прогиб в грудном отделе."}]; }
+                if (type === 'slouch') { title = "🧍‍♂️ Коррекция Сутулости"; exList = [{n:"Замок за спиной", m:"3х30 сек", d:"Соединяй пальцы рук сзади."}, {n:"Вращение плечами", m:"3х20 раз", d:"Круговые движения плечами назад."}]; }
+                if (type === 'scoli') { title = "📐 Стабилизация (Сколиоз)"; exList = [{n:"Боковая планка", m:"3х20 сек", d:"Укрепляет косые мышцы."}, {n:"Поза ребенка", m:"3х45 сек", d:"Мягкое вытяжение спины."}]; }
+            } else if (cat === 'fatburn') {
+                if (bmiCat === 'deficit') { title = "⚠️ Внимание: Низкий ИМТ"; exList = [{n:"Легкий тонус", m:"3х30 сек", d:"Кардио должно быть умеренным."}, {n:"Планка", m:"3х30 сек", d:"Укрепление мышц кора."}]; }
+                if (bmiCat === 'normal') { title = "🔥 Жиросжигание Интенсив"; exList = [{n:"Берпи", m:"3х10 раз", d:"Разгон метаболизма."}, {n:"Скалолаз", m:"3х45 сек", d:"Подтяжка колен к груди в упоре."}]; }
+                if (bmiCat === 'excess') { title = "🔥 Похудение (Без прыжков)"; exList = [{n:"Приседания на стул", m:"3х15 раз", d:"Безопасно для коленей."}, {n:"Планка с колен", m:"3х45 сек", d:"Нагрузка на пресс без давления."}]; }
+            } else if (cat === 'power') {
+                if (bmiCat === 'deficit') { title = "💪 Работа на объем (Масса)"; exList = [{n:"Отжимания", m:"4х10 раз", d:"Медленный темп, качаем грудь."}, {n:"Медленные приседания", m:"4х12 раз", d:"3 секунды вниз, взрыв вверх."}]; }
+            if (bmiCat === 'normal') { title = "💪 Домашний рельеф и сила"; exList = [{n:"Отжимания с паузой", m:"4х12 раз", d:"Задержка на 1 сек в нижней точке."}, {n:"Выпады назад", m:"3х12 раз", d:"Прокачка ног дома."}]; }
+            if (bmiCat === 'excess') { title = "💪 Силовой тонус суставов"; exList = [{n:"Отжимания от стола", m:"4х12 раз", d:"Снижает нагрузку на руки."}, {n:"Ягодичный мостик", m:"3х20 раз", d:"Безопасно для спины."}]; }
         }
 
-        function startTrigger() { if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); alert("Погнали, бро!"); }
-        window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('bmi-height').value = localStorage.getItem('user_height') || '';
-            document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
-            calculateBMI();
-        });
-    </script>
+        let html = `<div class="card"><h3>${title}</h3><div>`;
+        exList.forEach(e => { html += `<div class="exercise-item"><strong>${e.n}</strong><p style="margin:4px 0; font-size:13px; opacity:0.7;">${e.d}</p><div class="exercise-meta">⏱ ${e.m}</div></div>`; });
+        html += `</div><button onclick="startTrigger()">🦾 Начать</button></div>`;
+        comp.innerHTML = html;
+    }
+
+    function startTrigger() { if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); alert("Погнали, бро! Разорви эту тренировку!"); }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('bmi-height').value = localStorage.getItem('user_height') || '';
+        document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
+        calculateBMI();
+    });
+</script>
 </body>
 </html>
-
