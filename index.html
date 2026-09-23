@@ -22,6 +22,30 @@
         .nav-item { background: none; border: none; color: var(--tg-theme-text-color, #f5f6f7); opacity: 0.5; font-size: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; width: auto; margin: 0; padding: 5px; }
         .nav-item .icon { font-size: 20px; margin-bottom: 3px; }
         .nav-item.active { opacity: 1; color: var(--tg-theme-button-color, #5288c1); }
+                /* Стили для интерактивного таймера */
+        .timer-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            text-align: center;
+            border: 2px dashed var(--tg-theme-button-color, #5288c1);
+        }
+        .timer-digits {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--tg-theme-button-color, #5288c1);
+            margin-bottom: 10px;
+        }
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-stop {
+            background-color: #f44336 !important;
+        }
+
     </style>
 </head>
 <body>
@@ -167,17 +191,71 @@
 
         let html = `<div class="card"><h3>${title}</h3><div>`;
         exList.forEach(e => { html += `<div class="exercise-item"><strong>${e.n}</strong><p style="margin:4px 0; font-size:13px; opacity:0.7;">${e.d}</p><div class="exercise-meta">⏱ ${e.m}</div></div>`; });
-        html += `</div><button onclick="startTrigger()">🦾 Начать</button></div>`;
+                    // Добавляем блок скрытого таймера и зеленую кнопку запуска подхода
+            html += `</div>
+                <div id="timer-section" class="timer-box">
+                    <div class="timer-digits" id="timer-count-down">00:45</div>
+                    <button onclick="stopTimer()" class="btn-stop">🛑 Стоп / Сбросить</button>
+                </div>
+                <button onclick="startTrigger()" style="margin-top:15px; background-color:#4caf50;">🦾 Начать подход</button>
+            </div>`;
+
         comp.innerHTML = html;
     }
 
-    function startTrigger() { if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); alert("Погнали, бро! Разорви эту тренировку!"); }
+        // Переменные для управления временем
+        let countdown;
+        let timeLeft = 45;
 
-    window.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('bmi-height').value = localStorage.getItem('user_height') || '';
-        document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
-        calculateBMI();
-    });
-</script>
+        function startTrigger() { 
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); 
+            
+            // Сбрасываем старый таймер, если он работал
+            clearInterval(countdown);
+            timeLeft = 45; // Ставим 45 секунд на подход
+            
+            const timerBox = document.getElementById('timer-section');
+            const timerDigits = document.getElementById('timer-count-down');
+            
+            if (timerBox && timerDigits) {
+                timerBox.style.display = 'block';
+                timerDigits.innerText = `00:${timeLeft}`;
+                
+                // Запускаем тиканье каждую секунду
+                countdown = setInterval(() => {
+                    timeLeft--;
+                    
+                    // Форматируем вывод
+                    timerDigits.innerText = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`;
+                    
+                    // Легкий виброотклик на каждую секунду (эффект тиканья часов)
+                    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+
+                    if (timeLeft <= 0) {
+                        clearInterval(countdown);
+                        timerDigits.innerText = "ФИНИШ! 🔥";
+                        
+                        // Мощное финальное вибро
+                        if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+                        alert("Отличный подход, Бро! Отдохни немного и продолжай.");
+                    }
+                }, 1000);
+            }
+        }
+
+        function stopTimer() {
+            clearInterval(countdown);
+            const timerBox = document.getElementById('timer-section');
+            if (timerBox) timerBox.style.display = 'none';
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('bmi-height').value = localStorage.getItem('user_height') || '';
+            document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
+            calculateBMI();
+        });
+    </script>
 </body>
 </html>
+
