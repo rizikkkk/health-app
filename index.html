@@ -28,6 +28,9 @@
         .nav-item { background: none; border: none; color: var(--tg-theme-text-color, #f5f6f7); opacity: 0.5; font-size: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; width: auto; margin: 0; padding: 5px; }
         .nav-item .icon { font-size: 20px; margin-bottom: 3px; }
         .nav-item.active { opacity: 1; color: var(--tg-theme-button-color, #5288c1); }
+        /* Стили для сетки БЖУ и калорий */
+        .macro-grid { display: flex; justify-content: space-between; margin-top: 10px; font-size: 13px; opacity: 0.9; }
+        .macro-item { text-align: center; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 8px; flex: 1; margin: 0 4px; }
     </style>
 </head>
 <body>
@@ -40,6 +43,17 @@
             <p>Выпито за сегодня: <strong id="water-count" style="font-size: 20px; color: #5288c1;">0</strong> мл</p>
             <button onclick="addWater()">Выпить 250 мл</button>
         </div>
+                <!-- БЛОК ДНЕВНИКА КАЛОРИЙ -->
+        <div class="card">
+            <h3>🍎 Дневник питания</h3>
+            <p>Съедено за сегодня: <strong id="calories-current" style="color: #4caf50; font-size: 20px;">0</strong> / <span id="calories-target">2000</span> ккал</p>
+            <div class="input-group" style="margin-top: 10px;">
+                <input type="number" id="input-add-calories" placeholder="Введите ккал (например, 350)" style="width: 70%; display: inline-block;">
+                <button onclick="addCalories()" style="width: 26%; display: inline-block; margin-top: 0; margin-left: 3%; padding: 12px 0;">+</button>
+            </div>
+            <button onclick="resetCalories()" class="btn-stop" style="padding: 8px; font-size: 12px; margin-top: 10px; width: auto;">Сбросить еду</button>
+        </div>
+
         <div class="card">
             <h3>📊 Текущий статус</h3>
             <p id="status-text">Заполни данные во вкладке «Параметры».</p>
@@ -115,6 +129,28 @@
     <script>
         const tg = window?.Telegram?.WebApp;
         if (tg) { tg.ready(); tg.expand(); }
+        // Переменные дневника питания
+        let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10);
+        let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
+        
+        function addCalories() {
+            const input = document.getElementById('input-add-calories');
+            const val = parseInt(input.value, 10);
+            if (!val || val <= 0) return;
+
+            caloriesCurrent += val;
+            document.getElementById('calories-current').innerText = caloriesCurrent;
+            localStorage.setItem('calories_current', caloriesCurrent.toString());
+            input.value = "";
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        function resetCalories() {
+            caloriesCurrent = 0;
+            document.getElementById('calories-current').innerText = "0";
+            localStorage.setItem('calories_current', "0");
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+        }
 
         const courseDatabase = {
             posture: {
@@ -159,21 +195,55 @@
             localStorage.setItem('water_today', water.toString());
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
+        let bmiCat = localStorage.getItem('bmi_category') || 'normal';
 
         function calculateBMI() {
             const h = parseFloat(document.getElementById('bmi-height').value);
             const w = parseFloat(document.getElementById('bmi-weight').value);
             const res = document.getElementById('bmi-result');
             if (!h || !w) { res.style.display = 'none'; return; }
+            
             localStorage.setItem('user_height', h); localStorage.setItem('user_weight', w);
             const bmi = (w / ((h/100) * (h/100))).toFixed(1);
+            
             let txt = "", col = "#5288c1";
-            if (bmi < 18.5) { txt = "Дефицит массы"; col = "#e5a93b"; }
-            else if (bmi >= 18.5 && bmi < 25) { txt = "Нормальный вес"; col = "#4caf50"; }
-            else { txt = "Избыточный вес"; col = "#f44336"; }
+            
+            // Расчет базового обмена веществ (Формула Миффлина-Сан Жеора)
+            let bmr = Math.round((10 * w) + (6.25 * h) - (5 * 25) + 5); 
+            let normCalories = Math.round(bmr * 1.375); 
+            let targetCal = normCalories;
+            let p = 0, f = 0, c = 0; 
+
+            if (bmi < 18.5) { 
+                txt = "Дефицит массы"; col = "#e5a93b"; bmiCat = "deficit"; 
+                targetCal = Math.round(normCalories + 400); // НАБОР МАССЫ (Профицит)
+                p = Math.round(w * 2); f = Math.round(w * 1.1); c = Math.round((targetCal - (p*4 + f*9)) / 4);
+            } else if (bmi >= 18.5 && bmi < 25) { 
+                txt = "Нормальный вес"; col = "#4caf50"; bmiCat = "normal"; 
+                targetCal = normCalories; // ПОДДЕРЖАНИЕ ФОРМЫ
+                p = Math.round(w * 1.6); f = Math.round(w * 1.0); c = Math.round((targetCal - (p*4 + f*9)) / 4);
+            } else { 
+                txt = "Избыточный вес"; col = "#f44336"; bmiCat = "excess"; 
+                targetCal = Math.round(normCalories - 450); // ПОХУДЕНИЕ (Дефицит)
+                p = Math.round(w * 1.8); f = Math.round(w * 0.8); c = Math.round((targetCal - (p*4 + f*9)) / 4);
+            }
+
+            caloriesTarget = targetCal;
+            localStorage.setItem('calories_target', caloriesTarget.toString());
+            localStorage.setItem('bmi_category', bmiCat);
+            document.getElementById('calories-target').innerText = caloriesTarget;
+
             res.style.display = 'block'; res.style.color = col;
-            res.innerHTML = `ИМТ: ${bmi}<br><span style="font-size:13px;">${txt}</span>`;
-            document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}). Курс тренировок готов.`;
+            res.innerHTML = `
+                <div>ИМТ: ${bmi} (${txt})</div>
+                <div style="font-size:15px; color:#fff; margin-top:8px;">🎯 Цель питания: <strong>${caloriesTarget} ккал</strong></div>
+                <div class="macro-grid">
+                    <div class="macro-item" style="border-bottom:2px solid #5288c1;">🧬 Б: ${p}г</div>
+                    <div class="macro-item" style="border-bottom:2px solid #e5a93b;">🥑 Ж: ${f}г</div>
+                    <div class="macro-item" style="border-bottom:2px solid #4caf50;">🍞 У: ${c}г</div>
+                </div>
+            `;
+            document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}). Цель питания: ${caloriesTarget} ккал.`;
         }
 
         function togglePostureSub() {
@@ -255,8 +325,11 @@
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('bmi-height').value = localStorage.getItem('user_height') || '';
             document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
+            document.getElementById('calories-current').innerText = caloriesCurrent;
+            document.getElementById('calories-target').innerText = caloriesTarget;
             calculateBMI();
         });
+
     </script>
 </body>
 </html>
