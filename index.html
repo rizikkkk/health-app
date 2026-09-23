@@ -275,6 +275,7 @@
                 </div>
             `;
             document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}). Цель питания: ${caloriesTarget} ккал.`;
+            checkCaloriesColor();
         }
 
         function togglePostureSub() {
@@ -359,8 +360,8 @@
             document.getElementById('calories-current').innerText = caloriesCurrent;
             document.getElementById('calories-target').innerText = caloriesTarget;
             calculateBMI();
+            checkCaloriesColor(); // Проверяем цвет при самом старте
         });
-
     </script>
 </body>
 </html>
