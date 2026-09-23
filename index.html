@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой Трекер Здоровья</title>
-    <!-- Подключаем официальный скрипт Telegram -->
+    <title>Бро Трекер</title>
+    <!-- Подключаем скрипт Telegram с принудительной версией -->
     <script src="https://telegram.org"></script>
     <style>
-        /* Простые стили для красивого отображения */
         body {
             font-family: Arial, sans-serif;
             background-color: var(--tg-theme-bg-color, #f0f2f5);
@@ -34,84 +33,67 @@
             width: 100%;
             margin-top: 10px;
         }
-        button:active {
-            background-color: #1a6b9e;
-        }
     </style>
 </head>
 <body>
 
-    <h1>Бро, привет! Набираем форму 🦾</h1>
+    <h1>Бро, версия КОДА: 2.0 🦾</h1>
 
-    <!-- Блок Воды -->
     <div class="card">
         <h3>💧 Трекер воды</h3>
         <p>Выпито за сегодня: <strong id="water-count">0</strong> мл</p>
         <button onclick="addWater()">Выпить 250 мл</button>
     </div>
 
-    <!-- Блок Осанки -->
     <div class="card">
         <h3>🧘‍♂️ Борьба с кифозом</h3>
-        <p>Следующая разминка: <strong>Каждые 2 часа</strong></p>
-        <button onclick="showWorkout()">Открыть план упражнений</button>
+        <button onclick="showWorkout()">План упражнений</button>
     </div>
 
     <script>
-   // Инициализируем Telegram Web App
-const tg = window?.Telegram?.WebApp;
+        // Инициализация
+        const tg = window?.Telegram?.WebApp;
+        
+        if (tg) {
+            tg.ready(); // Сообщаем ТГ, что мы тут
+            tg.expand(); // Разворачиваем
+        }
 
-if (tg && typeof tg.expand === 'function') {
-    tg.expand(); 
-}
+        let water = 0;
 
-// Переменная для хранения воды
-let water = 0;
-
-// Функция, которая запускается САМОЙ ПЕРВОЙ при открытии приложения
-function initApp() {
-    // Проверяем, поддерживает ли Telegram встроенную память (DeviceStorage)
-    if (tg && tg.DeviceStorage) {
-        // Просим Telegram выдать нам сохраненное значение по ключу 'water_today'
-        tg.DeviceStorage.getItem('water_today', (error, value) => {
-            if (!error && value) {
-                water = parseInt(value, 10); // Превращаем текст в цифру
-                document.getElementById('water-count').innerText = water; // Выводим на экран
+        // Пытаемся вытащить воду из локальной памяти устройства (самый надежный способ)
+        try {
+            const savedWater = localStorage.getItem('water_today');
+            if (savedWater) {
+                water = parseInt(savedWater, 10);
+                document.getElementById('water-count').innerText = water;
             }
-        });
-    }
-}
+        } catch (e) {
+            alert("Ошибка чтения памяти: " + e);
+        }
 
-// Запускаем инициализацию
-initApp();
+        function addWater() {
+            water += 250;
+            document.getElementById('water-count').innerText = water;
+            
+            // Сохраняем в локальную память смартфона
+            try {
+                localStorage.setItem('water_today', water.toString());
+            } catch (e) {
+                alert("Ошибка записи в память: " + e);
+            }
 
-// Функция добавления воды
-function addWater() {
-    water += 250;
-    
-    const waterDisplay = document.getElementById('water-count');
-    if (waterDisplay) {
-        waterDisplay.innerText = water;
-    }
-    
-    // Сохраняем новое значение в память телефона через Telegram
-    if (tg && tg.DeviceStorage) {
-        tg.DeviceStorage.setItem('water_today', water.toString(), (error, success) => {
-            if (error) console.error("Ошибка сохранения:", error);
-        });
-    }
-    
-    // Вибрация
-    if (tg && tg.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('medium');
-    }
-}
+            // Пробуем вызвать вибрацию всеми доступными в ТГ способами
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('heavy'); // Поменял на heavy (сильный отклик)
+            } else {
+                alert("Telegram Haptic не найден!");
+            }
+        }
 
-// Логика для тренировки
-function showWorkout() {
-    alert("Бро, твой план на сегодня:\n1. Лодочка (3 подхода)\n2. Растяжка грудного отдела у стены.\n\nРасправь плечи прямо сейчас! 🧘‍♂️");
-}
-
+        function showWorkout() {
+            alert("1. Лодочка (3 подхода)\n2. Растяжка у стены. Расправь плечи!");
+        }
     </script>
 </body>
 </html>
