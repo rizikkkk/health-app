@@ -123,39 +123,38 @@
     </nav>
 
     <script>
-        const tg = window?.Telegram?.WebApp;
+           const tg = window?.Telegram?.WebApp;
         if (tg) { tg.ready(); tg.expand(); }
 
-        // БАЗА ДАННЫХ ИНТЕНСИВНЫХ КУРСОВ (Без ИМТ ограничений, по нарастающей)
+        // БАЗА ДАННЫХ ИНТЕНСИВНЫХ КУРСОВ
         const courseDatabase = {
             posture: {
                 kyphosis: [
-                    { name: "Лодочка со сведением лопаток", type: "reps", target: 15, desc: "Лежа на животе, оторви грудь от пола. Плавно своди лопатки, удерживая руки у головы." },
-                    { name: "Упражнение 'Кобра'", type: "reps", target: 12, desc: "Лежа на животе, упрись ладонями и плавно вытяни грудной отдел вверх. Плечи опущены." },
-                    { name: "Статическая планка для спины", type: "time", target: 45, desc: "Держи тело ровно. Пресс напряжен, лопатки разведены, держим позицию." }
+                    { name: "Лодочка со сведением лопаток", type: "reps", target: 15, desc: "Лежа на животе, оторви грудь от пола. Плавно своди лопатки." },
+                    { name: "Упражнение 'Кобра'", type: "reps", target: 12, desc: "Лежа на животе, плавно вытяни грудной отдел вверх." },
+                    { name: "Статическая планка для спины", type: "time", target: 45, desc: "Держи тело ровно. Пресс напряжен, лопатки разведены." }
                 ],
                 slouch: [
-                    { name: "Y-T-W подъемы рук на животе", type: "reps", target: 12, desc: "Последовательно поднимай руки вверх, разводя их буквами Y, T и W. Качает заднюю дельту." },
-                    { name: "Вращение плечами у стены", type: "reps", target: 20, desc: "Прижмись спиной и тазом к стене, выполняй круговые вращения плечами назад." }
+                    { name: "Y-T-W подъемы рук на животе", type: "reps", target: 12, desc: "Последовательно поднимай руки вверх, разводя их буквами Y, T и W." },
+                    { name: "Вращение плечами у стены", type: "reps", target: 20, desc: "Прижмись спиной к стене, выполняй круговые вращения плечами назад." }
                 ],
                 scoli: [
-                    { name: "Боковая планка (Левая сторона)", type: "time", target: 30, desc: "Стабилизация косых мышц. Держи таз высоко, не проваливайся." },
+                    { name: "Боковая планка (Левая сторона)", type: "time", target: 30, desc: "Стабилизация косых мышц. Держи таз высоко." },
                     { name: "Боковая планка (Правая сторона)", type: "time", target: 30, desc: "Симметричное укрепление мышечного корсета спины." }
                 ]
             },
             fatburn: [
-                { name: "Взрывные Берпи", type: "reps", target: 12, desc: "Упор лежа, отжимание, прыжок вверх с хлопком. Полный разгон жиросжигания!" },
-                { name: "Приседания с выпрыгиванием", type: "reps", target: 15, desc: "Опускайся до параллели с полом и мощно выталкивай тело вверх в прыжок." },
-                { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро поочередно подтягивай колени к груди. Держи темп!" }
+                { name: "Взрывные Берпи", type: "reps", target: 12, desc: "Упор лежа, отжимание, прыжок вверх с хлопком. Разгон жиросжигания!" },
+                { name: "Приседания с выпрыгиванием", type: "reps", target: 15, desc: "Опускайся до параллели с полом и мощно выталкивай тело вверх." },
+                { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро поочередно подтягивай колени к груди." }
             ],
             power: [
-                { name: "Отжимания широким хватом", type: "reps", target: 12, desc: "Глубокие отжимания от пола. Фокус на проработку грудных мышц." },
-                { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Сядь на край стула, руки у бедер. Сделай шаг вперед тазом и опускайся вниз, качая трицепс." },
-                { name: "Выпады назад попеременно", type: "reps", target: 16, desc: "Шаг назад, угол в коленях 90 градусов. Сделай по 8 раз на каждую ногу." }
+                { name: "Отжимания широким хватом", type: "reps", target: 12, desc: "Глубокие отжимания от пола. Фокус на грудные мышцы." },
+                { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Опора руками на край стула сзади. Прокачка трицепса." },
+                { name: "Выпады назад попеременно", type: "reps", target: 16, desc: "Шаг назад, угол в коленях 90 градусов. По 8 раз на ногу." }
             ]
         };
 
-        // НАВИГАЦИЯ
         function switchScreen(id, btn) {
             document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -164,7 +163,6 @@
             if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
         }
 
-        // ВОДА
         let water = parseInt(localStorage.getItem('water_today') || '0', 10);
         document.getElementById('water-count').innerText = water;
         function addWater() {
@@ -173,7 +171,6 @@
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
 
-        // ИМТ
         function calculateBMI() {
             const h = parseFloat(document.getElementById('bmi-height').value);
             const w = parseFloat(document.getElementById('bmi-weight').value);
@@ -195,10 +192,11 @@
             document.getElementById('sub-posture-group').style.display = (cat === 'posture') ? 'block' : 'none';
         }
 
-        // --- ДВИЖОК СИСТЕМЫ ПОДХОДОВ ТРЕНИРОВКИ ---
+        // --- ДВИЖОК КРУГОВОЙ ТРЕНИРОВКИ (УМНЫЙ КРОССФИТ) ---
         let currentExercises = []; 
-        let exIndex = 0;           
-        let roundIndex = 1;        
+        let exIndex = 0;           // Индекс упражнения ВНУТРИ текущего круга
+        let totalRounds = 3;       // Всего кругов тренировки
+        let currentRound = 1;      // Текущий круг по счету
         let timerInterval;         
         let isTimerRunning = false;
 
@@ -215,8 +213,9 @@
 
             if (!currentExercises || currentExercises.length === 0) return;
 
+            // Инициализация под круговую схему
             exIndex = 0;
-            roundIndex = 1;
+            currentRound = 1;
             isTimerRunning = false;
             clearInterval(timerInterval);
 
@@ -238,20 +237,21 @@
             clearInterval(timerInterval);
             isTimerRunning = false;
 
-            roundBadge.innerText = `ПОДХОД ${roundIndex} ИЗ 3`;
+            // Пишем текущий круг тренировки
+            roundBadge.innerText = `КРУГ ${currentRound} ИЗ ${totalRounds}`;
             exName.innerText = ex.name;
             exDesc.innerText = ex.desc;
 
             if (ex.type === "reps") {
                 exTarget.innerText = `${ex.target} РАЗ`;
                 timerDigits.style.display = 'none';
-                btnAction.innerText = "Выполнено! Следующий подход";
+                btnAction.innerText = "Выполнено! К следующему упражнению";
                 btnAction.className = "btn-success";
             } else {
                 exTarget.innerText = `ДЕРЖИМ ВРЕМЯ`;
                 timerDigits.style.display = 'block';
                 timerDigits.innerText = `00:${ex.target}`;
-                btnAction.innerText = "🟢 Запустить таймер подхода";
+                btnAction.innerText = "🟢 Запустить таймер упражнения";
                 btnAction.className = "btn-success";
             }
         }
@@ -259,12 +259,12 @@
         function handleActionClick() {
             const ex = currentExercises[exIndex];
             if (ex.type === "reps") {
-                goToNextRound();
+                goToNextExercise();
             } else {
                 if (!isTimerRunning) {
                     startExerciseTimer(ex.target);
                 } else {
-                    goToNextRound();
+                    goToNextExercise();
                 }
             }
         }
@@ -287,27 +287,33 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
-                    goToNextRound();
+                    goToNextExercise();
                 }
             }, 1000);
         }
 
-        function goToNextRound() {
+        // ЛОГИКА КРУГОВОГО ПЕРЕКЛЮЧЕНИЯ
+        function goToNextExercise() {
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 
-            if (roundIndex < 3) {
-                roundIndex++;
+            // Проверяем, есть ли еще упражнения в ЭТОМ круге
+            if (exIndex < currentExercises.length - 1) {
+                // Идем к следующему упражнению внутри текущего круга
+                exIndex++;
                 showCurrentStep();
             } else {
-                roundIndex = 1;
-                if (exIndex < currentExercises.length - 1) {
-                    exIndex++;
-                    alert("Отлично! Упражнение выполнено. Переходим к следующему! 🦾");
+                // Если упражнения в текущем круге кончились, проверяем круги
+                if (currentRound < totalRounds) {
+                    // Переходим на следующий КРУГ и сбрасываем индекс упражнений на первое!
+                    currentRound++;
+                    exIndex = 0;
+                    alert(`👊 Круг выполнен! Начинаем КРУГ №${currentRound}! Приготовься к первому упражнению.`);
                     showCurrentStep();
                 } else {
+                    // Если кончились и упражнения, и все 3 круга — финиш!
                     exitWorkoutSession();
                     if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
-                    alert("Бро, поздравляю! Ты полностью разорвал эту тренировку и выполнил все упражнения по 3 подхода! Крутейшая работа! 🔥🦾");
+                    alert("Бро, поздравляю! Ты прошел все 3 КРУГА тренировки подряд! Мега-жиросжигание выполнено! Отдыхай! 🔥🦾");
                 }
             }
         }
@@ -315,6 +321,7 @@
         function exitWorkoutSession() {
             clearInterval(timerInterval);
             document.getElementById('workout-player-container').style.display = 'none';
+                       document.getElementById('workout-player-container').style.display = 'none';
             document.getElementById('workout-setup-card').style.display = 'block';
         }
 
