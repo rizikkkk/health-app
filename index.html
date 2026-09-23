@@ -3,111 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бро Трекер</title>
-    <!-- Подключаем скрипт Telegram с принудительной версией -->
+    <title>Бро Фитнес</title>
     <script src="https://telegram.org"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: var(--tg-theme-bg-color, #f0f2f5);
-            color: var(--tg-theme-text-color, #222);
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        button {
-            background-color: #248bcf;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
+        body { font-family: sans-serif; background: var(--tg-theme-bg-color, #17212b); color: var(--tg-theme-text-color, #f5f6f7); margin: 0; padding: 20px 20px 90px 20px; }
+        h1, h2, h3 { margin-top: 0; color: var(--tg-theme-button-color, #5288c1); }
+        .card { background: var(--tg-theme-secondary-bg-color, #202b36); padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: bold; }
+        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: var(--tg-theme-bg-color, #17212b); color: var(--tg-theme-text-color, #f5f6f7); font-size: 16px; box-sizing: border-box; }
+        button { background-color: var(--tg-theme-button-color, #5288c1); color: var(--tg-theme-button-text-color, #ffffff); border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; width: 100%; margin-top: 5px; }
+        .result-box { margin-top: 15px; padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.05); display: none; font-weight: bold; text-align: center; }
+        .app-screen { display: none; }
+        .app-screen.active { display: block; }
+        .exercise-item { background: rgba(255, 255, 255, 0.03); border-left: 4px solid var(--tg-theme-button-color, #5288c1); padding: 12px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .exercise-meta { font-size: 13px; color: var(--tg-theme-button-color, #5288c1); font-weight: bold; margin-top: 4px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--tg-theme-secondary-bg-color, #202b36); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; }
+        .nav-item { background: none; border: none; color: var(--tg-theme-text-color, #f5f6f7); opacity: 0.5; font-size: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; width: auto; margin: 0; padding: 5px; }
+        .nav-item .icon { font-size: 20px; margin-bottom: 3px; }
+        .nav-item.active { opacity: 1; color: var(--tg-theme-button-color, #5288c1); }
     </style>
 </head>
 <body>
 
-    <h1>Бро, версия КОДА: 2.0 🦾</h1>
-
-    <div class="card">
-        <h3>💧 Трекер воды</h3>
-        <p>Выпито за сегодня: <strong id="water-count">0</strong> мл</p>
-        <button onclick="addWater()">Выпить 250 мл</button>
+    <!-- ЭКРАН 1: ГЛАВНАЯ -->
+    <div id="screen-main" class="app-screen active">
+        <h1>Твой день, Бро 🦾</h1>
+        <div class="card">
+            <h3>💧 Трекер воды</h3>
+            <p>Выпито за сегодня: <strong id="water-count" style="font-size: 20px; color: #5288c1;">0</strong> мл</p>
+            <button onclick="addWater()">Выпить 250 мл</button>
+        </div>
+        <div class="card">
+            <h3>📊 Текущий статус</h3>
+            <p id="status-text">Заполни данные во вкладке «Параметры».</p>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>🧘‍♂️ Борьба с кифозом</h3>
-        <button onclick="showWorkout()">План упражнений</button>
+    <!-- ЭКРАН 2: ПАРАМЕТРЫ -->
+    <div id="screen-bmi" class="app-screen">
+        <h2>Твои параметры</h2>
+        <div class="card">
+            <h3>📊 Расчет ИМТ</h3>
+            <div class="input-group">
+                <label>Рост (см):</label>
+                <input type="number" id="bmi-height" placeholder="Например, 178" oninput="calculateBMI()">
+            </div>
+            <div class="input-group">
+                <label>Вес (кг):</label>
+                <input type="number" id="bmi-weight" placeholder="Например, 80" oninput="calculateBMI()">
+            </div>
+            <div id="bmi-result" class="result-box"></div>
+        </div>
     </div>
+
+    <!-- ЭКРАН 3: ТРЕНИРОВКИ -->
+    <div id="screen-workout" class="app-screen">
+        <h2>Коррекция осанки 🏠</h2>
+        <div class="card">
+            <div class="input-group">
+                <label>Выбери тип нарушения:</label>
+                <select id="posture-type" onchange="generateProgram()">
+                    <option value="none">-- Выбрать --</option>
+                    <option value="kyphosis">🧘‍♂️ Кифоз (Грудной отдел)</option>
+                    <option value="slouch">🧍‍♂️ Сутулость (Плечи)</option>
+                    <option value="scoli">📐 Сколиоз (Искривление)</option>
+                </select>
+            </div>
+        </div>
+        <div id="workout-program-container"></div>
+    </div>
+
+    <!-- МЕНЮ НАВИГАЦИИ -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchScreen('screen-main', this)">
+            <span class="icon">🏠</span><span>Главная</span>
+        </button>
+        <button class="nav-item" onclick="switchScreen('screen-bmi', this)">
+            <span class="icon">📊</span><span>Параметры</span>
+        </button>
+        <button class="nav-item" onclick="switchScreen('screen-workout', this)">
+            <span class="icon">🏋️‍♂️</span><span>Осанка</span>
+        </button>
+    </nav>
 
     <script>
-// Переменная для хранения воды
-let water = 0;
+        const tg = window?.Telegram?.WebApp;
+        if (tg) { tg.ready(); tg.expand(); }
 
-// Функция для обновления цифры на экране
-function updateWaterDisplay(value) {
-    water = value;
-    const waterDisplay = document.getElementById('water-count');
-    if (waterDisplay) {
-        waterDisplay.innerText = water;
-    }
-}
+        const db = {
+            kyphosis: {
+                deficit: { title: "💪 Силовое раскрытие (Масса)", ex: [{ n: "Лодочка статическая", m: "3х20 сек", d: "Лежа на животе, оторви грудь и ноги." }, { n: "Отжимания Дельфин", m: "3х10 раз", d: "Раскрывает грудь без весов." }] },
+                normal: { title: "🧘‍♂️ Мобильность позвоночника", ex: [{ n: "Кобра", m: "3х12 раз", d: "Плавный прогиб в грудном отделе." }, { n: "Ангелы у стены", m: "3х15 раз", d: "Прижмись спиной к стене, двигай руки вверх." }] },
+                excess: { title: "🔥 Разгрузка спины (Безопасно)", ex: [{ n: "Кошка-Корова", m: "4х15 раз", d: "Мягко выгибай спину на четвереньках." }, { n: "Планка с колен", m: "3х30 сек", d: "Укрепляет кор без давления на диски." }] }
+            },
+            slouch: {
+                deficit: { title: "💪 Закачка задней дельты", ex: [{ n: "Подъемы рук назад", m: "3х15", d: "Лежа на животе, поднимай руки назад." }] },
+                normal: { title: "🧍‍♂️ Раскрытие плеч", ex: [{ n: "Замок за спиной", m: "3х30 сек", d: "Соединяй пальцы рук за спиной." }] },
+                excess: { title: "🔥 Тонус осанки стоя", ex: [{ n: "Вращение плечами", m: "3х20 раз", d: "Прижмись к стене, вращай плечи назад." }] }
+            },
+            scoli: {
+                deficit: { title: "📐 Симметричный корсет", ex: [{ n: "Боковая планка", m: "3х20 сек", d: "Укрепляет косые мышцы живота." }] },
+                normal: { title: "📐 Выравнивание", ex: [{ n: "Поза ребенка с уклоном", m: "3х45 sec", d: "Тянись руками по диагонали." }] },
+                excess: { title: "📐 Стабилизация", ex: [{ n: "Наклоны колен лежа", m: "3х12 раз", d: "Плавно наклоняй колени влево-вправо." }] }
+            }
+        };
 
-// Загружаем сохраненную воду сразу при старте страницы
-try {
-    const savedWater = localStorage.getItem('water_today');
-    if (savedWater) {
-        updateWaterDisplay(parseInt(savedWater, 10));
-    }
-} catch (e) {
-    console.log("Ошибка чтения памяти:", e);
-}
+        function switchScreen(id, btn) {
+            document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+        }
 
-// Функция, которая сработает, когда Telegram полностью загрузит свой интерфейс
-function initTelegram() {
-    const tg = window?.Telegram?.WebApp;
-    if (tg) {
-        tg.ready();
-        tg.expand();
-    }
-}
+        let water = parseInt(localStorage.getItem('water_today') || '0', 10);
+        document.getElementById('water-count').innerText = water;
 
-// Слушаем сигнал от Telegram о полной готовности
-window.addEventListener('DOMContentLoaded', initTelegram);
+        function addWater() {
+            water += 250;
+            document.getElementById('water-count').innerText = water;
+            localStorage.setItem('water_today', water.toString());
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        }
 
-// Функция добавления воды
-function addWater() {
-    water += 250;
-    updateWaterDisplay(water);
-    
-    // Сохраняем в память смартфона
-    try {
-        localStorage.setItem('water_today', water.toString());
-    } catch (e) {
-        console.log("Ошибка записи в память:", e);
-    }
+        let bmiCat = localStorage.getItem('bmi_category') || 'normal';
 
-    // Пробуем вызвать вибрацию аккуратно, без всплывающих окон
-    const tg = window?.Telegram?.WebApp;
-    if (tg && tg.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('heavy'); 
-    }
-}
+        function calculateBMI() {
+            const h = parseFloat(document.getElementById('bmi-height').value);
+            const w = parseFloat(document.getElementById('bmi-weight').value);
+            const res = document.getElementById('bmi-result');
+            if (!h || !w) { res.style.display = 'none'; return; }
+            
+            localStorage.setItem('user_height', h);
+            localStorage.setItem('user_weight', w);
+            const bmi = (w / ((h/100) * (h/100))).toFixed(1);
+            let txt = ""; let col = "#5288c1";
 
-function showWorkout() {
-    alert("Бро, твой план на сегодня:\n1. Лодочка (3 подхода)\n2. Растяжка грудного отдела у стены.\n\nРасправь плечи прямо сейчас! 🧘‍♂️");
-}
+            if (bmi < 18.5) { txt = "Дефицит массы"; col = "#e5a93b"; bmiCat = "deficit"; }
+            else if (bmi >= 18.5 && bmi < 25) { txt = "Нормальный вес"; col = "#4caf50"; bmiCat = "normal"; }
+            else { txt = "Избыточный вес"; col = "#f44336"; bmiCat = "excess"; }
 
+            localStorage.setItem('bmi_category', bmiCat);
+            res.style.display = 'block'; res.style.color = col;
+            res.innerHTML = `ИМТ: ${bmi}<br><span style="font-size:13px;">${txt}</span>`;
+            document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}).`;
+            generateProgram();
+        }
+
+        function generateProgram() {
+            const post = document.getElementById('posture-type').value;
+            const comp = document.getElementById('workout-program-container');
+            if (post === 'none') { comp.innerHTML = ""; return; }
+            
+            const prog = db[post][bmiCat];
+            if (!prog) return;
+
+            let html = `<div class="card"><h3>${prog.title}</h3><div style="margin-top:10px;">`;
+            prog.ex.forEach(e => {
+                html += `<div class="exercise-item"><strong>${e.n}</strong><p style="margin:4px 0; font-size:13px; opacity:0.7;">${e.d}</p><div class="exercise-meta">⏱ ${e.m}</div></div>`;
+            });
+            html += `</div><button onclick="startTrigger()">🦾 Начать</button></div>`;
+            comp.innerHTML = html;
+        }
+
+        function startTrigger() { if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); alert("Погнали, бро!"); }
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('bmi-height').value = localStorage.getItem('user_height') || '';
+            document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
+            calculateBMI();
+        });
     </script>
 </body>
 </html>
+
