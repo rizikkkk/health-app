@@ -103,13 +103,109 @@ button {
 .macro-grid { display: flex; justify-content: space-between; margin-top: 10px; font-size: 13px; opacity: 0.9; }
 .macro-item { text-align: center; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 8px; flex: 1; margin: 0 4px; }
 
-.calendar-row { display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
-.calendar-row-title { font-size: 14px; font-weight: bold; color: var(--tg-theme-button-color, #5288c1); margin-bottom: 4px; }
-.calendar-days-line { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 5px; }
-.calendar-box-day { min-width: 35px; height: 35px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; }
-.calendar-box-day strong { font-size: 13px; } 
-.day-done { background: #4caf50 !important; color: #fff; border-color: #4caf50; }
-.day-today-border { border: 2px solid var(--tg-theme-button-color, #5288c1); }
-
-/* Анимация плавного заполнения шкалы целевого веса */
+/* Плавное заполнение шкалы веса (перенесли сюда) */
 #weight-progress-bar { transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Коробка-контейнер для календаря */
+.heatmap-container {
+    background: var(--tg-theme-secondary-bg-color, #202b36);
+    padding: 15px;
+    border-radius: 16px;
+    margin-bottom: 15px;
+}
+
+/* Наша сетка: 7 столбиков (как дни недели) */
+.heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* Квадратный кубик дня */
+.heatmap-day {
+    aspect-ratio: 1 / 1; /* Делает кубик ровным квадратом */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+}
+
+/* Обводка для СЕГОДНЯШНЕГО дня */
+.heatmap-day.today {
+    border: 2px solid var(--tg-theme-button-color, #5288c1) !important;
+    color: #fff !important;
+}
+
+/* Цвета по уровням (чем больше дел сделал, тем ярче зеленый) */
+.heatmap-day.level-0 { background: rgba(255, 255, 255, 0.05); }
+.heatmap-day.level-1 { background: #0e4429; color: #fff; border-color: transparent; } /* 1 дело */
+.heatmap-day.level-2 { background: #006d32; color: #fff; border-color: transparent; } /* 2 дела */
+.heatmap-day.level-3 { background: #26a641; color: #fff; border-color: transparent; } /* 3 дела */
+.heatmap-day.level-4 { background: #39d353; color: #000; border-color: transparent; } /* 4 дела */
+
+/* ЗОЛОТОЙ КУБИК С КОРОНОЙ (Супер-Бро день) */
+.heatmap-day.level-king {
+    background: linear-gradient(135deg, #ffd700, #ffa500) !important;
+    color: #000 !important;
+    border-color: #fff !important;
+}
+
+/* Подсказка цветов внизу календаря */
+.heatmap-legend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 10px;
+}
+.legend-box {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+}
+
+/* ТЕМНОЕ ОКНО-МОДАЛКА (всплывает при клике на день) */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.85); /* Затемняем всё вокруг */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+.modal-content {
+    background: var(--tg-theme-secondary-bg-color, #202b36);
+    padding: 20px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 320px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.modal-field {
+    margin-bottom: 12px;
+}
+.modal-field label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+.btn-secondary {
+    background-color: rgba(255,255,255,0.1) !important;
+    color: #fff !important;
+}
