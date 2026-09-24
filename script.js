@@ -353,9 +353,12 @@ function renderHeatmapCalendar() {
     // Считаем, сколько дней в этом месяце
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     
-    // Подтягиваем цели Бро для проверки успехов (с дефолтными значениями в 2000)
+    // Подтягиваем цели Бро для проверки успехов
     const targetW = parseInt(localStorage.getItem('water_target') || '2000', 10);
     const targetC = parseInt(localStorage.getItem('calories_target') || '2000', 10);
+
+    // СЧЕТЧИК КОРОН ДЛЯ СТАТИСТИКИ
+    let totalCrownsThisMonth = 0;
 
     // Цикл: создаем кубик для каждого дня месяца
     for (let day = 1; day <= daysInMonth; day++) {
@@ -372,59 +375,58 @@ function renderHeatmapCalendar() {
         const dWorkouts = dayData.workouts || 0;
         const dWeight = dayData.weight || 0;
 
-        // НАДЕЖНЫЙ ПОДСЧЕТ БАЛЛОВ (Максимум 4)
+        // Считаем баллы за день
         let score = 0;
-        
-        // 1. Проверка воды (выпито больше или равно норме)
-        if (dWater >= targetW || (dWater > 0 && targetW === 0)) score++; 
-        
-        // 2. Проверка еды (ввел калории и не превысил цель)
+        if (dWater >= targetW) score++; 
         if (dCalories > 0 && dCalories <= targetC) score++; 
-        
-        // 3. Проверка тренировок (сделал 3 круга)
         if (dWorkouts >= 3) score++; 
-        
-        // 4. Проверка веса (просто записал вес за день)
         if (dWeight > 0) score++; 
 
-        // ЗОЛОТОЙ КУБИК С КОРОНОЙ (Если все 4 дела сделаны!)
+        // Если все 4 цели закрыты — это корона
         let isKing = (score === 4);
+        
+        // НАШЕ ОБНОВЛЕНИЕ: Если день золотой, увеличиваем общую сумму корон
+        if (isKing) {
+            totalCrownsThisMonth++;
+        }
 
         // Создаем сам кубик в HTML
         const dayBox = document.createElement('div');
         dayBox.className = 'heatmap-day';
         dayBox.innerText = day;
 
-        // Красим кубик в нужный цвет
+        // Красим кубик
         if (isKing) {
             dayBox.classList.add('level-king');
-            dayBox.innerText = "👑"; // Дарим корону вместо цифры дня
+            dayBox.innerText = "👑"; 
         } else {
             dayBox.classList.add(`level-${score}`);
         }
 
-        // Если кубик — это СЕГОДНЯ, добавляем синий контур
+        // Подсветка СЕГОДНЯ
         if (day === todayObj.getDate() && currentMonth === todayObj.getMonth() && currentYear === todayObj.getFullYear()) {
             dayBox.classList.add('today');
         }
 
-        // Нажатие на кубик — открывает всплывающее окно
+        // Нажатие на кубик
         dayBox.onclick = () => {
             selectedCalendarDate = dateKey;
             document.getElementById('modal-date-title').innerText = `День Бро: ${dd}.${mm}.${yyyy}`;
-            
-            // Пишем в поля модалки старые цифры дня
             document.getElementById('modal-water').value = dayData.water || "";
             document.getElementById('modal-calories').value = dayData.calories || "";
             document.getElementById('modal-workouts').value = dayData.workouts || "";
             document.getElementById('modal-weight').value = dayData.weight || "";
-            
-            // Открываем модалку на экране
             document.getElementById('calendar-modal').style.display = 'flex';
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
         };
 
         grid.appendChild(dayBox);
+    }
+
+    // ОБНОВЛЯЕМ ПЛАШКУ СТАТИСТИКИ НА ЭКРАНЕ
+    const crownsDisplay = document.getElementById('stats-crown-count');
+    if (crownsDisplay) {
+        crownsDisplay.innerText = totalCrownsThisMonth;
     }
 }
 
@@ -474,8 +476,43 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 });
+// ==========================================================================
+// ФУНКЦИЯ АВТОМАТИЧЕСКОГО СБРОСА СЧЕТЧИКОВ КАЖДОЕ УТРО
+// ==========================================================================
+function checkDailyReset() {
+    const todayDateStr = getFormattedDate(0); // Получаем дату сегодня, например "2026-03-24"
+    const lastSavedDate = localStorage.getItem('last_saved_date'); // Смотрим, когда Бро заходил последний раз
+
+    // Если даты не совпадают — значит наступил СЛЕДУЮЩИЙ день!
+    if (lastSavedDate !== todayDateStr) {
+        
+        // 1. Обнуляем воду и еду в оперативной памяти приложения
+        water = 0;
+        caloriesCurrent = 0;
+        
+        // 2. Сбрасываем их в локальной памяти телефона для Главного экрана
+        localStorage.setItem('water_today', '0');
+        localStorage.setItem('calories_current', '0');
+        
+        // 3. Сбрасываем галочки тренировок, чтобы курсы можно было делать заново
+        const todayObj = new Date();
+        const currentToday = todayObj.getDate();
+        localStorage.removeItem(`done_posture_day_${currentToday}`);
+        localStorage.removeItem(`done_fatburn_day_${currentToday}`);
+        localStorage.removeItem(`done_power_day_${currentToday}`);
+
+        // 4. Записываем свежую дату захода, чтобы сброс не срабатывал повторно сегодня
+        localStorage.setItem('last_saved_date', todayDateStr);
+        
+        // 5. Синхронизируем чистый день с календарем
+        syncTodayDataToCalendar();
+    }
+}
 
 window.addEventListener('DOMContentLoaded', () => {
+    // НАШЕ ОБНОВЛЕНИЕ: Проверяем, не наступило ли новое утро?
+    checkDailyReset();
+
     // Восстанавливаем рост и вес из памяти в поля ввода
     document.getElementById('bmi-height').value = localStorage.getItem('user_height') || ''; 
     document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
@@ -490,7 +527,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
     waterTarget = parseInt(localStorage.getItem('water_target') || '2000', 10);
     if(document.getElementById('water-target')) {
-        document.getElementById('water-target').innerText = targetWater; // Исправлено на правильную цель воды
+        document.getElementById('water-target').innerText = waterTarget;
     }
 
     // Восстанавливаем галочки фокуса
@@ -504,7 +541,7 @@ window.addEventListener('DOMContentLoaded', () => {
     checkWaterColor(); 
     updateWorkoutMenu(); 
     
-    // НАШЕ ОБНОВЛЕНИЕ: Сохраняем сегодняшние данные и включаем Календарь Всевластия!
+    // Сохраняем сегодняшние данные и включаем Календарь Всевластия!
     syncTodayDataToCalendar();
     renderHeatmapCalendar();
 });

@@ -110,7 +110,14 @@
     <div class="card" style="text-align: center;">
         <h2>Календарь Всевластия 👑</h2>
         
-        <!-- Сетка, куда наш JS сам вставит 31 кубик дней -->
+        <!-- НАШ НОВЫЙ БЛОК СТАТИСТИКИ -->
+        <div id="calendar-stats-box" style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.2); padding: 12px; border-radius: 12px; margin: 10px 0 15px 0;">
+            <span style="font-size: 15px; font-weight: bold; color: #ffd700;">
+                🔥 Мои достижения: <span id="stats-crown-count">0</span> корон за месяц
+            </span>
+        </div>
+        
+        <!-- Сетка для 31 кубика дней -->
         <div class="heatmap-container">
             <div id="calendar-heatmap" class="heatmap-grid"></div>
         </div>
@@ -128,6 +135,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- ВСПЛЫВАЮЩЕЕ ОКНО (МОДАЛКА) ДЛЯ ИСПРАВЛЕНИЯ ЛЮБОГО ДНЯ -->
 <div id="calendar-modal" class="modal-overlay" style="display: none;">
