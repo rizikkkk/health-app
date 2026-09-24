@@ -118,33 +118,52 @@ function calculateBMI() {
     if(document.getElementById('status-text')) document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}). Цель питания: ${caloriesTarget} ккал.`; 
     
     // ЛОГИКА ИНТЕРАКТИВНОЙ ШКАЛЫ ВЕСА
+    // ЛОГИКА ИНТЕРАКТИВНОЙ ШКАЛЫ ВЕСА (Грамотный расчет без багов)
     const progressContainer = document.getElementById('weight-progress-container');
     if (progressContainer && t) {
         progressContainer.style.display = 'block';
-        let startWeight = parseFloat(localStorage.getItem('user_start_weight'));
-        if (!startWeight) {
-            startWeight = w;
-            localStorage.setItem('user_start_weight', w);
-        }
         
         let percent = 0;
-        if (startWeight !== t) {
-            percent = Math.round(((startWeight - w) / (startWeight - t)) * 100);
+        
+        if (w > t) {
+            // Режим: Похудение (Текущий вес больше целевого)
+            // За базовый диапазон берем разницу + 15 кг от цели как точку старта
+            let maxRange = t + 15; 
+            if (w >= maxRange) {
+                percent = 0;
+            } else {
+                percent = Math.round(((maxRange - w) / (maxRange - t)) * 100);
+            }
+            
+            const diff = (w - t).toFixed(1);
+            document.getElementById('weight-motivation-text').innerText = `Бро, до заветной цели осталось скинуть всего ${diff} кг! 🔥`;
+        } 
+        else if (w < t) {
+            // Режим: Набор массы (Текущий вес меньше целевого)
+            // За базовый диапазон берем разницу - 15 кг от цели как точку старта
+            let minRange = t - 15;
+            if (w <= minRange) {
+                percent = 0;
+            } else {
+                percent = Math.round(((w - minRange) / (t - minRange)) * 100);
+            }
+            
+            const diff = (t - w).toFixed(1);
+            document.getElementById('weight-motivation-text').innerText = `Бро, до заветной цели осталось набрать еще ${diff} кг! 🔥`;
+        } 
+        else {
+            // Идеальное попадание в цель
+            percent = 100;
+            document.getElementById('weight-motivation-text').innerText = `Красава, Бро! Цель достигнута! Ты машина! 👑🏆`;
         }
+        
+        // Ограничиваем проценты от 0 до 100, чтобы полоса не вылезала за края
         if (percent < 0) percent = 0;
         if (percent > 100) percent = 100;
         
         document.getElementById('weight-progress-bar').style.width = percent + '%';
         document.getElementById('weight-progress-text').innerText = percent + '%';
         
-        const diff = Math.abs(w - t).toFixed(1);
-        if (w > t) {
-            document.getElementById('weight-motivation-text').innerText = `Бро, до заветной цели осталось скинуть всего ${diff} кг! 🔥`;
-        } else if (w < t) {
-            document.getElementById('weight-motivation-text').innerText = `Бро, до заветной цели осталось набрать еще ${diff} кг! 🔥`;
-        } else {
-            document.getElementById('weight-motivation-text').innerText = `Красава, Бро! Цель достигнута! Ты машина! 👑🏆`;
-        }
     } else if (progressContainer) {
         progressContainer.style.display = 'none';
     }
