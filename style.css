@@ -1,0 +1,115 @@
+body { 
+    font-family: sans-serif; 
+    background: var(--tg-theme-bg-color, #17212b); 
+    color: var(--tg-theme-text-color, #f5f6f7); 
+    margin: 0; 
+    padding: 20px 20px 90px 20px; 
+}
+h1, h2, h3 { 
+    margin-top: 0; 
+    color: var(--tg-theme-button-color, #5288c1); 
+    text-align: center; 
+}
+.card { 
+    background: var(--tg-theme-secondary-bg-color, #202b36); 
+    padding: 20px; 
+    border-radius: 16px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+}
+.input-group { 
+    margin-bottom: 15px; 
+}
+label { 
+    display: block; 
+    margin-bottom: 6px; 
+    font-size: 14px; 
+    font-weight: bold; 
+}
+input, select { 
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 10px; 
+    border: 1px solid rgba(255,255,255,0.1); 
+    background: var(--tg-theme-bg-color, #17212b); 
+    color: var(--tg-theme-text-color, #f5f6f7); 
+    font-size: 16px; 
+    box-sizing: border-box; 
+}
+button { 
+    background-color: var(--tg-theme-button-color, #5288c1); 
+    color: var(--tg-theme-button-text-color, #ffffff); 
+    border: none; 
+    padding: 14px; 
+    font-size: 16px; 
+    font-weight: bold; 
+    border-radius: 12px; 
+    cursor: pointer; 
+    width: 100%; 
+    margin-top: 5px; 
+}
+.btn-success { background-color: #4caf50 !important; } 
+.btn-stop { background-color: #f44336 !important; }
+
+.result-box { 
+    margin-top: 15px; 
+    padding: 12px; 
+    border-radius: 10px; 
+    background: rgba(255,255,255,0.05); 
+    display: none; 
+    font-weight: bold; 
+    text-align: center; 
+}
+.app-screen { display: none; } 
+.app-screen.active { display: block; }
+.workout-player { display: none; text-align: center; }
+
+.ex-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #e5a93b; }
+.ex-target { font-size: 28px; font-weight: bold; margin: 15px 0; color: var(--tg-theme-button-color, #5288c1); }
+.round-badge { font-size: 16px; font-weight: bold; color: #888; margin-bottom: 15px; text-transform: uppercase; }
+.timer-display { font-size: 48px; font-weight: bold; margin: 15px 0; color: #4caf50; display: none; }
+
+.bottom-nav { 
+    position: fixed; 
+    bottom: 0; left: 0; right: 0; height: 65px; 
+    background: var(--tg-theme-secondary-bg-color, #202b36); 
+    display: flex !important; 
+    flex-direction: row !important; 
+    justify-content: space-around !important; 
+    align-items: center !important; 
+    border-top: 1px solid rgba(255,255,255,0.05); 
+    z-index: 1000; 
+    box-sizing: border-box; 
+}
+.nav-item { 
+    background: none !important; 
+    border: none !important; 
+    color: var(--tg-theme-text-color, #f5f6f7) !important; 
+    opacity: 0.5; 
+    font-size: 12px !important; 
+    display: flex !important; 
+    flex-direction: column !important; 
+    align-items: center !important; 
+    cursor: pointer !important; 
+    width: 23% !important; 
+    margin: 0 !important; 
+    padding: 5px !important; 
+    box-sizing: border-box; 
+    float: left !important; 
+}
+.nav-item .icon { font-size: 20px; margin-bottom: 3px; } 
+.nav-item.active { opacity: 1 !important; color: var(--tg-theme-button-color, #5288c1) !important; }
+
+.macro-grid { display: flex; justify-content: space-between; margin-top: 10px; font-size: 13px; opacity: 0.9; }
+.macro-item { text-align: center; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 8px; flex: 1; margin: 0 4px; }
+
+.calendar-row { display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+.calendar-row-title { font-size: 14px; font-weight: bold; color: var(--tg-theme-button-color, #5288c1); margin-bottom: 4px; }
+.calendar-days-line { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 5px; }
+.calendar-box-day { min-width: 35px; height: 35px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; }
+.calendar-box-day strong { font-size: 13px; } 
+.day-done { background: #4caf50 !important; color: #fff; border-color: #4caf50; }
+.day-today-border { border: 2px solid var(--tg-theme-button-color, #5288c1); }
+
+/* Анимация плавного заполнения шкалы целевого веса */
+#weight-progress-bar { transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
