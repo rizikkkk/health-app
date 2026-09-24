@@ -353,10 +353,9 @@ function renderHeatmapCalendar() {
     // Считаем, сколько дней в этом месяце
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     
-    // Подтягиваем цели Бро для проверки успехов
+    // Подтягиваем цели Бро для проверки успехов (с дефолтными значениями в 2000)
     const targetW = parseInt(localStorage.getItem('water_target') || '2000', 10);
     const targetC = parseInt(localStorage.getItem('calories_target') || '2000', 10);
-    const targetWeight = parseFloat(localStorage.getItem('user_target_weight') || '0');
 
     // Цикл: создаем кубик для каждого дня месяца
     for (let day = 1; day <= daysInMonth; day++) {
@@ -373,27 +372,26 @@ function renderHeatmapCalendar() {
         const dWorkouts = dayData.workouts || 0;
         const dWeight = dayData.weight || 0;
 
-        // Считаем баллы (максимум 4)
+        // НАДЕЖНЫЙ ПОДСЧЕТ БАЛЛОВ (Максимум 4)
         let score = 0;
-        if (dWater >= targetW) score++; // Вода выполнена
-        if (dCalories > 0 && dCalories <= targetC && dCalories >= (targetC - 400)) score++; // Еда в зеленом коридоре
-        if (dWorkouts >= 3) score++; // Тренировка сделана полностью
-        if (dWeight > 0) score++; // Вес записан
+        
+        // 1. Проверка воды (выпито больше или равно норме)
+        if (dWater >= targetW || (dWater > 0 && targetW === 0)) score++; 
+        
+        // 2. Проверка еды (ввел калории и не превысил цель)
+        if (dCalories > 0 && dCalories <= targetC) score++; 
+        
+        // 3. Проверка тренировок (сделал 3 круга)
+        if (dWorkouts >= 3) score++; 
+        
+        // 4. Проверка веса (просто записал вес за день)
+        if (dWeight > 0) score++; 
 
-        // Проверяем, заслужил ли Бро Королевский день (Все 4 дела + вес дошел до цели)
-        let isKing = false;
-        if (score === 4 && targetWeight > 0) {
-            const currentWeight = parseFloat(localStorage.getItem('user_weight') || '0');
-            if ((currentWeight > targetWeight && dWeight <= targetWeight) || 
-                (currentWeight < targetWeight && dWeight >= targetWeight) || 
-                (dWeight === targetWeight)) {
-                isKing = true;
-            }
-        }
+        // ЗОЛОТОЙ КУБИК С КОРОНОЙ (Если все 4 дела сделаны!)
+        let isKing = (score === 4);
 
         // Создаем сам кубик в HTML
         const dayBox = document.createElement('div');
-        dayBox.heatmapDay = true; 
         dayBox.className = 'heatmap-day';
         dayBox.innerText = day;
 
@@ -429,6 +427,7 @@ function renderHeatmapCalendar() {
         grid.appendChild(dayBox);
     }
 }
+
 
 // Слушатель для кнопок внутри всплывающего окна (Отмена и Сохранить)
 document.addEventListener('DOMContentLoaded', () => {
