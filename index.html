@@ -171,12 +171,13 @@
         }
 
         function resetWater() {
-            waterCurrent = 0;
-            document.getElementById('water-count').innerText = "0";
-            localStorage.setItem('water_current', "0");
-            checkWaterColor();
+            water = 0; // ОБНУЛЯЕМ ТЕКУЩУЮ ПЕРЕМЕННУЮ
+            document.getElementById('water-count').innerText = "0"; // ОБНУЛЯЕМ ЭКРАН
+            localStorage.setItem('water_today', "0"); // ОБНУЛЯЕМ ПАМЯТЬ ТЕЛЕФОНА
+            checkWaterColor(); // ВОЗВРАЩАЕМ ЦВЕТ
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
         }
+
 
         let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10); let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
         function checkCaloriesColor() { const d = document.getElementById('calories-current'); if (!d) return; if (caloriesCurrent > caloriesTarget) { d.style.setProperty('color', '#f44336', 'important'); } else { d.style.setProperty('color', '#4caf50', 'important'); } }
@@ -250,17 +251,29 @@
                 }
             });
         }
-        function toggleDayManual(goalId, day) { const storageKey = `done_${goalId}_day_${day}`; const currentState = localStorage.getItem(storageKey) === 'true'; localStorage.setItem(storageKey, !currentState); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); renderTableCalendar(); }
+        function toggleDayManual(goalId, day) { 
+            const storageKey = `done_${goalId}_day_${day}`; 
+            const currentState = localStorage.getItem(storageKey) === 'true'; 
+            localStorage.setItem(storageKey, !currentState); 
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); 
+            renderTableCalendar(); 
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('bmi-height').value = localStorage.getItem('user_height') || ''; 
             document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
             document.getElementById('calories-current').innerText = caloriesCurrent; 
             document.getElementById('calories-target').innerText = caloriesTarget;
+            
+            // ВОТ СЮДА МЫ ДОБАВИЛИ ПОДГРУЗКУ ВОДЫ ПРИ СТАРТЕ БОТА
+            document.getElementById('water-count').innerText = water;
+
             document.getElementById('goal-posture').checked = localStorage.getItem('goal_posture') !== 'false'; 
             document.getElementById('goal-fatburn').checked = localStorage.getItem('goal_fatburn') === 'true'; 
             document.getElementById('goal-power').checked = localStorage.getItem('goal_power') === 'true';
-            calculateBMI(); checkCaloriesColor(); updateWorkoutMenu(); renderTableCalendar();
+            calculateBMI(); checkCaloriesColor(); checkWaterColor(); updateWorkoutMenu(); renderTableCalendar();
         });
+
     </script>
 </body>
 </html>
