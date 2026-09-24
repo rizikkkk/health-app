@@ -36,11 +36,27 @@
     <!-- ЭКРАН 1: ГЛАВНАЯ -->
     <div id="screen-main" class="app-screen active">
         <h1>Твой day, Бро 🦾</h1>
+        <!-- ОБНОВЛЕННЫЙ ТРЕКЕР ВОДЫ -->
         <div class="card">
             <h3>💧 Трекер воды</h3>
-            <p>Выпито за сегодня: <strong id="water-count" style="font-size: 20px; color: #5288c1;">0</strong> мл</p>
-            <button onclick="addWater()">Выпить 250 мл</button>
+            <p>Выпито за сегодня: <strong id="water-count" style="font-size: 20px; color: #5288c1;">0</strong> / <span id="water-target">2000</span> мл</p>
+            
+            <!-- Поле ручного ввода -->
+            <div class="input-group" style="margin-top: 10px; margin-bottom: 10px;">
+                <input type="number" id="input-add-water" placeholder="Введите мл (например, 200)" style="width: 70%; display: inline-block;">
+                <button onclick="addWaterManual()" style="width: 26%; display: inline-block; margin-top: 0; margin-left: 3%; padding: 12px 0;">+</button>
+            </div>
+            
+            <!-- Кнопки быстрого ввода воды -->
+            <div style="display: flex; gap: 8px; margin-top: 10px; margin-bottom: 10px;">
+                <button onclick="quickAddWater(100)" style="margin-top:0; padding:8px; font-size:13px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">+100</button>
+                <button onclick="quickAddWater(300)" style="margin-top:0; padding:8px; font-size:13px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">+300</button>
+                <button onclick="quickAddWater(500)" style="margin-top:0; padding:8px; font-size:13px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">+500</button>
+            </div>
+            
+            <button onclick="resetWater()" class="btn-stop" style="padding: 8px; font-size: 12px; margin-top: 5px; width: auto;">Сбросить воду</button>
         </div>
+
         <div class="card">
             <h3>🍎 Дневник питания</h3>
             <p>Съедено за сегодня: <strong id="calories-current" style="color: #4caf50; font-size: 20px;">0</strong> / <span id="calories-target">2000</span> ккал</p>
@@ -121,8 +137,47 @@
             }, fatburn: [{ name: "Взрывные Берпи", type: "reps", target: 12, desc: "Упор лежа, отжимание, прыжок вверх." }, { name: "Приседания с выпрыгиванием", type: "reps", target: 15, desc: "Опускайся до параллели и выпрыгивай вверх." }, { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро подтягивай колени к груди." }],
             power: [{ name: "Отжимания широким хватом", type: "reps", target: 12, desc: "Глубокие отжимания от пола." }, { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Опора руками на край стула сзади." }, { name: "Выпады назад попеременно", type: "reps", target: 16, desc: "Шаг назад, угол в коленях 90 градусов." }]
         };
-        let water = parseInt(localStorage.getItem('water_today') || '0', 10); document.getElementById('water-count').innerText = water;
-        function addWater() { water += 250; document.getElementById('water-count').innerText = water; localStorage.setItem('water_today', water.toString()); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); }
+        // Переменные трекера воды
+        let water = parseInt(localStorage.getItem('water_today') || '0', 10);
+        let waterTarget = 2000; // Фиксированная норма Бро
+        function checkWaterColor() {
+            const display = document.getElementById('water-count');
+            if (!display) return;
+            if (water >= waterTarget) {
+                display.style.setProperty('color', '#00b0ff', 'important'); // Голубой, если выпил норму
+            } else {
+                display.style.setProperty('color', '#5288c1', 'important');
+            }
+        }
+
+        function addWaterManual() {
+            const input = document.getElementById('input-add-water');
+            const val = parseInt(input.value, 10);
+            if (!val || val <= 0) return;
+            water += val;
+            document.getElementById('water-count').innerText = water;
+            localStorage.setItem('water_today', water.toString());
+            input.value = "";
+            checkWaterColor();
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        function quickAddWater(amount) {
+            water += amount;
+            document.getElementById('water-count').innerText = water;
+            localStorage.setItem('water_today', water.toString());
+            checkWaterColor();
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        function resetWater() {
+            waterCurrent = 0;
+            document.getElementById('water-count').innerText = "0";
+            localStorage.setItem('water_current', "0");
+            checkWaterColor();
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+        }
+
         let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10); let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
         function checkCaloriesColor() { const d = document.getElementById('calories-current'); if (!d) return; if (caloriesCurrent > caloriesTarget) { d.style.setProperty('color', '#f44336', 'important'); } else { d.style.setProperty('color', '#4caf50', 'important'); } }
         function addCalories() { const i = document.getElementById('input-add-calories'); const v = parseInt(i.value, 10); if (!v || v <= 0) return; caloriesCurrent += v; document.getElementById('calories-current').innerText = caloriesCurrent; localStorage.setItem('calories_current', caloriesCurrent.toString()); i.value = ""; checkCaloriesColor(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); }
