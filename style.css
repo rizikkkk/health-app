@@ -106,7 +106,26 @@ button {
 /* Плавное заполнение шкалы веса (перенесли сюда) */
 #weight-progress-bar { transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 
-/* Коробка-контейнер для календаря */
+/* ==========================================================================
+   ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ БРО ФИТНЕС 2.0 (ПРОГРАММЫ, ШКАЛЫ И КУБКИ)
+   ========================================================================== */
+
+/* Эффект нажатия на большие карточки курсов (Витрина целей) */
+.program-card-btn {
+    transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.program-card-btn:active {
+    transform: scale(0.97); /* Карточка слегка вдавливается при тапе на смартфоне */
+    background-color: #24303b !important;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Анимация плавного заполнения шкалы курса 0-100% */
+#course-progress-bar {
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Коробка-контейнер для тепловой карты календаря */
 .heatmap-container {
     background: var(--tg-theme-secondary-bg-color, #202b36);
     padding: 15px;
@@ -114,7 +133,7 @@ button {
     margin-bottom: 15px;
 }
 
-/* Наша сетка: 7 столбиков (как дни недели) */
+/* Сетка календаря: 7 ровных столбцов */
 .heatmap-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -122,9 +141,9 @@ button {
     margin-top: 10px;
 }
 
-/* Квадратный кубик дня */
+/* Базовый квадратный кубик дня */
 .heatmap-day {
-    aspect-ratio: 1 / 1; /* Делает кубик ровным квадратом */
+    aspect-ratio: 1 / 1; /* Жесткий квадрат на любых экранах */
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
@@ -135,51 +154,46 @@ button {
     font-weight: bold;
     color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+.heatmap-day:active {
+    transform: scale(0.9); /* Мягкий отклик при клике на день */
 }
 
-/* Обводка для СЕГОДНЯШНЕГО дня */
+/* Подсветка сегодняшнего дня (Синяя рамка) */
 .heatmap-day.today {
     border: 2px solid var(--tg-theme-button-color, #5288c1) !important;
-    color: #fff !important;
+    color: #ffffff !important;
 }
 
-/* Цвета по уровням (чем больше дел сделал, тем ярче зеленый) */
+/* 4 стандартных фитнес-уровня активности (Зеленые кубики) */
 .heatmap-day.level-0 { background: rgba(255, 255, 255, 0.05); }
-.heatmap-day.level-1 { background: #0e4429; color: #fff; border-color: transparent; } /* 1 дело */
-.heatmap-day.level-2 { background: #006d32; color: #fff; border-color: transparent; } /* 2 дела */
-.heatmap-day.level-3 { background: #26a641; color: #fff; border-color: transparent; } /* 3 дела */
-.heatmap-day.level-4 { background: #39d353; color: #000; border-color: transparent; } /* 4 дела */
+.heatmap-day.level-1 { background: #0e4429; color: #ffffff; border-color: transparent; }
+.heatmap-day.level-2 { background: #006d32; color: #ffffff; border-color: transparent; }
+.heatmap-day.level-3 { background: #26a641; color: #ffffff; border-color: transparent; }
+.heatmap-day.level-4 { background: #39d353; color: #000000; border-color: transparent; }
 
-/* ЗОЛОТОЙ КУБИК С КОРОНОЙ (Супер-Бро день) — ТЕПЕРЬ С ЖЕСТКИМ ПРИОРИТЕТОМ */
+/* ЗОЛОТАЯ КОРОНА ВСЕВЛАСТИЯ (Плановый день или доп-нагрузка) */
 .heatmap-day.level-king {
     background: linear-gradient(135deg, #ffd700, #ffa500) !important;
     color: #000000 !important;
     border-color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.6) !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
 }
 
-
-/* Подсказка цветов внизу календаря */
-.heatmap-legend {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-size: 12px;
-    opacity: 0.7;
-    margin-top: 10px;
-}
-.legend-box {
-    width: 15px;
-    height: 15px;
-    border-radius: 3px;
+/* СЕРЕБРЯНЫЙ КУБИК ОТДЫХА И ВОССТАНОВЛЕНИЯ (Идеальный чилл по режиму) */
+.heatmap-day.level-cup {
+    background: linear-gradient(135deg, #00b0ff, #00e5ff) !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(0, 176, 255, 0.5) !important;
 }
 
-/* ТЕМНОЕ ОКНО-МОДАЛКА (всплывает при клике на день) */
+/* ВСПЛЫВАЮЩЕЕ ОКНО (МОДАЛКА) */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.85); /* Затемняем всё вокруг */
+    background: rgba(0, 0, 0, 0.85); /* Глубокое красивое затемнение */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -201,6 +215,7 @@ button {
     display: block;
     margin-bottom: 4px;
     font-size: 13px;
+    font-weight: bold;
 }
 .modal-buttons {
     display: flex;
@@ -209,5 +224,5 @@ button {
 }
 .btn-secondary {
     background-color: rgba(255,255,255,0.1) !important;
-    color: #fff !important;
+    color: #ffffff !important;
 }
