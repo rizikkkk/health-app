@@ -39,7 +39,8 @@
         <!-- ОБНОВЛЕННЫЙ ТРЕКЕР ВОДЫ -->
         <div class="card">
             <h3>💧 Трекер воды</h3>
-            <p>Выпито за сегодня: <strong id="water-count" style="font-size: 20px; color: #5288c1;">0</strong> / <span id="water-target">2000</span> мл</p>
+           <p>Выпито за сегодня: <strong id="water-count" style="font-size: 20px; color: #5288c1;">0</strong> / <span id="water-target">2000</span> мл</p>
+
             
             <!-- Поле ручного ввода -->
             <div class="input-group" style="margin-top: 10px; margin-bottom: 10px;">
@@ -190,18 +191,59 @@
             if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
         }
         let bmiCat = localStorage.getItem('bmi_category') || 'normal';
+
         function calculateBMI() {
-            const h = parseFloat(document.getElementById('bmi-height').value); const w = parseFloat(document.getElementById('bmi-weight').value); const res = document.getElementById('bmi-result'); if (!h || !w) { res.style.display = 'none'; return; }
-            localStorage.setItem('user_height', h); localStorage.setItem('user_weight', w); const bmi = (w / ((h/100) * (h/100))).toFixed(1); let txt = "", col = "#5288c1";
-            let bmr = Math.round((10 * w) + (6.25 * h) - (5 * 25) + 5); let normCalories = Math.round(bmr * 1.375); let targetCal = normCalories; let p = 0, f = 0, c = 0;
-            if (bmi < 18.5) { txt = "Дефицит массы"; col = "#e5a93b"; bmiCat = "deficit"; targetCal = Math.round(normCalories + 400); p = Math.round(w * 2); f = Math.round(w * 1.1); c = Math.round((targetCal - (p*4 + f*9)) / 4); }
-            else if (bmi >= 18.5 && bmi < 25) { txt = "Нормальный вес"; col = "#4caf50"; bmiCat = "normal"; targetCal = normCalories; p = Math.round(w * 1.6); f = Math.round(w * 1.0); c = Math.round((targetCal - (p*4 + f*9)) / 4); }
-            else { txt = "Избыточный вес"; col = "#f44336"; bmiCat = "excess"; targetCal = Math.round(normCalories - 450); p = Math.round(w * 1.8); f = Math.round(w * 0.8); c = Math.round((targetCal - (p*4 + f*9)) / 4); }
-            caloriesTarget = targetCal; localStorage.setItem('calories_target', caloriesTarget.toString()); localStorage.setItem('bmi_category', bmiCat); document.getElementById('calories-target').innerText = caloriesTarget;
+            const h = parseFloat(document.getElementById('bmi-height').value); 
+            const w = parseFloat(document.getElementById('bmi-weight').value); 
+            const res = document.getElementById('bmi-result'); 
+            if (!h || !w) { res.style.display = 'none'; return; }
+            
+            localStorage.setItem('user_height', h); localStorage.setItem('user_weight', w); 
+            const bmi = (w / ((h/100) * (h/100))).toFixed(1); 
+            let txt = "", col = "#5288c1";
+            
+            let bmr = Math.round((10 * w) + (6.25 * h) - (5 * 25) + 5); 
+            let normCalories = Math.round(bmr * 1.375); 
+            let targetCal = normCalories;
+            let targetWater = 2000; // Базовый дефолт
+            let p = 0, f = 0, c = 0;
+
+            // УМНЫЙ НАУЧНЫЙ РАСЧЕТ КАЛОРИЙ, БЖУ И ВОДЫ ОТ ВЕСА И ИМТ
+            if (bmi < 18.5) { 
+                txt = "Дефицит массы"; col = "#e5a93b"; bmiCat = "deficit"; 
+                targetCal = Math.round(normCalories + 400); 
+                targetWater = Math.round((w * 35) + 500); // 35мл/кг + 500мл на тренировки
+                p = Math.round(w * 2); f = Math.round(w * 1.1); c = Math.round((targetCal - (p*4 + f*9)) / 4); 
+            } else if (bmi >= 18.5 && bmi < 25) { 
+                txt = "Нормальный вес"; col = "#4caf50"; bmiCat = "normal"; 
+                targetCal = normCalories; 
+                targetWater = Math.round((w * 35) + 500); // 35мл/кг + 500мл на тренировки
+                p = Math.round(w * 1.6); f = Math.round(w * 1.0); c = Math.round((targetCal - (p*4 + f*9)) / 4); 
+            } else { 
+                txt = "Избыточный вес"; col = "#f44336"; bmiCat = "excess"; 
+                targetCal = Math.round(normCalories - 450); 
+                targetWater = Math.round((w * 40) + 500); // Увеличенная норма 40мл/кг для детокса + 500мл
+                p = Math.round(w * 1.8); f = Math.round(w * 0.8); c = Math.round((targetCal - (p*4 + f*9)) / 4); 
+            }
+
+            // Сохраняем и выводим калории
+            caloriesTarget = targetCal; 
+            localStorage.setItem('calories_target', caloriesTarget.toString()); 
+            localStorage.setItem('bmi_category', bmiCat); 
+            if(document.getElementById('calories-target')) document.getElementById('calories-target').innerText = caloriesTarget;
+            
+            // ЖЕЛЕЗОБЕТОННО СОХРАНЯЕМ И ОБНОВЛЯЕМ ЦЕЛЬ ПО ВОДЕ НА ГЛАВНОМ ЭКРАНЕ
+            waterTarget = targetWater;
+            localStorage.setItem('water_target', waterTarget.toString());
+            if(document.getElementById('water-target')) document.getElementById('water-target').innerText = waterTarget;
+
             res.style.display = 'block'; res.style.color = col;
             res.innerHTML = `<div>ИМТ: ${bmi} (${txt})</div><div style="font-size:15px; color:#fff; margin-top:8px;">🎯 Цель питания: <strong>${caloriesTarget} ккал</strong></div><div class="macro-grid"><div class="macro-item" style="border-bottom:2px solid #5288c1;">🧬 Б: ${p}г</div><div class="macro-item" style="border-bottom:2px solid #e5a93b;">🥑 Ж: ${f}г</div><div class="macro-item" style="border-bottom:2px solid #4caf50;">🍞 У: ${c}г</div></div>`;
-            document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}). Цель питания: ${caloriesTarget} ккал.`; checkCaloriesColor();
+            if(document.getElementById('status-text')) document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}). Цель питания: ${caloriesTarget} ккал.`; 
+            checkCaloriesColor();
+            checkWaterColor();
         }
+
         function togglePostureSub() { const cat = document.getElementById('workout-category').value; document.getElementById('sub-posture-group').style.display = (cat === 'posture') ? 'block' : 'none'; }
         let currentExercises = [], exIndex = 0, totalRounds = 3, currentRound = 1, timerInterval, isTimerRunning = false;
         function startWorkoutSession() {
@@ -271,6 +313,10 @@
             document.getElementById('goal-posture').checked = localStorage.getItem('goal_posture') !== 'false'; 
             document.getElementById('goal-fatburn').checked = localStorage.getItem('goal_fatburn') === 'true'; 
             document.getElementById('goal-power').checked = localStorage.getItem('goal_power') === 'true';
+            waterTarget = parseInt(localStorage.getItem('water_target') || '2000', 10);
+
+if(document.getElementById('water-target')) document.getElementById('water-target').innerText = waterTarget;
+
             calculateBMI(); checkCaloriesColor(); checkWaterColor(); updateWorkoutMenu(); renderTableCalendar();
         });
 
