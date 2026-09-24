@@ -8,10 +8,17 @@ const courseDatabase = {
     }, fatburn: [{ name: "Взрывные Берпи", type: "reps", target: 12, desc: "Упор лежа, отжимание, прыжок вверх." }, { name: "Приседания с выпрыгиванием", type: "reps", target: 15, desc: "Опускайся до параллели и выпрыгивай вверх." }, { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро подтягивай колени к груди." }],
     power: [{ name: "Отжимания широким хватом", type: "reps", target: 12, desc: "Глубокие отжимания от пола." }, { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Опора руками на край стула сзади." }, { name: "Выпады назад попеременно", type: "reps", target: 16, desc: "Шаг назад, угол в коленях 90 градусов." }]
 };
-
 function switchScreen(id, btn) {
-    document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+    document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active')); 
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active')); 
+    btn.classList.add('active');
+    
+    // НАШЕ ОБНОВЛЕНИЕ: Если Бро зашел в календарь — сразу перерисовываем кубики
+    if (id === 'screen-calendar') {
+        renderHeatmapCalendar();
+    }
+    
     if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
 
@@ -24,21 +31,50 @@ function checkWaterColor() {
     else { display.style.setProperty('color', '#5288c1', 'important'); }
 }
 
+// ==========================================================================
+// ОБНОВЛЕННЫЙ БЛОК ВОДЫ (С АВТООБНОВЛЕНИЕМ КАЛЕНДАРЯ)
+// ==========================================================================
 function addWaterManual() {
-    const input = document.getElementById('input-add-water'); const val = parseInt(input.value, 10); if (!val || val <= 0) return;
-    water += val; document.getElementById('water-count').innerText = water; localStorage.setItem('water_today', water.toString());
-    input.value = ""; checkWaterColor(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    const input = document.getElementById('input-add-water'); 
+    const val = parseInt(input.value, 10); 
+    if (!val || val <= 0) return;
+    
+    water += val; 
+    document.getElementById('water-count').innerText = water; 
+    localStorage.setItem('water_today', water.toString());
+    input.value = ""; 
+    checkWaterColor(); 
+    
+    // Перекрашиваем календарь прямо на лету!
+    syncTodayDataToCalendar();
+    
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 }
 
 function quickAddWater(amount) {
-    water += amount; document.getElementById('water-count').innerText = water; localStorage.setItem('water_today', water.toString());
-    checkWaterColor(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    water += amount; 
+    document.getElementById('water-count').innerText = water; 
+    localStorage.setItem('water_today', water.toString());
+    checkWaterColor(); 
+    
+    // Перекрашиваем календарь прямо на лету!
+    syncTodayDataToCalendar();
+    
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 }
 
 function resetWater() {
-    water = 0; document.getElementById('water-count').innerText = "0"; localStorage.setItem('water_today', "0");
-    checkWaterColor(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+    water = 0; 
+    document.getElementById('water-count').innerText = "0"; 
+    localStorage.setItem('water_today', "0");
+    checkWaterColor(); 
+    
+    // Сбрасываем и в календаре тоже!
+    syncTodayDataToCalendar();
+    
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
 }
+
 
 let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10); 
 let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
@@ -49,21 +85,50 @@ function checkCaloriesColor() {
     else { d.style.setProperty('color', '#4caf50', 'important'); }
 }
 
+// ==========================================================================
+// ОБНОВЛЕННЫЙ БЛОК ЕДЫ (С АВТООБНОВЛЕНИЕМ КАЛЕНДАРЯ)
+// ==========================================================================
 function addCalories() {
-    const i = document.getElementById('input-add-calories'); const v = parseInt(i.value, 10); if (!v || v <= 0) return;
-    caloriesCurrent += v; document.getElementById('calories-current').innerText = caloriesCurrent; localStorage.setItem('calories_current', caloriesCurrent.toString());
-    i.value = ""; checkCaloriesColor(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    const i = document.getElementById('input-add-calories'); 
+    const v = parseInt(i.value, 10); 
+    if (!v || v <= 0) return;
+    
+    caloriesCurrent += v; 
+    document.getElementById('calories-current').innerText = caloriesCurrent; 
+    localStorage.setItem('calories_current', caloriesCurrent.toString());
+    i.value = ""; 
+    checkCaloriesColor(); 
+    
+    // Календарь сразу видит новую еду!
+    syncTodayDataToCalendar();
+    
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 }
 
 function quickAddCalories(amount) {
-    caloriesCurrent += amount; document.getElementById('calories-current').innerText = caloriesCurrent; localStorage.setItem('calories_current', caloriesCurrent.toString());
-    checkCaloriesColor(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    caloriesCurrent += amount; 
+    document.getElementById('calories-current').innerText = caloriesCurrent; 
+    localStorage.setItem('calories_current', caloriesCurrent.toString());
+    checkCaloriesColor(); 
+    
+    // Календарь сразу видит новую еду!
+    syncTodayDataToCalendar();
+    
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 }
 
 function resetCalories() {
-    caloriesCurrent = 0; document.getElementById('calories-current').innerText = "0"; localStorage.setItem('calories_current', "0");
-    checkCaloriesColor(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+    caloriesCurrent = 0; 
+    document.getElementById('calories-current').innerText = "0"; 
+    localStorage.setItem('calories_current', "0");
+    checkCaloriesColor(); 
+    
+    // Обнуляем еду в календаре за сегодня!
+    syncTodayDataToCalendar();
+    
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
 }
+
 let bmiCat = localStorage.getItem('bmi_category') || 'normal';
 
 function calculateBMI() {
@@ -186,15 +251,34 @@ function startExerciseTimer(seconds) {
     isTimerRunning = true; let timeLeft = seconds; const btnAction = document.getElementById('btn-action'); btnAction.innerText = "Пропустить время"; btnAction.className = "btn-stop"; if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
     timerInterval = setInterval(() => { timeLeft--; document.getElementById('player-timer-digits').innerText = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`; if (timeLeft <= 0) { clearInterval(timerInterval); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); goToNextExercise(); } }, 1000);
 }
-
 function goToNextExercise() {
     if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-    if (exIndex < currentExercises.length - 1) { exIndex++; showCurrentStep(); } 
+    if (exIndex < currentExercises.length - 1) { 
+        exIndex++; 
+        showCurrentStep(); 
+    } 
     else {
-        if (currentRound < totalRounds) { currentRound++; exIndex = 0; alert(`👊 Круг выполнен! Приготовиться к КРУГУ №${currentRound}!`); showCurrentStep(); } 
-        else { const currentCat = document.getElementById('workout-category').value; const currentToday = new Date().getDate(); localStorage.setItem(`done_${currentCat}_day_${currentToday}`, 'true'); exitWorkoutSession(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); alert("Бро, поздравляю! Ты прошел все 3 КРУГА тренировки подряд! 🔥🦾"); }
+        if (currentRound < totalRounds) { 
+            currentRound++; 
+            exIndex = 0; 
+            alert(`👊 Круг выполнен! Приготовиться к КРУГУ №${currentRound}!`); 
+            showCurrentStep(); 
+        } 
+        else { 
+            const currentCat = document.getElementById('workout-category').value; 
+            const currentToday = new Date().getDate(); 
+            localStorage.setItem(`done_${currentCat}_day_${currentToday}`, 'true'); 
+            
+            // НАШЕ ОБНОВЛЕНИЕ: Записываем тренировку в календарь!
+            syncTodayDataToCalendar();
+            
+            exitWorkoutSession(); 
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); 
+            alert("Бро, поздравляю! Ты прошел все 3 КРУГА тренировки подряд! 🔥🦾"); 
+        }
     }
 }
+
 
 function exitWorkoutSession() { 
     clearInterval(timerInterval); 
@@ -214,40 +298,216 @@ function updateWorkoutMenu() {
     if (select.value === 'posture' && !showPosture) select.value = 'none'; if (select.value === 'fatburn' && !showFatburn) select.value = 'none'; if (select.value === 'power' && !showPower) select.value = 'none'; togglePostureSub();
 }
 
-function renderTableCalendar() {
-    const container = document.getElementById('calendar-table-container'); if (!container) return; container.innerHTML = "";
-    const goals = [{ id: 'posture', name: '🧘‍♂️ Коррекция осанки', checked: document.getElementById('goal-posture').checked }, { id: 'fatburn', name: '🔥 Похудение и жиросжигание', checked: document.getElementById('goal-fatburn').checked }, { id: 'power', name: '💪 Прокачка мышц дома', checked: document.getElementById('goal-power').checked }];
-    const today = new Date().getDate();
-    goals.forEach(goal => {
-        if (goal.checked) {
-            let rowHtml = `<div class="calendar-row"><div class="calendar-row-title">${goal.name}</div><div class="calendar-days-line">`;
-            for (let day = 1; day <= 7; day++) {
-                const storageKey = `done_${goal.id}_day_${day}`; const isDone = localStorage.getItem(storageKey) === 'true'; let dayClass = "calendar-box-day"; if (isDone) dayClass += " day-done"; if (day === today) dayClass += " day-today-border";
-                rowHtml += `<div class="${dayClass}" onclick="toggleDayManual('${goal.id}', ${day})"><span style="font-size:10px; opacity:0.6;">день</span><strong>${day}</strong></div>`;
-            }
-            rowHtml += `</div></div>`; container.innerHTML += rowHtml;
-        }
-    });
+// ==========================================================================
+// НОВАЯ ЛОГИКА: КАЛЕНДАРЬ ВСЕВЛАСТИЯ (ПОЛНЫЙ ГОТОВЫЙ БЛОК)
+// ==========================================================================
+
+// Функция, которая узнает текущую дату компьютера/телефона
+function getFormattedDate(dateOffset = 0) {
+    const d = new Date();
+    d.setDate(d.getDate() + dateOffset);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
 }
 
-function toggleDayManual(goalId, day) { const storageKey = `done_${goalId}_day_${day}`; const currentState = localStorage.getItem(storageKey) === 'true'; localStorage.setItem(storageKey, !currentState); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); renderTableCalendar(); }
+// Запоминаем, какой день Бро нажал в календаре
+let selectedCalendarDate = null;
+
+// Умная функция: берет все цифры за сегодня и сохраняет в календарь
+function syncTodayDataToCalendar() {
+    const todayKey = getFormattedDate(0);
+    
+    // Берем старые данные за сегодня из памяти или создаем чистые
+    let dayData = JSON.parse(localStorage.getItem(`calendar_day_${todayKey}`) || '{}');
+    
+    // Записываем текущую воду и калории
+    dayData.water = water;
+    dayData.calories = caloriesCurrent;
+    
+    // Проверяем, была ли тренировка сегодня
+    const todayObj = new Date();
+    const currentToday = todayObj.getDate();
+    const didWorkout = localStorage.getItem(`done_posture_day_${currentToday}`) === 'true' ||
+                      localStorage.getItem(`done_fatburn_day_${currentToday}`) === 'true' ||
+                      localStorage.getItem(`done_power_day_${currentToday}`) === 'true';
+                      
+    dayData.workouts = didWorkout ? 3 : (dayData.workouts || 0);
+    dayData.weight = parseFloat(localStorage.getItem('user_weight') || '0');
+    
+    // Сохраняем в память телефона
+    localStorage.setItem(`calendar_day_${todayKey}`, JSON.stringify(dayData));
+}
+
+// Функция, которая рисует 31 кубик на экране Календаря
+function renderHeatmapCalendar() {
+    const grid = document.getElementById('calendar-heatmap');
+    if (!grid) return;
+    grid.innerHTML = ""; // Очищаем старые кубики перед прорисовкой
+
+    const todayObj = new Date();
+    const currentYear = todayObj.getFullYear();
+    const currentMonth = todayObj.getMonth();
+    
+    // Считаем, сколько дней в этом месяце
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    // Подтягиваем цели Бро для проверки успехов
+    const targetW = parseInt(localStorage.getItem('water_target') || '2000', 10);
+    const targetC = parseInt(localStorage.getItem('calories_target') || '2000', 10);
+    const targetWeight = parseFloat(localStorage.getItem('user_target_weight') || '0');
+
+    // Цикл: создаем кубик для каждого дня месяца
+    for (let day = 1; day <= daysInMonth; day++) {
+        const yyyy = currentYear;
+        const mm = String(currentMonth + 1).padStart(2, '0');
+        const dd = String(day).padStart(2, '0');
+        const dateKey = `${yyyy}-${mm}-${dd}`;
+        
+        // Читаем из памяти данные за этот конкретный день
+        const dayData = JSON.parse(localStorage.getItem(`calendar_day_${dateKey}`) || '{}');
+        
+        const dWater = dayData.water || 0;
+        const dCalories = dayData.calories || 0;
+        const dWorkouts = dayData.workouts || 0;
+        const dWeight = dayData.weight || 0;
+
+        // Считаем баллы (максимум 4)
+        let score = 0;
+        if (dWater >= targetW) score++; // Вода выполнена
+        if (dCalories > 0 && dCalories <= targetC && dCalories >= (targetC - 400)) score++; // Еда в зеленом коридоре
+        if (dWorkouts >= 3) score++; // Тренировка сделана полностью
+        if (dWeight > 0) score++; // Вес записан
+
+        // Проверяем, заслужил ли Бро Королевский день (Все 4 дела + вес дошел до цели)
+        let isKing = false;
+        if (score === 4 && targetWeight > 0) {
+            const currentWeight = parseFloat(localStorage.getItem('user_weight') || '0');
+            if ((currentWeight > targetWeight && dWeight <= targetWeight) || 
+                (currentWeight < targetWeight && dWeight >= targetWeight) || 
+                (dWeight === targetWeight)) {
+                isKing = true;
+            }
+        }
+
+        // Создаем сам кубик в HTML
+        const dayBox = document.createElement('div');
+        dayBox.heatmapDay = true; 
+        dayBox.className = 'heatmap-day';
+        dayBox.innerText = day;
+
+        // Красим кубик в нужный цвет
+        if (isKing) {
+            dayBox.classList.add('level-king');
+            dayBox.innerText = "👑"; // Дарим корону вместо цифры дня
+        } else {
+            dayBox.classList.add(`level-${score}`);
+        }
+
+        // Если кубик — это СЕГОДНЯ, добавляем синий контур
+        if (day === todayObj.getDate() && currentMonth === todayObj.getMonth() && currentYear === todayObj.getFullYear()) {
+            dayBox.classList.add('today');
+        }
+
+        // Нажатие на кубик — открывает всплывающее окно
+        dayBox.onclick = () => {
+            selectedCalendarDate = dateKey;
+            document.getElementById('modal-date-title').innerText = `День Бро: ${dd}.${mm}.${yyyy}`;
+            
+            // Пишем в поля модалки старые цифры дня
+            document.getElementById('modal-water').value = dayData.water || "";
+            document.getElementById('modal-calories').value = dayData.calories || "";
+            document.getElementById('modal-workouts').value = dayData.workouts || "";
+            document.getElementById('modal-weight').value = dayData.weight || "";
+            
+            // Открываем модалку на экране
+            document.getElementById('calendar-modal').style.display = 'flex';
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        };
+
+        grid.appendChild(dayBox);
+    }
+}
+
+// Слушатель для кнопок внутри всплывающего окна (Отмена и Сохранить)
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('calendar-modal');
+    const btnClose = document.getElementById('btn-modal-close');
+    const btnSave = document.getElementById('btn-modal-save');
+
+    if (btnClose) {
+        btnClose.onclick = () => { modal.style.display = 'none'; };
+    }
+
+    if (btnSave) {
+        btnSave.onclick = () => {
+            if (!selectedCalendarDate) return;
+
+            // Считываем, что Бро ввёл в поля руками
+            const wVal = parseInt(document.getElementById('modal-water').value, 10) || 0;
+            const cVal = parseInt(document.getElementById('modal-calories').value, 10) || 0;
+            const woVal = parseInt(document.getElementById('modal-workouts').value, 10) || 0;
+            const weVal = parseFloat(document.getElementById('modal-weight').value) || 0;
+
+            // Записываем новые цифры в память
+            const updatedData = { water: wVal, calories: cVal, workouts: woVal, weight: weVal };
+            localStorage.setItem(`calendar_day_${selectedCalendarDate}`, JSON.stringify(updatedData));
+
+            // Если Бро менял СЕГОДНЯШНИЙ день — обновляем цифры и на Главном экране
+            const todayKey = getFormattedDate(0);
+            if (selectedCalendarDate === todayKey) {
+                water = wVal;
+                caloriesCurrent = cVal;
+                document.getElementById('water-count').innerText = water;
+                document.getElementById('calories-current').innerText = caloriesCurrent;
+                localStorage.setItem('water_today', water.toString());
+                localStorage.setItem('calories_current', caloriesCurrent.toString());
+                checkWaterColor();
+                checkCaloriesColor();
+            }
+
+            modal.style.display = 'none'; // Закрываем окно
+            renderHeatmapCalendar(); // Мгновенно перерисовываем кубики!
+            
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+            alert("Данные дня успешно сохранены, Бро! 🦾");
+        };
+    }
+});
 
 window.addEventListener('DOMContentLoaded', () => {
+    // Восстанавливаем рост и вес из памяти в поля ввода
     document.getElementById('bmi-height').value = localStorage.getItem('user_height') || ''; 
     document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
-    if(document.getElementById('weight-target')) document.getElementById('weight-target').value = localStorage.getItem('user_target_weight') || '';
+    if(document.getElementById('weight-target')) {
+        document.getElementById('weight-target').value = localStorage.getItem('user_target_weight') || '';
+    }
     
+    // Выводим текущую воду и калории на Главный экран
     document.getElementById('calories-current').innerText = caloriesCurrent; 
     document.getElementById('calories-target').innerText = caloriesTarget;
     document.getElementById('water-count').innerText = water;
     
     waterTarget = parseInt(localStorage.getItem('water_target') || '2000', 10);
-    if(document.getElementById('water-target')) document.getElementById('water-target').innerText = waterTarget;
+    if(document.getElementById('water-target')) {
+        document.getElementById('water-target').innerText = targetWater; // Исправлено на правильную цель воды
+    }
 
+    // Восстанавливаем галочки фокуса
     document.getElementById('goal-posture').checked = localStorage.getItem('goal_posture') !== 'false'; 
     document.getElementById('goal-fatburn').checked = localStorage.getItem('goal_fatburn') === 'true'; 
     document.getElementById('goal-power').checked = localStorage.getItem('goal_power') === 'true';
     
-    calculateBMI(); checkCaloriesColor(); checkWaterColor(); updateWorkoutMenu(); renderTableCalendar();
+    // Запускаем расчет ИМТ, цветов счетчиков и меню тренировок
+    calculateBMI(); 
+    checkCaloriesColor(); 
+    checkWaterColor(); 
+    updateWorkoutMenu(); 
+    
+    // НАШЕ ОБНОВЛЕНИЕ: Сохраняем сегодняшние данные и включаем Календарь Всевластия!
+    syncTodayDataToCalendar();
+    renderHeatmapCalendar();
 });
+
 

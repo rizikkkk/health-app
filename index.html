@@ -105,20 +105,71 @@
             <div id="player-controls"><button id="btn-action" class="btn-success" onclick="handleActionClick()">Выполнено</button><button class="btn-stop" onclick="exitWorkoutSession()" style="margin-top:15px;">🛑 Прервать</button></div>
         </div>
     </div>
+<!-- ЭКРАН 4: КАЛЕНДАРЬ ВСЕВЛАСТИЯ -->
+<div id="screen-calendar" class="app-screen">
+    <div class="card" style="text-align: center;">
+        <h2>Календарь Всевластия 👑</h2>
+        <p style="font-size: 14px; opacity: 0.7; margin-top: -5px;">Твой прогресс в стиле GitHub Heatmap</p>
+        
+        <!-- Сетка, куда наш JS сам вставит 31 кубик дней -->
+        <div class="heatmap-container">
+            <div id="calendar-heatmap" class="heatmap-grid"></div>
+        </div>
 
-    <!-- ЭКРАН 4: КАЛЕНДАРЬ -->
-    <div id="screen-calendar" class="app-screen">
-        <h2>Календарь Успеха 📅</h2>
-        <div class="card" style="padding: 15px;"><p style="font-size:13px; opacity:0.8; margin-bottom:15px; text-align:center;">Только выбранные направления.</p><div id="calendar-table-container" style="display:flex; flex-direction:column; gap:20px;"></div></div>
+        <!-- Подсказка по цветам внизу -->
+        <div class="heatmap-legend">
+            <span style="opacity: 0.5;">Меньше</span>
+            <div class="legend-box level-0" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);"></div>
+            <div class="legend-box level-1" style="background: #0e4429;"></div>
+            <div class="legend-box level-2" style="background: #006d32;"></div>
+            <div class="legend-box level-3" style="background: #26a641;"></div>
+            <div class="legend-box level-4" style="background: #39d353;"></div>
+            <div class="legend-box level-king" style="background: linear-gradient(135deg, #ffd700, #ffa500); font-size: 9px; display: flex; align-items: center; justify-content: center;">👑</div>
+            <span style="opacity: 0.5;">Больше</span>
+        </div>
     </div>
+</div>
 
-    <!-- НАВИГАЦИЯ -->
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchScreen('screen-main', this)"><span class="icon">🏠</span><span>Главная</span></button>
-        <button class="nav-item" onclick="switchScreen('screen-bmi', this)"><span class="icon">📊</span><span>Параметры</span></button>
-        <button class="nav-item" onclick="switchScreen('screen-workout', this)"><span class="icon">🏋️‍♂️</span><span>Курс</span></button>
-        <button class="nav-item" onclick="switchScreen('screen-calendar', this); renderTableCalendar();"><span class="icon">📅</span><span>Календарь</span></button>
-    </nav>
+<!-- ВСПЛЫВАЮЩЕЕ ОКНО (МОДАЛКА) ДЛЯ ИСПРАВЛЕНИЯ ЛЮБОГО ДНЯ -->
+<div id="calendar-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h3 id="modal-date-title" style="color: #ffd700; margin-bottom: 15px;">День Бро</h3>
+        
+        <div class="modal-field">
+            <label>💧 Вода за этот день (мл):</label>
+            <input type="number" id="modal-water" min="0" placeholder="Например: 2000">
+        </div>
+
+        <div class="modal-field">
+            <label>🍎 Еда за этот день (ккал):</label>
+            <input type="number" id="modal-calories" min="0" placeholder="Например: 1800">
+        </div>
+
+        <div class="modal-field">
+            <label>🏋️‍♂️ Тренировки (сколько кругов сделал):</label>
+            <input type="number" id="modal-workouts" min="0" placeholder="Например: 3">
+        </div>
+
+        <div class="modal-field">
+            <label>⚖️ Вес в этот день (кг):</label>
+            <input type="number" id="modal-weight" step="0.1" placeholder="Например: 78.3">
+        </div>
+
+        <div class="modal-buttons">
+            <button id="btn-modal-close" class="btn-stop" style="margin-top: 0;">Отмена</button>
+            <button id="btn-modal-save" class="btn-success" style="margin-top: 0;">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<!-- НАВИГАЦИЯ -->
+<nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchScreen('screen-main', this)"><span class="icon">🏠</span><span>Главная</span></button>
+    <button class="nav-item" onclick="switchScreen('screen-bmi', this)"><span class="icon">📊</span><span>Параметры</span></button>
+    <button class="nav-item" onclick="switchScreen('screen-workout', this)"><span class="icon">🏋️‍♂️</span><span>Курс</span></button>
+    <button class="nav-item" onclick="switchScreen('screen-calendar', this)"><span class="icon">📅</span><span>Календарь</span></button>
+</nav>
+
 
     <!-- ПОДКЛЮЧАЕМ ВНЕШНЮЮ ЛОГИКУ JAVASCRIPT (Шаг 3) -->
     <script src="script.js"></script>
