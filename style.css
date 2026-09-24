@@ -150,12 +150,14 @@ button {
 .heatmap-day.level-3 { background: #26a641; color: #fff; border-color: transparent; } /* 3 дела */
 .heatmap-day.level-4 { background: #39d353; color: #000; border-color: transparent; } /* 4 дела */
 
-/* ЗОЛОТОЙ КУБИК С КОРОНОЙ (Супер-Бро день) */
+/* ЗОЛОТОЙ КУБИК С КОРОНОЙ (Супер-Бро день) — ТЕПЕРЬ С ЖЕСТКИМ ПРИОРИТЕТОМ */
 .heatmap-day.level-king {
     background: linear-gradient(135deg, #ffd700, #ffa500) !important;
-    color: #000 !important;
-    border-color: #fff !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.6) !important;
 }
+
 
 /* Подсказка цветов внизу календаря */
 .heatmap-legend {
