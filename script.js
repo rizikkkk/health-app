@@ -116,48 +116,48 @@ function calculateBMI() {
     res.style.display = 'block'; res.style.color = col;
     res.innerHTML = `<div>ИМТ: ${bmi} (${txt})</div><div style="font-size:15px; color:#fff; margin-top:8px;">🎯 Цель питания: <strong>${caloriesTarget} ккал</strong></div><div class="macro-grid"><div class="macro-item" style="border-bottom:2px solid #5288c1;">🧬 Б: ${p}г</div><div class="macro-item" style="border-bottom:2px solid #e5a93b;">🥑 Ж: ${f}г</div><div class="macro-item" style="border-bottom:2px solid #4caf50;">🍞 У: ${c}г</div></div>`;
     if(document.getElementById('status-text')) document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}). Цель питания: ${caloriesTarget} ккал.`; 
-    
-    // ЛОГИКА ИНТЕРАКТИВНОЙ ШКАЛЫ ВЕСА
-    // ЛОГИКА ИНТЕРАКТИВНОЙ ШКАЛЫ ВЕСА (Грамотный расчет без багов)
+    // ЛОГИКА ИНТЕРАКТИВНОЙ ШКАЛЫ ВЕСА (Автоматический сброс при смене целей)
     const progressContainer = document.getElementById('weight-progress-container');
     if (progressContainer && t) {
         progressContainer.style.display = 'block';
         
+        let startWeight = parseFloat(localStorage.getItem('user_start_weight'));
+        let savedTarget = parseFloat(localStorage.getItem('user_saved_target'));
+        
+        // ЕСЛИ ЦЕЛЬ ИЗМЕНИЛАСЬ ИЛИ ВЕС ВЫШЕЛ ЗА РАМКИ — АВТОМАТИЧЕСКИ ПЕРЕЗАПИСЫВАЕМ СТАРТ!
+        if (!startWeight || !savedTarget || t !== savedTarget || (w > startWeight && w > t) || (w < startWeight && w < t)) {
+            startWeight = w;
+            localStorage.setItem('user_start_weight', w.toString());
+            localStorage.setItem('user_saved_target', t.toString());
+        }
+        
         let percent = 0;
         
         if (w > t) {
-            // Режим: Похудение (Текущий вес больше целевого)
-            // За базовый диапазон берем разницу + 15 кг от цели как точку старта
-            let maxRange = t + 15; 
-            if (w >= maxRange) {
+            // Режим: Похудение
+            if (startWeight <= t || w >= startWeight) {
                 percent = 0;
             } else {
-                percent = Math.round(((maxRange - w) / (maxRange - t)) * 100);
+                percent = Math.round(((startWeight - w) / (startWeight - t)) * 100);
             }
-            
             const diff = (w - t).toFixed(1);
             document.getElementById('weight-motivation-text').innerText = `Бро, до заветной цели осталось скинуть всего ${diff} кг! 🔥`;
         } 
         else if (w < t) {
-            // Режим: Набор массы (Текущий вес меньше целевого)
-            // За базовый диапазон берем разницу - 15 кг от цели как точку старта
-            let minRange = t - 15;
-            if (w <= minRange) {
+            // Режим: Набор массы
+            if (startWeight >= t || w <= startWeight) {
                 percent = 0;
             } else {
-                percent = Math.round(((w - minRange) / (t - minRange)) * 100);
+                percent = Math.round(((w - startWeight) / (t - startWeight)) * 100);
             }
-            
             const diff = (t - w).toFixed(1);
             document.getElementById('weight-motivation-text').innerText = `Бро, до заветной цели осталось набрать еще ${diff} кг! 🔥`;
         } 
         else {
-            // Идеальное попадание в цель
             percent = 100;
             document.getElementById('weight-motivation-text').innerText = `Красава, Бро! Цель достигнута! Ты машина! 👑🏆`;
         }
         
-        // Ограничиваем проценты от 0 до 100, чтобы полоса не вылезала за края
         if (percent < 0) percent = 0;
         if (percent > 100) percent = 100;
         
