@@ -116,26 +116,42 @@ function calculateBMI() {
     res.style.display = 'block'; res.style.color = col;
     res.innerHTML = `<div>ИМТ: ${bmi} (${txt})</div><div style="font-size:15px; color:#fff; margin-top:8px;">🎯 Цель питания: <strong>${caloriesTarget} ккал</strong></div><div class="macro-grid"><div class="macro-item" style="border-bottom:2px solid #5288c1;">🧬 Б: ${p}г</div><div class="macro-item" style="border-bottom:2px solid #e5a93b;">🥑 Ж: ${f}г</div><div class="macro-item" style="border-bottom:2px solid #4caf50;">🍞 У: ${c}г</div></div>`;
     if(document.getElementById('status-text')) document.getElementById('status-text').innerText = `ИМТ: ${bmi} (${txt}). Цель питания: ${caloriesTarget} ккал.`; 
-    // ЛОГИКА ИНТЕРАКТИВНОЙ ШКАЛЫ ВЕСА (Автоматический сброс при смене целей)
+       // ЛОГИКА ИНТЕРАКТИВНОЙ ШКАЛЫ ВЕСА (Умный сброс памяти при достижении цели)
     const progressContainer = document.getElementById('weight-progress-container');
     if (progressContainer && t) {
         progressContainer.style.display = 'block';
         
-        let startWeight = parseFloat(localStorage.getItem('user_start_weight'));
-        let savedTarget = parseFloat(localStorage.getItem('user_saved_target'));
-        
-        // ЕСЛИ ЦЕЛЬ ИЗМЕНИЛАСЬ ИЛИ ВЕС ВЫШЕЛ ЗА РАМКИ — АВТОМАТИЧЕСКИ ПЕРЕЗАПИСЫВАЕМ СТАРТ!
-        if (!startWeight || !savedTarget || t !== savedTarget || (w > startWeight && w > t) || (w < startWeight && w < t)) {
+        let startWeight = localStorage.getItem('user_start_weight') ? parseFloat(localStorage.getItem('user_start_weight')) : null;
+        let savedTarget = localStorage.getItem('user_saved_target') ? parseFloat(localStorage.getItem('user_saved_target')) : null;
+        let isAchieved = localStorage.getItem('target_achieved') === 'true';
+
+        // ЕСЛИ БРО ДОСТИГ ЦЕЛИ, А ТЕПЕРЬ ВВЕЛ НОВЫЙ ВЕС — СБРАСЫВАЕМ ПАМЯТЬ И НАЧИНАЕМ НОВЫЙ ПУТЬ
+        if (isAchieved && w !== t) {
             startWeight = w;
+            savedTarget = t;
             localStorage.setItem('user_start_weight', w.toString());
             localStorage.setItem('user_saved_target', t.toString());
+            localStorage.setItem('target_achieved', 'false');
+            isAchieved = false;
+        }
+
+        // Если это самый первый запуск или цель полностью сменилась
+        if (startWeight === null || savedTarget === null || t !== savedTarget) {
+            startWeight = w;
+            savedTarget = t;
+            localStorage.setItem('user_start_weight', w.toString());
+            localStorage.setItem('user_saved_target', t.toString());
+            localStorage.setItem('target_achieved', 'false');
+            isAchieved = false;
         }
         
         let percent = 0;
         
         if (w > t) {
             // Режим: Похудение
-            if (startWeight <= t || w >= startWeight) {
+            if (w >= startWeight) {
+                percent = 0;
+            } else if (startWeight <= t) {
                 percent = 0;
             } else {
                 percent = Math.round(((startWeight - w) / (startWeight - t)) * 100);
@@ -145,7 +161,9 @@ function calculateBMI() {
         } 
         else if (w < t) {
             // Режим: Набор массы
-            if (startWeight >= t || w <= startWeight) {
+            if (w <= startWeight) {
+                percent = 0;
+            } else if (startWeight >= t) {
                 percent = 0;
             } else {
                 percent = Math.round(((w - startWeight) / (t - startWeight)) * 100);
@@ -154,7 +172,9 @@ function calculateBMI() {
             document.getElementById('weight-motivation-text').innerText = `Бро, до заветной цели осталось набрать еще ${diff} кг! 🔥`;
         } 
         else {
+            // ЦЕЛЬ ДОСТИГНУТА! Фиксируем этот факт в памяти телефона
             percent = 100;
+            localStorage.setItem('target_achieved', 'true');
             document.getElementById('weight-motivation-text').innerText = `Красава, Бро! Цель достигнута! Ты машина! 👑🏆`;
         }
         
