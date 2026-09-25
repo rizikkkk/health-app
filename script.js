@@ -105,16 +105,25 @@ function getFormattedDate(offset = 0) {
     const d = new Date(); d.setDate(d.getDate() + offset);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
-
 function switchScreen(id, btn) {
     document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active')); 
     const el = document.getElementById(id); if (el) el.classList.add('active');
+    
+    // БЕЗОПАСНАЯ ПОДСВЕТКА АКТИВНОЙ КНОПКИ В МЕНЮ
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active')); 
-    if (btn) btn.classList.add('active');
+    if (btn) {
+        btn.classList.add('active');
+    } else {
+        // Защита: если запустились первый раз, находим кнопку Главной по onclick атрибуту
+        const mainBtn = document.querySelector(".nav-item[onclick*='screen-main']");
+        if (mainBtn) mainBtn.classList.add('active');
+    }
+    
     if (id === 'screen-calendar') renderHeatmapCalendar();
     if (id === 'screen-workout') renderWorkoutDashboard();
     if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
+
 // ==========================================================================
 // 💧 ЛОГИКА ТРЕКЕРА ВОДЫ И ЕДЫ
 // ==========================================================================
@@ -229,8 +238,12 @@ function renderWorkoutDashboard() {
         catsView.style.display = 'none'; dashView.style.display = 'block';
         const courseKey = broPrograms.activeCourse; const subKey = broPrograms.activeSubCourse; const levelKey = broPrograms.activeLevel;
         
-        const subConfig = courseDatabase[courseKey].subCourses[subKey];
-        const levelConfig = courseDatabase[courseKey][levelKey];
+        // ЗАЩИТА: Проверяем, что все ветки в базе данных существуют, чтобы код не падал
+        const courseData = courseDatabase[courseKey];
+        if (!courseData || !courseData.subCourses[subKey] || !courseData[levelKey]) return;
+
+        const subConfig = courseData.subCourses[subKey];
+        const levelConfig = courseData[levelKey];
 
         document.getElementById('active-course-title').innerText = `${subConfig.name}`;
         document.getElementById('active-course-status').innerText = `Режим: ${levelConfig.label}`;
