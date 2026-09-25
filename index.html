@@ -82,10 +82,10 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 3: КУРС ТРЕНИРОВОК (ПОЛНЫЙ РЕФАКТОР НА 30-ДНЕВНЫЕ ПРОГРАММЫ) -->
+        <!-- ЭКРАН 3: КУРС ТРЕНИРОВОК (ПРОФЕССИОНАЛЬНАЯ ВЛОЖЕННОСТЬ) -->
     <div id="screen-workout" class="app-screen">
         
-        <!-- ШАГ А: ВЫБОР ОСНОВНОЙ КАТЕГОРИИ -->
+        <!-- ШАГ А: ВЫБОР ОСНОВНОЙ КАТЕГОРИИ (ГЛАВНЫЕ ПЛИТКИ) -->
         <div id="workout-categories-view" class="card">
             <h2>🏋️‍♂️ Выбери Цель на Месяц</h2>
             <p style="text-align:center; font-size:13px; opacity:0.7; margin-top:-5px;">Умный трек тренировок 30 дней</p>
@@ -111,14 +111,54 @@
             </div>
         </div>
 
-        <!-- ШАГ Б: ПАНЕЛЬ УПРАВЛЕНИЯ АКТИВНЫМ КУРСОМ (СО ШКАЛОЙ И КНОПКАМИ) -->
+        <!-- ШАГ Б: ВЫБОР ПОДКУРСА (НАПРАВЛЕНИЯ) -->
+        <div id="workout-subcategories-view" class="card" style="display:none;">
+            <button onclick="backToCategories()" style="background:none !important; color:#5288c1; text-align:left; width:auto; padding:0; font-size:14px; margin-bottom:15px; font-weight:normal;">↩️ Назад к целям</button>
+            <h2 id="subcategories-header-title">Выбери Направление</h2>
+            <!-- Сюда JS будет сам вставлять кнопки подкурсов (Фулл Бади, Руки, Ноги и т.д.) -->
+            <div id="subcategories-list-container" style="display:flex; flex-direction:column; gap:12px; margin-top:15px;"></div>
+        </div>
+
+        <!-- ШАГ В: ВЫБОР СЛОЖНОСТИ И ВРЕМЕНИ -->
+        <div id="workout-levels-view" class="card" style="display:none;">
+            <button onclick="backToSubCategories()" style="background:none !important; color:#5288c1; text-align:left; width:auto; padding:0; font-size:14px; margin-bottom:15px; font-weight:normal;">↩️ Назад к направлениям</button>
+            <h2 id="levels-header-title">Выбери Время на Сегодня</h2>
+            
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:15px;">
+                <div class="program-card-btn" onclick="selectWorkoutLevel('easy')" style="background:#2c3b47; padding:15px; border-radius:12px; cursor:pointer; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="color:#4caf50; font-weight:bold;">🟢 ЛЕГКО</span>
+                        <div style="font-size:12px; opacity:0.6; margin-top:2px;">Разминка и легкий тонус</div>
+                    </div>
+                    <span style="font-weight:bold; color:#4caf50;">20 мин</span>
+                </div>
+                
+                <div class="program-card-btn" onclick="selectWorkoutLevel('medium')" style="background:#2c3b47; padding:15px; border-radius:12px; cursor:pointer; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="color:#00b0ff; font-weight:bold;">🟡 СРЕДНЕ</span>
+                        <div style="font-size:12px; opacity:0.6; margin-top:2px;">Оптимальная рабочая нагрузка</div>
+                    </div>
+                    <span style="font-weight:bold; color:#00b0ff;">40 мин</span>
+                </div>
+                
+                <div class="program-card-btn" onclick="selectWorkoutLevel('hard')" style="background:#2c3b47; padding:15px; border-radius:12px; cursor:pointer; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="color:#f44336; font-weight:bold;">🔴 ЖЕСТКО</span>
+                        <div style="font-size:12px; opacity:0.6; margin-top:2px;">Мощный хардкор для машин</div>
+                    </div>
+                    <span style="font-weight:bold; color:#f44336;">60 min</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ШАГ Г: ГЛАВНЫЙ ДАШБОРД КОНКРЕТНОГО ВЫБРАННОГО ПОДКУРСА -->
         <div id="workout-dashboard-view" class="card" style="display:none;">
-            <button onclick="backToCategories()" style="background:none !important; color:#5288c1; text-align:left; width:auto; padding:0; font-size:14px; margin-bottom:15px; font-weight:normal;">↩️ К выбору целей</button>
+            <button onclick="backToLevels()" style="background:none !important; color:#5288c1; text-align:left; width:auto; padding:0; font-size:14px; margin-bottom:15px; font-weight:normal;">↩️ Назад к выбору времени</button>
             
             <h3 id="active-course-title" style="text-align:left; margin-bottom:5px;">Название курса</h3>
-            <div id="active-course-status" style="font-size:13px; opacity:0.7; margin-bottom:15px;">План: Тренировки день через день</div>
+            <div id="active-course-status" style="font-size:13px; opacity:0.7; margin-bottom:15px; color:#ffd700;">Режим: Загрузка...</div>
             
-            <!-- СОЧНАЯ ШКАЛА ЗАПОЛНЕНИЯ КУРСА (0-100%) -->
+            <!-- ШКАЛА ЗАПОЛНЕНИЯ ЭТОГО ПОДКУРСА -->
             <div class="course-progress-box" style="background:rgba(0,0,0,0.15); padding:12px; border-radius:12px; margin-bottom:20px;">
                 <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
                     <span>Прогресс курса на месяц:</span>
@@ -127,33 +167,23 @@
                 <div style="background:rgba(255,255,255,0.05); height:12px; border-radius:6px; overflow:hidden;">
                     <div id="course-progress-bar" style="background:linear-gradient(90deg, #4caf50, #00b0ff); width:0%; height:100%; transition:width 0.4s;"></div>
                 </div>
-                <div id="course-steps-text" style="font-size:11px; opacity:0.5; margin-top:6px; text-align:right;">Пройдено: 0 из 30 шагов</div>
+                <div id="course-steps-text" style="font-size:11px; opacity:0.5; margin-top:6px; text-align:right;">Пройдено: 0 из 15 шагов</div>
             </div>
 
-            <!-- ИНТЕРАКТИВНЫЙ БЛОК ДЕЙСТВИЯ НА СЕГОДНЯ -->
+            <!-- БЛОК ДЕЙСТВИЯ НА СЕГОДНЯ -->
             <div id="day-action-card" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:15px; border-radius:12px; text-align:center;">
                 <h4 id="day-action-title" style="margin:0 0 8px 0; font-size:16px;">Сегодня по плану:</h4>
                 <p id="day-action-desc" style="font-size:14px; opacity:0.8; margin:0 0 15px 0;">Загрузка плана...</p>
                 
-                <!-- Динамические кнопки (Будут скрываться/показываться из JS) -->
                 <button id="btn-start-plan" class="btn-success" onclick="startPlannedWorkout()">🦾 НАЧАТЬ ТРЕНИРОВКУ</button>
                 <button id="btn-start-bonus" class="btn-primary" onclick="startBonusWorkout()" style="display:none; background:linear-gradient(135deg, #ffd700, #ffa500) !important; color:#000 !important;">⚡ Я ЗАРЯЖЕН! ДОП-ТРЕНИРОВКА</button>
             </div>
 
             <button class="btn-stop" onclick="resetActiveCourse()" style="margin-top:25px; padding:8px; font-size:12px; background:rgba(244,67,54,0.1) !important; color:#f44336 !important; border:1px solid rgba(244,67,54,0.2);">Сбросить курс и начать сначала</button>
         </div>
-        <!-- ШАГ В: ПЛЕЕР КРУГОВОЙ ТРЕНИРОВКИ -->
+
+        <!-- ШАГ Д: ПЛЕЕР КРУГОВОЙ ТРЕНИРОВКИ -->
         <div id="workout-player-container" class="card workout-player" style="display:none;">
-            <div id="player-round-info" class="round-badge">КРУГ 1 ИЗ 3</div>
-            <div id="player-ex-name" class="ex-title">Название упражнения</div>
-            <div id="player-ex-target" class="ex-target">15 РАЗ</div>
-            <div id="player-timer-digits" class="timer-display">00:45</div>
-            <p id="player-ex-desc" style="font-size:14px; opacity:0.8; min-height:40px; margin:15px 0;"></p>
-            
-            <button id="btn-action" class="btn-success" onclick="handleActionClick()">Выполнено! Далее</button>
-            <button class="btn-stop" onclick="exitWorkoutSession()" style="margin-top:12px; background:rgba(255,255,255,0.05) !important;">Прервать сессию</button>
-        </div>
-    </div>
 
     <!-- ЭКРАН 4: КАЛЕНДАРЬ ВСЕВЛАСТИЯ -->
     <div id="screen-calendar" class="app-screen">

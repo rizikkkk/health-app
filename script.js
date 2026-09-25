@@ -6,45 +6,77 @@ if (tg) {
 }
 
 // ==========================================================================
-// 📦 БАЗА ДАННЫХ ТРЕНИРОВОК НА 30 ДНЕЙ С УРОВНЯМИ (20 / 40 / 60 МИНУТ)
+// 📦 БАЗА ДАННЫХ ТРЕНИРОВОК С ПОДКУРСАМИ И УРОВНЯМИ ВРЕМЕНИ
 // ==========================================================================
 const courseDatabase = {
     power: {
         name: "Домашняя сила (Мышцы)",
-        easy: { label: "Легко (20 мин)", rounds: 2, exInterval: 30 },
-        medium: { label: "Средне (40 мин)", rounds: 3, exInterval: 30 },
-        hard: { label: "Жестко (60 мин)", rounds: 4, exInterval: 20 },
-        exercisesPool: [
-            { name: "Классические отжимания", type: "reps", target: 15, desc: "Руки чуть шире плеч, опускайся до параллели с полом." },
-            { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Опора руками на край стула сзади, плавно сгибай локти." },
-            { name: "Приседания Бро", type: "reps", target: 20, desc: "Опускай таз до параллели с полом, держи спину ровно." },
-            { name: "Статическая планка", type: "time", target: 45, desc: "Держи тело ровно в одну линию, пресс и ягодицы напряжены." },
-            { name: "Скалолаз в упоре лежа", type: "time", target: 30, desc: "Быстро подтягивай колени к груди поочередно." }
-        ]
+        subCourses: {
+            arms_chest: {
+                name: "Тяни-Толкай (Руки и Грудь) 🔴",
+                desc: "Прокачка грудных мышц, трицепса и дельт",
+                exercises: [
+                    { name: "Классические отжимания", type: "reps", target: 15, desc: "Руки чуть шире плеч, опускайся до параллели с полом." },
+                    { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Опора руками на край стула сзади, плавно сгибай локти." },
+                    { name: "Алмазные отжимания", type: "reps", target: 10, desc: "Поставь ладони близко, чтобы большие и указательные пальцы коснулись." }
+                ]
+            },
+            legs_core: {
+                name: "Стальной фундамент (Ноги и Пресс) 🟢",
+                desc: "Мощная проработка квадрицепсов, ягодиц и мышц кора",
+                exercises: [
+                    { name: "Приседания Бро", type: "reps", target: 20, desc: "Опускай таз до параллели с полом, держи спину ровно." },
+                    { name: "Выпады назад попеременно", type: "reps", target: 16, desc: "Делай широкий шаг назад, угол в коленях 90 градусов." },
+                    { name: "Скручивания на пресс", type: "reps", target: 20, desc: "Лежа на спине, плавно поднимай лопатки, напрягая пресс." }
+                ]
+            }
+        }
     },
     fatburn: {
         name: "Жиросжигание и Рельеф",
-        easy: { label: "Легко (20 мин)", rounds: 2, exInterval: 25 },
-        medium: { label: "Средне (40 мин)", rounds: 3, exInterval: 25 },
-        hard: { label: "Жестко (60 мин)", rounds: 4, exInterval: 15 },
-        exercisesPool: [
-            { name: "Прыжки Джеки (Jumping Jacks)", type: "time", target: 45, desc: "Прыжком расставляй ноги и соединяй руки над головой." },
-            { name: "Приседания с выпрыгиванием", type: "reps", target: 12, desc: "Опускайся до параллели и взрывайся вверх in прыжке." },
-            { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро беги ногами к груди." },
-            { name: "Взрывные берпи", type: "reps", target: 10, desc: "Упор лежа, отжимание, прыжок вверх с хлопком." }
-        ]
+        subCourses: {
+            full_body: {
+                name: "Фулл Бади Пот ⚡",
+                desc: "Взрывной комплекс на все тело для максимального жиросжигания",
+                exercises: [
+                    { name: "Прыжки Джеки (Jumping Jacks)", type: "time", target: 45, desc: "Прыжком расставляй ноги и соединяй руки над головой." },
+                    { name: "Приседания с выпрыгиванием", type: "reps", target: 12, desc: "Опускайся до параллели и взрывайся вверх в прыжке." },
+                    { name: "Взрывные берпи", type: "reps", target: 10, desc: "Упор лежа, отжимание, прыжок вверх с хлопком." }
+                ]
+            },
+            abs_core: {
+                name: "Пресс и Кор 🎯",
+                desc: "Прицельная топка жира на животе и создание стальных кубиков",
+                exercises: [
+                    { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро беги ногами к груди." },
+                    { name: "Велосипед на прессе", type: "reps", target: 20, desc: "Лежа тянись локтем к противоположному колену поочередно." },
+                    { name: "Статическая планка", type: "time", target: 45, desc: "Держи тело ровно в одну линию, пресс напряжен." }
+                ]
+            }
+        }
     },
     posture: {
         name: "Здоровая спина и Осанка",
-        easy: { label: "Легко (20 мин)", rounds: 2, exInterval: 30 },
-        medium: { label: "Средне (40 мин)", rounds: 3, exInterval: 30 },
-        hard: { label: "Жестко (60 мин)", rounds: 3, exInterval: 20 },
-        exercisesPool: [
-            { name: "Y-T-W подъемы на животе", type: "reps", target: 12, desc: "Лежа на животе, поднимай руки, изображая буквы Y, T, W." },
-            { name: "Вращение плечами у стены", type: "reps", target: 20, desc: "Прижмись спиной и локтями к стене, вращай плечи назад." },
-            { name: "Лодочка со сведением лопаток", type: "reps", target: 15, desc: "Лежа на животе, оторви грудь от пола и своди лопатки." },
-            { name: "Упражнение 'Кобра'", type: "time", target: 30, desc: "Лежа на животе, мягко вытягивай грудной отдел вверх." }
-        ]
+        subCourses: {
+            back_straight: {
+                name: "Ровная спина Бро 🧘‍♂️",
+                desc: "Раскрытие грудной клетки, укрепление лопаток и выпрямление позвоночника",
+                exercises: [
+                    { name: "Y-T-W подъемы на животе", type: "reps", target: 12, desc: "Лежа на животе, поднимай руки, изображая буквы Y, T, W." },
+                    { name: "Вращение плечами у стены", type: "reps", target: 20, desc: "Прижмись спиной и локтями к стене, вращай плечи назад." },
+                    { name: "Лодочка со сведением лопаток", type: "reps", target: 15, desc: "Лежа на животе, оторви грудь от пола и своди лопатки." }
+                ]
+            },
+            neck_computer: {
+                name: "Шея и Компьютерный синдром 📱",
+                desc: "Снятие зажимов трапеции и шеи после долгой сидячей работы",
+                exercises: [
+                    { name: "Упражнение 'Кобра'", type: "time", target: 30, desc: "Лежа на животе, мягко вытягивай грудной отдел вверх." },
+                    { name: "Разгибание бедра на четвереньках", type: "reps", target: 16, desc: "Стоя на четвереньках, поочередно поднимай прямую ногу назад и вверх." },
+                    { name: "Растяжка 'Кошка-Корова'", type: "reps", target: 12, desc: "На четвереньках плавно выгибай спину колесом вверх и вниз." }
+                ]
+            }
+        }
     }
 };
 
@@ -56,16 +88,21 @@ let waterTarget = parseInt(localStorage.getItem('water_target') || '2000', 10);
 let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10); 
 let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
 
-// ИСПРАВЛЕНИЕ: Теперь у каждого курса СВОЯ личная дата последней тренировки!
+// ПОЛНАЯ НЕЗАВИСИМОСТЬ: Теперь каждый подкурс помнит свой шаг и свою личную дату!
 let broPrograms = JSON.parse(localStorage.getItem('bro_programs_data') || JSON.stringify({
-    activeCourse: 'none',    
-    selectedLevel: 'medium', // По умолчанию средний уровень (medium)
-    power_step: 0,           
-    fatburn_step: 0,
-    posture_step: 0,
-    power_date: '',       // Дата последней тренировки для Силы
-    fatburn_date: '',     // Дата для Жиросжигания
-    posture_date: ''      // Дата для Осанки
+    activeCourse: 'none',       // Выбранная категория ('power', 'fatburn', 'posture')
+    activeSubCourse: 'none',    // Выбранный подкурс ('arms_chest', 'legs_core' и т.д.)
+    activeLevel: 'medium',      // Выбранное время ('easy', 'medium', 'hard')
+    
+    // Память шагов по каждому направлению
+    power_arms_chest_step: 0, power_legs_core_step: 0,
+    fatburn_full_body_step: 0, fatburn_abs_core_step: 0,
+    posture_back_straight_step: 0, posture_neck_computer_step: 0,
+    
+    // Память дат по каждому направлению
+    power_arms_chest_date: '', power_legs_core_date: '',
+    fatburn_full_body_date: '', fatburn_abs_core_date: '',
+    posture_back_straight_date: '', posture_neck_computer_date: ''
 }));
 
 function saveProgramsState() {
@@ -91,6 +128,73 @@ function switchScreen(id, btn) {
     if (id === 'screen-workout') renderWorkoutDashboard();
     if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
+// ==========================================================================
+// 🕹️ НОВАЯ ЛОГИКА НАВИГАЦИИ ПО КУРСАМ, НАПРАВЛЕНИЯМ И СЛОЖНОСТИ
+// ==========================================================================
+
+// Шаг А -> Шаг Б: Выбрали главную категорию, строим список подкурсов
+function selectMainCategory(courseKey) {
+    broPrograms.activeCourse = courseKey;
+    saveProgramsState();
+    
+    const container = document.getElementById('subcategories-list-container');
+    if (!container) return;
+    container.innerHTML = ""; // Чистим старые кнопки
+
+    const courseData = courseDatabase[courseKey];
+    document.getElementById('subcategories-header-title').innerText = courseData.name;
+
+    // Генерируем кнопки для каждого подкурса прямо на лету
+    Object.keys(courseData.subCourses).forEach(subKey => {
+        const sub = courseData.subCourses[subKey];
+        const subCard = document.createElement('div');
+        subCard.className = 'program-card-btn';
+        subCard.style.cssText = 'background:#2c3b47; padding:15px; border-radius:12px; cursor:pointer; border:1px solid rgba(255,255,255,0.05);';
+        subCard.innerHTML = `
+            <div style="font-size:16px; font-weight:bold; color:#5288c1;">${sub.name}</div>
+            <div style="font-size:12px; opacity:0.6; margin-top:4px;">${sub.desc}</div>
+        `;
+        subCard.onclick = () => selectSubCategory(subKey);
+        container.appendChild(subCard);
+    });
+
+    document.getElementById('workout-categories-view').style.display = 'none';
+    document.getElementById('workout-subcategories-view').style.display = 'block';
+}
+
+// Шаг Б -> Шаг В: Выбрали конкретный подкурс, открываем выбор времени
+function selectSubCategory(subKey) {
+    broPrograms.activeSubCourse = subKey;
+    saveProgramsState();
+
+    const courseKey = broPrograms.activeCourse;
+    const subData = courseDatabase[courseKey].subCourses[subKey];
+    document.getElementById('levels-header-title').innerText = `${subData.name}`;
+
+    document.getElementById('workout-subcategories-view').style.display = 'none';
+    document.getElementById('workout-levels-view').style.display = 'block';
+}
+
+// Шаг В -> Шаг Г: Выбрали время (Легко/Средне/Жестко), открываем Главный Дашборд
+function selectWorkoutLevel(levelKey) {
+    broPrograms.activeLevel = levelKey;
+    saveProgramsState();
+
+    document.getElementById('workout-levels-view').style.display = 'none';
+    renderWorkoutDashboard();
+}
+
+// КНОПКИ СТРЕЛОЧЕК «НАЗАД» ДЛЯ НАВИГАЦИИ БЕЗ ЛАГОВ
+function backToSubCategories() {
+    document.getElementById('workout-levels-view').style.display = 'none';
+    document.getElementById('workout-subcategories-view').style.display = 'block';
+}
+
+function backToLevels() {
+    document.getElementById('workout-dashboard-view').style.display = 'none';
+    document.getElementById('workout-levels-view').style.display = 'block';
+}
+
 // ==========================================================================
 // 💧 ЛОГИКА ТРЕКЕРА ВОДЫ
 // ==========================================================================
@@ -224,16 +328,33 @@ function renderWorkoutDashboard() {
     if (broPrograms.activeCourse === 'none') {
         catsView.style.display = 'block';
         dashView.style.display = 'none';
+        document.getElementById('workout-subcategories-view').style.display = 'none';
+        document.getElementById('workout-levels-view').style.display = 'none';
+    } else if (broPrograms.activeSubCourse === 'none') {
+        catsView.style.display = 'none';
+        dashView.style.display = 'none';
+        selectMainCategory(broPrograms.activeCourse);
+    } else if (broPrograms.activeLevel === 'none') {
+        catsView.style.display = 'none';
+        dashView.style.display = 'none';
+        selectSubCategory(broPrograms.activeSubCourse);
     } else {
         catsView.style.display = 'none';
         dashView.style.display = 'block';
 
         const courseKey = broPrograms.activeCourse;
-        const config = courseDatabase[courseKey];
-        document.getElementById('active-course-title').innerText = config.name;
+        const subKey = broPrograms.activeSubCourse;
+        const levelKey = broPrograms.activeLevel;
 
-        // Расчёт прогресса конкретного курса (15 шагов на месяц)
-        const currentStep = broPrograms[`${courseKey}_step`] || 0;
+        const courseConfig = courseDatabase[courseKey];
+        const subConfig = courseConfig.subCourses[subKey];
+        const levelConfig = courseConfig[levelKey];
+
+        document.getElementById('active-course-title').innerText = `${subConfig.name}`;
+        document.getElementById('active-course-status').innerText = `Режим: ${levelConfig.label} | ${levelConfig.rounds} круга`;
+
+        const subKeyFull = `${courseKey}_${subKey}`;
+        const currentStep = broPrograms[`${subKeyFull}_step`] || 0;
         let progressPercent = Math.round((currentStep / 15) * 100);
         if (progressPercent > 100) progressPercent = 100;
 
@@ -241,32 +362,27 @@ function renderWorkoutDashboard() {
         document.getElementById('course-progress-bar').style.width = progressPercent + '%';
         document.getElementById('course-steps-text').innerText = `Выполнено: ${currentStep} из 15 фитнес-шагов`;
 
-        // УМНАЯ НЕЗАВИСИМАЯ ПРОВЕРКА ДНЯ ДЛЯ КАЖДОГО КУРСА
         const todayStr = getFormattedDate(0);
-        const lastCourseDate = broPrograms[`${courseKey}_date`] || '';
+        const lastWorkoutDate = broPrograms[`${subKeyFull}_date`] || '';
 
         const btnPlan = document.getElementById('btn-start-plan');
         const btnBonus = document.getElementById('btn-start-bonus');
 
-        if (lastCourseDate === todayStr) {
-            // 1. ЕСЛИ ТРЕНИРОВКА СДЕЛАНА СЕГОДНЯ ЖЕ
+        if (lastWorkoutDate === todayStr) {
             document.getElementById('day-action-title').innerText = "🛌 План на сегодня выполнен!";
             document.getElementById('day-action-desc').innerText = "Красава, Бро! На сегодня этот курс закрыт. Отдыхай и восстанавливай силы. Завтра откроется день отдыха с доп-тренировками!";
             btnPlan.style.display = 'none';
             btnBonus.style.display = 'none';
         } else {
-            // Выясняем, был ли этот курс пройден вчера (день отдыха)
             const yesterdayStr = getFormattedDate(-1);
-            const isRestDay = (lastCourseDate === yesterdayStr);
+            const isRestDay = (lastWorkoutDate === yesterdayStr);
 
             if (!isRestDay) {
-                // 2. РАБОЧИЙ ДЕНЬ ПО ПЛАНУ
                 document.getElementById('day-action-title').innerText = "💪 Сегодня по плану: РАБОЧИЙ ДЕНЬ";
                 document.getElementById('day-action-desc').innerText = `Приготовиться к фитнес-шагу №${currentStep + 1}. Тебя ждет уникальный микс упражнений!`;
                 btnPlan.style.display = 'block';
                 btnBonus.style.display = 'none';
             } else {
-                // 3. ДЕНЬ ВОССТАНОВЛЕНИЯ НА СЛЕДУЮЩИЙ ДЕНЬ
                 document.getElementById('day-action-title').innerText = "🛌 Сегодня по плану: ДЕНЬ ВОССТАНОВЛЕНИЯ";
                 document.getElementById('day-action-desc').innerText = "Мышцы сегодня активно растут, Бро! Отдыхай, пей воду и держи калории. Либо бахни внеплановый доп-комплекс:";
                 btnPlan.style.display = 'none';
@@ -276,35 +392,47 @@ function renderWorkoutDashboard() {
     }
 }
 
+function backToLevels() {
+    document.getElementById('workout-dashboard-view').style.display = 'none';
+    document.getElementById('workout-levels-view').style.display = 'block';
+}
+
 function resetActiveCourse() {
-    if (confirm("Бро, ты уверен, что хочешь полностью обнулить этот курс и начать 30-дневный план сначала?")) {
+    if (confirm("Бро, ты уверен, что хочешь полностью обнулить этот подкурс и начать 30-дневный план сначала?")) {
         const courseKey = broPrograms.activeCourse;
-        broPrograms[`${courseKey}_step`] = 0;
-        broPrograms[`${courseKey}_date`] = '';
+        const subKey = broPrograms.activeSubCourse;
+        const subKeyFull = `${courseKey}_${subKey}`;
+        
+        broPrograms[`${subKeyFull}_step`] = 0;
+        broPrograms[`${subKeyFull}_date`] = '';
         saveProgramsState();
         renderWorkoutDashboard();
         syncTodayDataToCalendar();
     }
 }
 
-// УМНЫЙ МИКСЕР КОНСТРУКТОРА УПРАЖНЕНИЙ
-function generateWorkoutExercises(courseKey, isBonus = false) {
-    const pool = courseDatabase[courseKey].exercisesPool;
+function generateWorkoutExercises(courseKey, subKey, isBonus = false) {
+    const pool = courseDatabase[courseKey].subCourses[subKey].exercises;
     let shuffled = [...pool].sort(() => 0.5 - Math.random());
     return isBonus ? shuffled.slice(0, 2) : shuffled.slice(0, 3);
 }
 
 function startPlannedWorkout() {
     const courseKey = broPrograms.activeCourse;
-    currentExercises = generateWorkoutExercises(courseKey, false);
-    totalRounds = courseDatabase[courseKey].medium.rounds; 
+    const subKey = broPrograms.activeSubCourse;
+    const levelKey = broPrograms.activeLevel;
+
+    currentExercises = generateWorkoutExercises(courseKey, subKey, false);
+    totalRounds = courseDatabase[courseKey][levelKey].rounds; 
     currentWorkoutTypeFlag = 'planned';
     launchPlayer();
 }
 
 function startBonusWorkout() {
     const courseKey = broPrograms.activeCourse;
-    currentExercises = generateWorkoutExercises(courseKey, true);
+    const subKey = broPrograms.activeSubCourse;
+
+    currentExercises = generateWorkoutExercises(courseKey, subKey, true);
     totalRounds = 2; 
     currentWorkoutTypeFlag = 'bonus';
     launchPlayer();
@@ -340,12 +468,14 @@ function goToNextExercise() {
         if (currentRound < totalRounds) { currentRound++; exIndex = 0; alert(`👊 Круг выполнен Бро! Приготовиться к КРУГУ №${currentRound}!`); showCurrentStep(); } 
         else {
             const courseKey = broPrograms.activeCourse;
+            const subKey = broPrograms.activeSubCourse;
+            const subKeyFull = `${courseKey}_${subKey}`;
             const todayStr = getFormattedDate(0);
 
-            // Сохраняем дату тренировки ЛИЧНО для этого активного курса!
+            // Сохраняем дату тренировки ЛИЧНО для этого активного подкурса!
             if (currentWorkoutTypeFlag === 'planned') {
-                broPrograms[`${courseKey}_step`] += 1;
-                broPrograms[`${courseKey}_date`] = todayStr;
+                broPrograms[`${subKeyFull}_step`] += 1;
+                broPrograms[`${subKeyFull}_date`] = todayStr;
                 saveProgramsState();
                 
                 let dayData = JSON.parse(localStorage.getItem(`calendar_day_${todayStr}`) || '{}');
@@ -386,7 +516,15 @@ function syncTodayDataToCalendar() {
     
     if (!dayData.workoutStatus) {
         const yesterdayStr = getFormattedDate(-1);
-        const isRest = (broPrograms.power_date === yesterdayStr || broPrograms.fatburn_date === yesterdayStr || broPrograms.posture_date === yesterdayStr);
+        // Считаем день отдыха Rest, если вчера делали ХОТЬ ОДИН подкурс
+        const isRest = (
+            broPrograms.power_arms_chest_date === yesterdayStr || 
+            broPrograms.power_legs_core_date === yesterdayStr ||
+            broPrograms.fatburn_full_body_date === yesterdayStr ||
+            broPrograms.fatburn_abs_core_date === yesterdayStr ||
+            broPrograms.posture_back_straight_date === yesterdayStr ||
+            broPrograms.posture_neck_computer_date === yesterdayStr
+        );
         dayData.workoutStatus = isRest ? 'rest' : 'none';
     }
     
@@ -420,6 +558,7 @@ function renderHeatmapCalendar() {
         const dWeight = dayData.weight || 0;
         const dStatus = dayData.workoutStatus || 'none';
 
+        // Бытовой скор (макс 3 балла)
         let baseScore = 0;
         if (dWater >= targetW) baseScore++;
         if (dCalories > 0 && dCalories <= targetC) baseScore++;
@@ -429,7 +568,7 @@ function renderHeatmapCalendar() {
         let isCup = false;
         let scoreLevel = baseScore;
 
-        // МГНОВЕННЫЙ РАСЧЕТ НАГРАД (ДЛЯ ТЕСТА РАЗРАБОТЧИКА)
+        // ЧИТ-КОД РАЗРАБОТЧИКА: МГНОВЕННЫЙ РАСЧЕТ НАГРАД ЧЕРЕЗ МОДАЛКУ
         if (baseScore === 3) {
             if (dStatus === 'planned' || dStatus === 'bonus') {
                 isKing = true;
