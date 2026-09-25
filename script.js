@@ -85,6 +85,7 @@ const courseDatabase = {
         }
     }
 };
+
 // ==========================================================================
 // 🔧 СОСТОЯНИЕ И НЕЗАВИСИМАЯ ПАМЯТЬ КУРСОВ (STORAGE)
 // ==========================================================================
@@ -100,9 +101,21 @@ let broPrograms = JSON.parse(localStorage.getItem('bro_programs_data') || JSON.s
 }));
 
 function saveProgramsState() { localStorage.setItem('bro_programs_data', JSON.stringify(broPrograms)); }
+
+// РОКИРОВКА: Объявляем функции даты и синхронизации в самом начале, чтобы код их видел!
 function getFormattedDate(offset = 0) {
     const d = new Date(); d.setDate(d.getDate() + offset);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function syncTodayDataToCalendar() {
+    const todayKey = getFormattedDate(0); let dayData = JSON.parse(localStorage.getItem(`calendar_day_${todayKey}`) || '{}');
+    dayData.water = water; dayData.calories = caloriesCurrent; dayData.weight = parseFloat(localStorage.getItem('user_weight') || '0');
+    if (!dayData.workoutStatus) {
+        const y = getFormattedDate(-1);
+        dayData.workoutStatus = (broPrograms.power_arms_chest_date === y || broPrograms.power_legs_core_date === y || broPrograms.fatburn_full_body_date === y || broPrograms.fatburn_abs_core_date === y || broPrograms.posture_back_straight_date === y || broPrograms.posture_neck_computer_date === y) ? 'rest' : 'none';
+    }
+    localStorage.setItem(`calendar_day_${todayKey}`, JSON.stringify(dayData));
 }
 
 function switchScreen(id, btn) {
@@ -119,6 +132,7 @@ function switchScreen(id, btn) {
     if (id === 'screen-workout') renderWorkoutDashboard();
     if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
+
 // ==========================================================================
 // 💧 ЛОГИКА ТРЕКЕРА ВОДЫ И ЕДЫ
 // ==========================================================================
