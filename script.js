@@ -85,7 +85,6 @@ const courseDatabase = {
         }
     }
 };
-
 // ==========================================================================
 // 🔧 СОСТОЯНИЕ И НЕЗАВИСИМАЯ ПАМЯТЬ КУРСОВ (STORAGE)
 // ==========================================================================
@@ -105,25 +104,21 @@ function getFormattedDate(offset = 0) {
     const d = new Date(); d.setDate(d.getDate() + offset);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
+
 function switchScreen(id, btn) {
     document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active')); 
     const el = document.getElementById(id); if (el) el.classList.add('active');
-    
-    // БЕЗОПАСНАЯ ПОДСВЕТКА АКТИВНОЙ КНОПКИ В МЕНЮ
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active')); 
     if (btn) {
         btn.classList.add('active');
     } else {
-        // Защита: если запустились первый раз, находим кнопку Главной по onclick атрибуту
         const mainBtn = document.querySelector(".nav-item[onclick*='screen-main']");
         if (mainBtn) mainBtn.classList.add('active');
     }
-    
     if (id === 'screen-calendar') renderHeatmapCalendar();
     if (id === 'screen-workout') renderWorkoutDashboard();
     if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
-
 // ==========================================================================
 // 💧 ЛОГИКА ТРЕКЕРА ВОДЫ И ЕДЫ
 // ==========================================================================
@@ -185,7 +180,6 @@ function calculateBMI() {
     }
     checkCaloriesColor(); checkWaterColor();
 }
-
 // ==========================================================================
 // 🕹️ НАВИГАЦИЯ И УПРАВЛЕНИЕ КУРСАМИ
 // ==========================================================================
@@ -221,6 +215,7 @@ function selectWorkoutLevel(levelKey) {
 function backToCategories() { broPrograms.activeCourse = 'none'; saveProgramsState(); renderWorkoutDashboard(); }
 function backToSubCategories() { document.getElementById('workout-levels-view').style.display = 'none'; document.getElementById('workout-subcategories-view').style.display = 'block'; }
 function backToLevels() { document.getElementById('workout-dashboard-view').style.display = 'none'; document.getElementById('workout-levels-view').style.display = 'block'; }
+
 function renderWorkoutDashboard() {
     const catsView = document.getElementById('workout-categories-view');
     const dashView = document.getElementById('workout-dashboard-view');
@@ -238,7 +233,6 @@ function renderWorkoutDashboard() {
         catsView.style.display = 'none'; dashView.style.display = 'block';
         const courseKey = broPrograms.activeCourse; const subKey = broPrograms.activeSubCourse; const levelKey = broPrograms.activeLevel;
         
-        // ЗАЩИТА: Проверяем, что все ветки в базе данных существуют, чтобы код не падал
         const courseData = courseDatabase[courseKey];
         if (!courseData || !courseData.subCourses[subKey] || !courseData[levelKey]) return;
 
@@ -275,18 +269,11 @@ function renderWorkoutDashboard() {
         }
     }
 }
-
 function resetActiveCourse() {
     if (confirm("Бро, ты уверен, что хочешь полностью обнулить этот подкурс и начать 30-дневный план сначала?")) {
-        const courseKey = broPrograms.activeCourse;
-        const subKey = broPrograms.activeSubCourse;
-        const subKeyFull = `${courseKey}_${subKey}`;
-        
-        broPrograms[`${subKeyFull}_step`] = 0;
-        broPrograms[`${subKeyFull}_date`] = '';
-        saveProgramsState();
-        renderWorkoutDashboard();
-        syncTodayDataToCalendar();
+        const courseKey = broPrograms.activeCourse; const subKey = broPrograms.activeSubCourse; const subKeyFull = `${courseKey}_${subKey}`;
+        broPrograms[`${subKeyFull}_step`] = 0; broPrograms[`${subKeyFull}_date`] = '';
+        saveProgramsState(); renderWorkoutDashboard(); syncTodayDataToCalendar();
     }
 }
 
@@ -297,32 +284,23 @@ function generateWorkoutExercises(courseKey, subKey, isBonus = false) {
 }
 
 function startPlannedWorkout() {
-    const courseKey = broPrograms.activeCourse;
-    const subKey = broPrograms.activeSubCourse;
-    const levelKey = broPrograms.activeLevel;
-
+    const courseKey = broPrograms.activeCourse; const subKey = broPrograms.activeSubCourse; const levelKey = broPrograms.activeLevel;
     currentExercises = generateWorkoutExercises(courseKey, subKey, false);
-    totalRounds = courseDatabase[courseKey][levelKey].rounds; 
-    currentWorkoutTypeFlag = 'planned';
-    launchPlayer();
+    totalRounds = courseDatabase[courseKey][levelKey].rounds; currentWorkoutTypeFlag = 'planned'; launchPlayer();
 }
 
 function startBonusWorkout() {
-    const courseKey = broPrograms.activeCourse;
-    const subKey = broPrograms.activeSubCourse;
-
+    const courseKey = broPrograms.activeCourse; const subKey = broPrograms.activeSubCourse;
     currentExercises = generateWorkoutExercises(courseKey, subKey, true);
-    totalRounds = 2; 
-    currentWorkoutTypeFlag = 'bonus';
-    launchPlayer();
+    totalRounds = 2; currentWorkoutTypeFlag = 'bonus'; launchPlayer();
 }
 
 function launchPlayer() {
     exIndex = 0; currentRound = 1; isTimerRunning = false; clearInterval(timerInterval);
     document.getElementById('workout-dashboard-view').style.display = 'none';
-    document.getElementById('workout-player-container').style.display = 'block'; 
-    showCurrentStep();
+    document.getElementById('workout-player-container').style.display = 'block'; showCurrentStep();
 }
+
 function showCurrentStep() {
     const ex = currentExercises[exIndex]; const btnAction = document.getElementById('btn-action'); clearInterval(timerInterval); isTimerRunning = false;
     document.getElementById('player-round-info').innerText = `КРУГ ${currentRound} ИЗ ${totalRounds}`; document.getElementById('player-ex-name').innerText = ex.name; document.getElementById('player-ex-desc').innerText = ex.desc;
@@ -430,7 +408,6 @@ window.addEventListener('DOMContentLoaded', () => {
             modal.style.display = 'none'; calculateBMI(); renderHeatmapCalendar(); renderWorkoutDashboard();
         };
     }
-    
     try {
         calculateBMI(); syncTodayDataToCalendar(); renderWorkoutDashboard(); renderHeatmapCalendar();
     } catch (e) {
