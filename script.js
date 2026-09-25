@@ -569,35 +569,47 @@ function checkDailyReset() {
         syncTodayDataToCalendar();
     }
 }
-
 // ==========================================================================
-// 🚀 ЗАПУСК ПРИ СТАРТЕ ПРИЛОЖЕНИЯ
+// 🚀 БЕЗОПАСНЫЙ СТАРТ ПРИЛОЖЕНИЯ (ЖЕЛЕЗОБЕТОННЫЙ ВАРИАНТ)
 // ==========================================================================
 window.addEventListener('DOMContentLoaded', () => {
+    // Включаем автосброс счетчиков каждое утро
     checkDailyReset();
 
-    if (document.getElementById('bmi-height')) document.getElementById('bmi-height').value = localStorage.getItem('user_height') || ''; 
-    if (document.getElementById('bmi-weight')) document.getElementById('bmi-weight').value = localStorage.getItem('user_weight') || '';
-    if (document.getElementById('weight-target')) document.getElementById('weight-target').value = localStorage.getItem('user_target_weight') || '';
-    
-    if (document.getElementById('calories-current')) document.getElementById('calories-current').innerText = caloriesCurrent; 
-    if (document.getElementById('calories-target')) document.getElementById('calories-target').innerText = caloriesTarget;
-    if (document.getElementById('water-count')) document.getElementById('water-count').innerText = water;
-    if (document.getElementById('water-target')) document.getElementById('water-target').innerText = waterTarget;
+    // Безопасное восстановление данных в поля Экрана Параметров
+    const inputHeight = document.getElementById('bmi-height');
+    const inputWeight = document.getElementById('bmi-weight');
+    const inputTargetWeight = document.getElementById('weight-target');
 
+    if (inputHeight) inputHeight.value = localStorage.getItem('user_height') || ''; 
+    if (inputWeight) inputWeight.value = localStorage.getItem('user_weight') || '';
+    if (inputTargetWeight) inputTargetWeight.value = localStorage.getItem('user_target_weight') || '';
+    
+    // Безопасное обновление текстовых счетчиков на Главной
+    const txtCalCurr = document.getElementById('calories-current');
+    const txtCalTarg = document.getElementById('calories-target');
+    const txtWatCurr = document.getElementById('water-count');
+    const txtWatTarg = document.getElementById('water-target');
+
+    if (txtCalCurr) txtCalCurr.innerText = caloriesCurrent; 
+    if (txtCalTarg) txtCalTarg.innerText = caloriesTarget;
+    if (txtWatCurr) txtWatCurr.innerText = water;
+    if (txtWatTarg) txtWatTarg.innerText = waterTarget;
+
+    // Безопасная настройка кнопок всплывающего окна (модалки) календаря
     const modal = document.getElementById('calendar-modal');
     const btnClose = document.getElementById('btn-modal-close');
     const btnSave = document.getElementById('btn-modal-save');
 
-    if (btnClose) btnClose.onclick = () => { modal.style.display = 'none'; };
+    if (btnClose) btnClose.onclick = () => { if (modal) modal.style.display = 'none'; };
     if (btnSave) {
         btnSave.onclick = () => {
             if (!selectedCalendarDate) return;
 
-            const wVal = parseInt(document.getElementById('modal-water').value, 10) || 0;
-            const cVal = parseInt(document.getElementById('modal-calories').value, 10) || 0;
-            const sVal = document.getElementById('modal-workout-status').value;
-            const weVal = parseFloat(document.getElementById('modal-weight').value) || 0;
+            const wVal = parseInt(document.getElementById('modal-water')?.value || '0', 10);
+            const cVal = parseInt(document.getElementById('modal-calories')?.value || '0', 10);
+            const sVal = document.getElementById('modal-workout-status')?.value || 'none';
+            const weVal = parseFloat(document.getElementById('modal-weight')?.value || '0');
 
             const updatedData = { water: wVal, calories: cVal, workoutStatus: sVal, weight: weVal };
             localStorage.setItem(`calendar_day_${selectedCalendarDate}`, JSON.stringify(updatedData));
@@ -606,24 +618,31 @@ window.addEventListener('DOMContentLoaded', () => {
             if (selectedCalendarDate === todayKey) {
                 water = wVal; caloriesCurrent = cVal;
                 if (weVal > 0) localStorage.setItem('user_weight', weVal.toString());
-                document.getElementById('water-count').innerText = water;
-                document.getElementById('calories-current').innerText = caloriesCurrent;
+                if (txtWatCurr) txtWatCurr.innerText = water;
+                if (txtCalCurr) txtCalCurr.innerText = caloriesCurrent;
                 localStorage.setItem('water_today', water.toString());
                 localStorage.setItem('calories_current', caloriesCurrent.toString());
             }
 
-            modal.style.display = 'none';
-            calculateBMI();
-            renderHeatmapCalendar();
-            renderWorkoutDashboard();
+            if (modal) modal.style.display = 'none';
+            
+            // Запускаем перерисовки
+            if (typeof calculateBMI === 'function') calculateBMI();
+            if (typeof renderHeatmapCalendar === 'function') renderHeatmapCalendar();
+            if (typeof renderWorkoutDashboard === 'function') renderWorkoutDashboard();
             
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
             alert("Данные за день успешно перезаписаны, Бро! 🦾");
         };
     }
 
-    calculateBMI();
-    syncTodayDataToCalendar();
-    renderWorkoutDashboard();
-    renderHeatmapCalendar();
+    // Первичный запуск прорисовок и расчетов с защитой от сбоев
+    try {
+        if (typeof calculateBMI === 'function') calculateBMI();
+        syncTodayDataToCalendar();
+        if (typeof renderWorkoutDashboard === 'function') renderWorkoutDashboard();
+        if (typeof renderHeatmapCalendar === 'function') renderHeatmapCalendar();
+    } catch (e) {
+        console.log("Загрузка интерфейса выполнена с предупреждением:", e);
+    }
 });
