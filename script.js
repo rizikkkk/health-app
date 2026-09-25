@@ -251,6 +251,29 @@ function backToCategories() {
     saveProgramsState();
     renderWorkoutDashboard();
 }
+// Шаг Б -> Шаг В: Выбрали конкретный подкурс, открываем выбор времени
+function selectSubCategory(subKey) {
+    broPrograms.activeSubCourse = subKey;
+    saveProgramsState();
+
+    const courseKey = broPrograms.activeCourse;
+    const subData = courseDatabase[courseKey].subCourses[subKey];
+    
+    const levelsTitle = document.getElementById('levels-header-title');
+    if (levelsTitle && subData) {
+        levelsTitle.innerText = `${subData.name}`;
+    }
+
+    document.getElementById('workout-subcategories-view').style.display = 'none';
+    document.getElementById('workout-levels-view').style.display = 'block';
+}
+
+// КНОПКА СТРЕЛОЧКИ «НАЗАД» ДЛЯ ШАГА В
+function backToSubCategories() {
+    document.getElementById('workout-levels-view').style.display = 'none';
+    document.getElementById('workout-subcategories-view').style.display = 'block';
+}
+
 function renderWorkoutDashboard() {
     const catsView = document.getElementById('workout-categories-view');
     const dashView = document.getElementById('workout-dashboard-view');
