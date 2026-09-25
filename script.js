@@ -262,6 +262,7 @@ function renderWorkoutDashboard() {
         }
     }
 }
+
 function resetActiveCourse() {
     if (confirm("Бро, ты уверен, что хочешь полностью обнулить этот подкурс и начать 30-дневный план сначала?")) {
         const courseKey = broPrograms.activeCourse;
@@ -276,9 +277,6 @@ function resetActiveCourse() {
     }
 }
 
-// ==========================================================================
-// 🏋️‍♂️ ПЛЕЕР ТРЕНИРОВОК И КРУГОВЫЕ ЦИКЛЫ
-// ==========================================================================
 function generateWorkoutExercises(courseKey, subKey, isBonus = false) {
     const pool = courseDatabase[courseKey].subCourses[subKey].exercises;
     let shuffled = [...pool].sort(() => 0.5 - Math.random());
@@ -312,11 +310,9 @@ function launchPlayer() {
     document.getElementById('workout-player-container').style.display = 'block'; 
     showCurrentStep();
 }
-
 function showCurrentStep() {
-    const ex = currentExercises[exIndex]; const btnAction = document.getElementById('btn-action'); clearInterval(timerInterval);
-    document.getElementById('player-round-info').innerText = `КРУГ ${currentRound} ИЗ ${totalRounds}`;
-    document.getElementById('player-ex-name').innerText = ex.name; document.getElementById('player-ex-desc').innerText = ex.desc;
+    const ex = currentExercises[exIndex]; const btnAction = document.getElementById('btn-action'); clearInterval(timerInterval); isTimerRunning = false;
+    document.getElementById('player-round-info').innerText = `КРУГ ${currentRound} ИЗ ${totalRounds}`; document.getElementById('player-ex-name').innerText = ex.name; document.getElementById('player-ex-desc').innerText = ex.desc;
     document.getElementById('player-ex-target').innerText = ex.type === "reps" ? `${ex.target} РАЗ` : `ДЕРЖИМ ВРЕМЯ`;
     if(btnAction) btnAction.innerText = ex.type === "reps" ? "Выполнено! Далее" : "🟢 Запустить таймер";
 }
@@ -348,7 +344,7 @@ function goToNextExercise() {
 function exitWorkoutSession() { clearInterval(timerInterval); document.getElementById('workout-player-container').style.display = 'none'; renderWorkoutDashboard(); }
 
 // ==========================================================================
-// 👑 КАЛЕНДАРЬ И СЕРВИС АВТОСБРОСА СЧЕТЧИКОВ
+// 👑 КАЛЕНДАРЬ И АВТОСБРОС СЧЕТЧИКОВ
 // ==========================================================================
 function syncTodayDataToCalendar() {
     const todayKey = getFormattedDate(0); let dayData = JSON.parse(localStorage.getItem(`calendar_day_${todayKey}`) || '{}');
@@ -366,6 +362,7 @@ function renderHeatmapCalendar() {
     const targetW = parseInt(localStorage.getItem('water_target') || '2000', 10);
     const targetC = parseInt(localStorage.getItem('calories_target') || '2000', 10);
     let crowns = 0, cups = 0;
+
     for (let day = 1; day <= daysInMonth; day++) {
         const dateKey = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const dayData = JSON.parse(localStorage.getItem(`calendar_day_${dateKey}`) || '{}');
@@ -405,7 +402,7 @@ function checkDailyReset() {
     }
 }
 
-// СТАРТ ЗАГРУЗКИ С ЗАЩИТОЙ ОТ СБОЕВ
+// СТАРТ ЗАГРУЗКИ С ЗАЩИТОЙ
 window.addEventListener('DOMContentLoaded', () => {
     checkDailyReset();
     const modal = document.getElementById('calendar-modal');
