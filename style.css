@@ -226,3 +226,22 @@ button {
     background-color: rgba(255,255,255,0.1) !important;
     color: #ffffff !important;
 }
+/* ЖЕЛЕЗОБЕТОННЫЙ ФИКС ОТОБРАЖЕНИЯ ЭКРАНОВ И НАВИГАЦИИ */
+.app-screen { 
+    display: none !important; 
+} 
+.app-screen.active { 
+    display: block !important; 
+}
+
+/* Фикс для того, чтобы нижнее меню всегда было прибито к экрану телефона */
+.bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 65px !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
