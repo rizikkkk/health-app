@@ -6,108 +6,72 @@ if (tg) {
 }
 
 // ==========================================================================
-// 📦 БАЗА ДАННЫХ ТРЕНИРОВОК НА 30 ШАГОВ (МЕСЯЦ) + ДОПЫ
+// 📦 БАЗА ДАННЫХ ТРЕНИРОВОК НА 30 ДНЕЙ С УРОВНЯМИ (20 / 40 / 60 МИНУТ)
 // ==========================================================================
 const courseDatabase = {
-    // 1. КАТЕГОРИЯ: ДОМАШНЯЯ СИЛА (МЫШЦЫ)
     power: {
         name: "Домашняя сила (Мышцы)",
-        rounds: 3,          // Базово делаем 3 круга
-        exInterval: 30,     // 30 секунд отдыха между упражнениями
-        exercisesPool: {
-            arms: [
-                { name: "Классические отжимания", type: "reps", target: 15, desc: "Руки чуть шире плеч, опускайся до параллели с полом." },
-                { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Опора руками на край стула сзади, плавно сгибай локти." },
-                { name: "Алмазные отжимания", type: "reps", target: 10, desc: "Поставь ладони близко, чтобы большие и указательные пальцы коснулись." }
-            ],
-            legs: [
-                { name: "Приседания Бро", type: "reps", target: 20, desc: "Опускай таз до параллели с полом, держи спину ровно." },
-                { name: "Выпады назад попеременно", type: "reps", target: 16, desc: "Делай широкий шаг назад, угол в коленях 90 градусов." },
-                { name: "Стульчик у стены", type: "time", target: 30, desc: "Прижмись спиной к стене, присядь до угла 90 градусов и держи." }
-            ],
-            core: [
-                { name: "Скручивания на пресс", type: "reps", target: 20, desc: "Лежа на спине, плавно поднимай лопатки, напрягая пресс." },
-                { name: "Статическая планка", type: "time", target: 45, desc: "Держи body ровно в одну линию, пресс и ягодицы напряжены." },
-                { name: "Скалолаз в упоре лежа", type: "time", target: 30, desc: "Быстро подтягивай колени к груди поочередно." }
-            ],
-            bonus: [
-                { name: "Взрывные берпи", type: "reps", target: 10, desc: "Упор лежа, отжимание, прыжок вверх с хлопком." },
-                { name: "Приседы с выпрыгиванием", type: "reps", target: 15, desc: "Присядь и мощно вытолкни body вверх в прыжок." }
-            ]
-        }
+        easy: { label: "Легко (20 мин)", rounds: 2, exInterval: 30 },
+        medium: { label: "Средне (40 мин)", rounds: 3, exInterval: 30 },
+        hard: { label: "Жестко (60 мин)", rounds: 4, exInterval: 20 },
+        exercisesPool: [
+            { name: "Классические отжимания", type: "reps", target: 15, desc: "Руки чуть шире плеч, опускайся до параллели с полом." },
+            { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Опора руками на край стула сзади, плавно сгибай локти." },
+            { name: "Приседания Бро", type: "reps", target: 20, desc: "Опускай таз до параллели с полом, держи спину ровно." },
+            { name: "Статическая планка", type: "time", target: 45, desc: "Держи тело ровно в одну линию, пресс и ягодицы напряжены." },
+            { name: "Скалолаз в упоре лежа", type: "time", target: 30, desc: "Быстро подтягивай колени к груди поочередно." }
+        ]
     },
-    // 2. КАТЕГОРИЯ: ЖИРОСЖИГАНИЕ И РЕЛЬЕФ
     fatburn: {
         name: "Жиросжигание и Рельеф",
-        rounds: 3,
-        exInterval: 25,     // Более интенсивный отдых
-        exercisesPool: {
-            arms: [
-                { name: "Отжимания в темпе", type: "reps", target: 12, desc: "Делай классические отжимания чуть быстрее обычного." },
-                { name: "Удары руками (Бокс)", type: "time", target: 45, desc: "В стойке активно наноси удары вперед перед собой." }
-            ],
-            legs: [
-                { name: "Прыжки Джеки (Jumping Jacks)", type: "time", target: 45, desc: "Прыжком расставляй ноги и соединяй руки над головой." },
-                { name: "Приседания с выпрыгиванием", type: "reps", target: 12, desc: "Опускайся до параллели и взрывайся вверх в прыжке." }
-            ],
-            core: [
-                { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро беги ногами к груди." },
-                { name: "Велосипед на прессе", type: "reps", target: 20, desc: "Лежа тянись локтем к противоположному колену поочередно." }
-            ],
-            bonus: [
-                { name: "Супер-Берпи", type: "reps", target: 12, desc: "Жесткое берпи с полным касанием пола грудью и прыжком." },
-                { name: "Бег на месте с высоким подъемом колен", type: "time", target: 45, desc: "Активно беги на месте, поднимая колени до пояса." }
-            ]
-        }
+        easy: { label: "Легко (20 мин)", rounds: 2, exInterval: 25 },
+        medium: { label: "Средне (40 мин)", rounds: 3, exInterval: 25 },
+        hard: { label: "Жестко (60 мин)", rounds: 4, exInterval: 15 },
+        exercisesPool: [
+            { name: "Прыжки Джеки (Jumping Jacks)", type: "time", target: 45, desc: "Прыжком расставляй ноги и соединяй руки над головой." },
+            { name: "Приседания с выпрыгиванием", type: "reps", target: 12, desc: "Опускайся до параллели и взрывайся вверх in прыжке." },
+            { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро беги ногами к груди." },
+            { name: "Взрывные берпи", type: "reps", target: 10, desc: "Упор лежа, отжимание, прыжок вверх с хлопком." }
+        ]
     },
-    // 3. КАТЕГОРИЯ: ЗДОРОВАЯ СПИНА И ОСАНКА
     posture: {
         name: "Здоровая спина и Осанка",
-        rounds: 2,          // Для спины делаем 2 круга, чтобы не перегружать
-        exInterval: 30,
-        exercisesPool: {
-            arms: [
-                { name: "Y-T-W подъемы на животе", type: "reps", target: 12, desc: "Лежа на животе, поднимай руки, изображая буквы Y, T, W." },
-                { name: "Вращение плечами у стены", type: "reps", target: 20, desc: "Прижмись спиной и локтями к стене, вращай плечи назад." }
-            ],
-            legs: [
-                { name: "Разгибание бедра на четвереньках", type: "reps", target: 16, desc: "Стоя на четвереньках, поочередно поднимай прямую ногу назад и вверх." },
-                { name: "Мостик ягодичный", type: "reps", target: 20, desc: "Лежа на спине, поднимай таз вверх, зажимая ягодицы." }
-            ],
-            core: [
-                { name: "Лодочка со сведением лопаток", type: "reps", target: 15, desc: "Лежа на животе, оторви грудь от пола и своди лопатки." },
-                { name: "Упражнение 'Кобра'", type: "time", target: 30, desc: "Лежа на животе, мягко вытягивай грудной отдел вверх, упираясь руками." }
-            ],
-            bonus: [
-                { name: "Растяжка 'Кошка-Корова'", type: "reps", target: 12, desc: "На четвереньках плавно выгибай спину колесом вверх и прогибай вниз." },
-                { name: "Статическая планка для спины", type: "time", target: 30, desc: "Упор на локти, держи спину идеально ровной без прогибов." }
-            ]
-        }
+        easy: { label: "Легко (20 мин)", rounds: 2, exInterval: 30 },
+        medium: { label: "Средне (40 мин)", rounds: 3, exInterval: 30 },
+        hard: { label: "Жестко (60 мин)", rounds: 3, exInterval: 20 },
+        exercisesPool: [
+            { name: "Y-T-W подъемы на животе", type: "reps", target: 12, desc: "Лежа на животе, поднимай руки, изображая буквы Y, T, W." },
+            { name: "Вращение плечами у стены", type: "reps", target: 20, desc: "Прижмись спиной и локтями к стене, вращай плечи назад." },
+            { name: "Лодочка со сведением лопаток", type: "reps", target: 15, desc: "Лежа на животе, оторви грудь от пола и своди лопатки." },
+            { name: "Упражнение 'Кобра'", type: "time", target: 30, desc: "Лежа на животе, мягко вытягивай грудной отдел вверх." }
+        ]
     }
 };
 
 // ==========================================================================
-// 🔧 СОСТОЯНИЕ И ДВИЖОК ХРАНЕНИЯ (STORAGE)
+// 🔧 СОСТОЯНИЕ И ДВИЖОК НЕЗАВИСИМОГО ХРАНЕНИЯ (STORAGE)
 // ==========================================================================
 let water = parseInt(localStorage.getItem('water_today') || '0', 10);
 let waterTarget = parseInt(localStorage.getItem('water_target') || '2000', 10);
 let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10); 
 let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
 
-// Глобальный объект прогресса курсов Бро
+// ИСПРАВЛЕНИЕ: Теперь у каждого курса СВОЯ личная дата последней тренировки!
 let broPrograms = JSON.parse(localStorage.getItem('bro_programs_data') || JSON.stringify({
-    activeCourse: 'none',    // Какой курс запущен ('power', 'fatburn', 'posture' или 'none')
-    power_step: 0,           // Пройдено плановых шагов
+    activeCourse: 'none',    
+    selectedLevel: 'medium', // По умолчанию средний уровень (medium)
+    power_step: 0,           
     fatburn_step: 0,
     posture_step: 0,
-    lastWorkoutDate: ''      // Дата последней выполненной плановой тренировки
+    power_date: '',       // Дата последней тренировки для Силы
+    fatburn_date: '',     // Дата для Жиросжигания
+    posture_date: ''      // Дата для Осанки
 }));
 
 function saveProgramsState() {
     localStorage.setItem('bro_programs_data', JSON.stringify(broPrograms));
 }
 
-// Функция получения даты "ГГГГ-ММ-ДД"
 function getFormattedDate(offset = 0) {
     const d = new Date();
     d.setDate(d.getDate() + offset);
@@ -117,7 +81,6 @@ function getFormattedDate(offset = 0) {
     return `${yyyy}-${mm}-${dd}`;
 }
 
-// Переключение вкладок приложения
 function switchScreen(id, btn) {
     document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active')); 
     document.getElementById(id).classList.add('active');
@@ -126,7 +89,6 @@ function switchScreen(id, btn) {
     
     if (id === 'screen-calendar') renderHeatmapCalendar();
     if (id === 'screen-workout') renderWorkoutDashboard();
-    
     if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
 // ==========================================================================
@@ -238,7 +200,7 @@ function calculateBMI() {
 }
 
 // ==========================================================================
-// 🏋️‍♂️ УМНЫЙ ДИСПЕТЧЕР КУРСОВ И ТРЕНИРОВОК (ПРОГРАММЫ НА МЕСЯЦ)
+// 🏋️‍♂️ УМНЫЙ ДИСПЕТЧЕР КУРСОВ И ТРЕНИРОВОК
 // ==========================================================================
 let currentExercises = [], exIndex = 0, totalRounds = 3, currentRound = 1, timerInterval, isTimerRunning = false;
 let currentWorkoutTypeFlag = 'none';
@@ -270,7 +232,7 @@ function renderWorkoutDashboard() {
         const config = courseDatabase[courseKey];
         document.getElementById('active-course-title').innerText = config.name;
 
-        // Рассчитываем прогресс (всего 15 тренировок на месяц, так как тренировки через день)
+        // Расчёт прогресса конкретного курса (15 шагов на месяц)
         const currentStep = broPrograms[`${courseKey}_step`] || 0;
         let progressPercent = Math.round((currentStep / 15) * 100);
         if (progressPercent > 100) progressPercent = 100;
@@ -279,25 +241,37 @@ function renderWorkoutDashboard() {
         document.getElementById('course-progress-bar').style.width = progressPercent + '%';
         document.getElementById('course-steps-text').innerText = `Выполнено: ${currentStep} из 15 фитнес-шагов`;
 
-        // Проверяем: сегодня день тренировки или день отдыха?
+        // УМНАЯ НЕЗАВИСИМАЯ ПРОВЕРКА ДНЯ ДЛЯ КАЖДОГО КУРСА
         const todayStr = getFormattedDate(0);
-        const isRestDay = (broPrograms.lastWorkoutDate === todayStr);
+        const lastCourseDate = broPrograms[`${courseKey}_date`] || '';
 
         const btnPlan = document.getElementById('btn-start-plan');
         const btnBonus = document.getElementById('btn-start-bonus');
 
-        if (!isRestDay) {
-            // ДЕНЬ ТРЕНИРОВКИ
-            document.getElementById('day-action-title').innerText = "💪 Сегодня по плану: РАБОЧИЙ ДЕНЬ";
-            document.getElementById('day-action-desc').innerText = `Приготовиться к фитнес-шагу №${currentStep + 1}. Тебя ждет уникальный микс упражнений!`;
-            btnPlan.style.display = 'block';
+        if (lastCourseDate === todayStr) {
+            // 1. ЕСЛИ ТРЕНИРОВКА СДЕЛАНА СЕГОДНЯ ЖЕ
+            document.getElementById('day-action-title').innerText = "🛌 План на сегодня выполнен!";
+            document.getElementById('day-action-desc').innerText = "Красава, Бро! На сегодня этот курс закрыт. Отдыхай и восстанавливай силы. Завтра откроется день отдыха с доп-тренировками!";
+            btnPlan.style.display = 'none';
             btnBonus.style.display = 'none';
         } else {
-            // ДЕНЬ ОТДЫХА
-            document.getElementById('day-action-title').innerText = "🛌 Сегодня по плану: ДЕНЬ ВОССТАНОВЛЕНИЯ";
-            document.getElementById('day-action-desc').innerText = "Твои мышцы сегодня активно растут Бро! Отдыхай, пей воду и держи калории. Или бахни доп-комплекс:";
-            btnPlan.style.display = 'none';
-            btnBonus.style.display = 'block';
+            // Выясняем, был ли этот курс пройден вчера (день отдыха)
+            const yesterdayStr = getFormattedDate(-1);
+            const isRestDay = (lastCourseDate === yesterdayStr);
+
+            if (!isRestDay) {
+                // 2. РАБОЧИЙ ДЕНЬ ПО ПЛАНУ
+                document.getElementById('day-action-title').innerText = "💪 Сегодня по плану: РАБОЧИЙ ДЕНЬ";
+                document.getElementById('day-action-desc').innerText = `Приготовиться к фитнес-шагу №${currentStep + 1}. Тебя ждет уникальный микс упражнений!`;
+                btnPlan.style.display = 'block';
+                btnBonus.style.display = 'none';
+            } else {
+                // 3. ДЕНЬ ВОССТАНОВЛЕНИЯ НА СЛЕДУЮЩИЙ ДЕНЬ
+                document.getElementById('day-action-title').innerText = "🛌 Сегодня по плану: ДЕНЬ ВОССТАНОВЛЕНИЯ";
+                document.getElementById('day-action-desc').innerText = "Мышцы сегодня активно растут, Бро! Отдыхай, пей воду и держи калории. Либо бахни внеплановый доп-комплекс:";
+                btnPlan.style.display = 'none';
+                btnBonus.style.display = 'block';
+            }
         }
     }
 }
@@ -306,33 +280,24 @@ function resetActiveCourse() {
     if (confirm("Бро, ты уверен, что хочешь полностью обнулить этот курс и начать 30-дневный план сначала?")) {
         const courseKey = broPrograms.activeCourse;
         broPrograms[`${courseKey}_step`] = 0;
-        broPrograms.lastWorkoutDate = '';
+        broPrograms[`${courseKey}_date`] = '';
         saveProgramsState();
         renderWorkoutDashboard();
         syncTodayDataToCalendar();
     }
 }
 
-// ГЕНЕРАТОР СЛУЧАЙНОГО МИКСА УПРАЖНЕНИЙ (КОНСТРУКТОР)
+// УМНЫЙ МИКСЕР КОНСТРУКТОРА УПРАЖНЕНИЙ
 function generateWorkoutExercises(courseKey, isBonus = false) {
     const pool = courseDatabase[courseKey].exercisesPool;
-    let resultList = [];
-
-    if (!isBonus) {
-        if (pool.arms && pool.arms.length > 0) resultList.push(pool.arms[Math.floor(Math.random() * pool.arms.length)]);
-        if (pool.legs && pool.legs.length > 0) resultList.push(pool.legs[Math.floor(Math.random() * pool.legs.length)]);
-        if (pool.core && pool.core.length > 0) resultList.push(pool.core[Math.floor(Math.random() * pool.core.length)]);
-    } else {
-        if (pool.core && pool.core.length > 0) resultList.push(pool.core[Math.floor(Math.random() * pool.core.length)]);
-        if (pool.bonus && pool.bonus.length > 0) resultList.push(pool.bonus[Math.floor(Math.random() * pool.bonus.length)]);
-    }
-    return JSON.parse(JSON.stringify(resultList));
+    let shuffled = [...pool].sort(() => 0.5 - Math.random());
+    return isBonus ? shuffled.slice(0, 2) : shuffled.slice(0, 3);
 }
 
 function startPlannedWorkout() {
     const courseKey = broPrograms.activeCourse;
     currentExercises = generateWorkoutExercises(courseKey, false);
-    totalRounds = courseDatabase[courseKey].rounds;
+    totalRounds = courseDatabase[courseKey].medium.rounds; 
     currentWorkoutTypeFlag = 'planned';
     launchPlayer();
 }
@@ -340,11 +305,10 @@ function startPlannedWorkout() {
 function startBonusWorkout() {
     const courseKey = broPrograms.activeCourse;
     currentExercises = generateWorkoutExercises(courseKey, true);
-    totalRounds = 2; // Допы покороче - всего 2 круга
+    totalRounds = 2; 
     currentWorkoutTypeFlag = 'bonus';
     launchPlayer();
 }
-
 function launchPlayer() {
     exIndex = 0; currentRound = 1; isTimerRunning = false; clearInterval(timerInterval);
     document.getElementById('workout-dashboard-view').style.display = 'none';
@@ -378,9 +342,10 @@ function goToNextExercise() {
             const courseKey = broPrograms.activeCourse;
             const todayStr = getFormattedDate(0);
 
+            // Сохраняем дату тренировки ЛИЧНО для этого активного курса!
             if (currentWorkoutTypeFlag === 'planned') {
                 broPrograms[`${courseKey}_step`] += 1;
-                broPrograms.lastWorkoutDate = todayStr;
+                broPrograms[`${courseKey}_date`] = todayStr;
                 saveProgramsState();
                 
                 let dayData = JSON.parse(localStorage.getItem(`calendar_day_${todayStr}`) || '{}');
@@ -407,7 +372,7 @@ function exitWorkoutSession() {
 }
 
 // ==========================================================================
-// 👑 МОЩНЫЙ УМНЫЙ КАЛЕНДАРЬ ВСЕВЛАСТИЯ С СИСТЕМОЙ КОРОН И КУБКОВ
+// 👑 КАЛЕНДАРЬ ВСЕВЛАСТИЯ С СИСТЕМОЙ КОРОН И КУБКОВ ВОССТАНОВЛЕНИЯ
 // ==========================================================================
 let selectedCalendarDate = null;
 
@@ -420,7 +385,8 @@ function syncTodayDataToCalendar() {
     dayData.weight = parseFloat(localStorage.getItem('user_weight') || '0');
     
     if (!dayData.workoutStatus) {
-        const isRest = (broPrograms.lastWorkoutDate === todayKey);
+        const yesterdayStr = getFormattedDate(-1);
+        const isRest = (broPrograms.power_date === yesterdayStr || broPrograms.fatburn_date === yesterdayStr || broPrograms.posture_date === yesterdayStr);
         dayData.workoutStatus = isRest ? 'rest' : 'none';
     }
     
@@ -442,7 +408,6 @@ function renderHeatmapCalendar() {
 
     let crownsCount = 0;
     let cupsCount = 0;
-
     for (let day = 1; day <= daysInMonth; day++) {
         const dd = String(day).padStart(2, '0');
         const mm = String(currentMonth + 1).padStart(2, '0');
@@ -456,7 +421,7 @@ function renderHeatmapCalendar() {
         const dStatus = dayData.workoutStatus || 'none';
 
         let baseScore = 0;
-                if (dWater >= targetW) baseScore++;
+        if (dWater >= targetW) baseScore++;
         if (dCalories > 0 && dCalories <= targetC) baseScore++;
         if (dWeight > 0) baseScore++;
 
@@ -464,6 +429,7 @@ function renderHeatmapCalendar() {
         let isCup = false;
         let scoreLevel = baseScore;
 
+        // МГНОВЕННЫЙ РАСЧЕТ НАГРАД (ДЛЯ ТЕСТА РАЗРАБОТЧИКА)
         if (baseScore === 3) {
             if (dStatus === 'planned' || dStatus === 'bonus') {
                 isKing = true;
@@ -574,11 +540,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('calories-current').innerText = caloriesCurrent;
                 localStorage.setItem('water_today', water.toString());
                 localStorage.setItem('calories_current', caloriesCurrent.toString());
-                
-                if (sVal === 'planned') {
-                    broPrograms.lastWorkoutDate = todayKey;
-                    saveProgramsState();
-                }
             }
 
             modal.style.display = 'none';
@@ -596,4 +557,3 @@ window.addEventListener('DOMContentLoaded', () => {
     renderWorkoutDashboard();
     renderHeatmapCalendar();
 });
-
