@@ -1,9 +1,6 @@
 // ПОДКЛЮЧЕНИЕ TELEGRAM WEBAPP
 const tg = window?.Telegram?.WebApp; 
-if (tg) { 
-    tg.ready(); 
-    tg.expand(); 
-}
+if (tg) { tg.ready(); tg.expand(); }
 
 // ==========================================================================
 // 📦 БАЗА ДАННЫХ ТРЕНИРОВОК С ПОДКУРСАМИ И УРОВНЯМИ ВРЕМЕНИ
@@ -11,69 +8,78 @@ if (tg) {
 const courseDatabase = {
     power: {
         name: "Домашняя сила (Мышцы)",
+        easy: { label: "Легко (20 мин)", rounds: 2 },
+        medium: { label: "Средне (40 мин)", rounds: 3 },
+        hard: { label: "Жестко (60 мин)", rounds: 4 },
         subCourses: {
             arms_chest: {
                 name: "Тяни-Толкай (Руки и Грудь) 🔴",
                 desc: "Прокачка грудных мышц, трицепса и дельт",
                 exercises: [
                     { name: "Классические отжимания", type: "reps", target: 15, desc: "Руки чуть шире плеч, опускайся до параллели с полом." },
-                    { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Опора руками на край стула сзади, плавно сгибай локти." },
-                    { name: "Алмазные отжимания", type: "reps", target: 10, desc: "Поставь ладони близко, чтобы большие и указательные пальцы коснулись." }
+                    { name: "Обратные отжимания от стула", type: "reps", target: 15, desc: "Опора руками на край стула сзади." },
+                    { name: "Алмазные отжимания", type: "reps", target: 10, desc: "Поставь ладони близко плечом к плечу." }
                 ]
             },
             legs_core: {
                 name: "Стальной фундамент (Ноги и Пресс) 🟢",
                 desc: "Мощная проработка квадрицепсов, ягодиц и мышц кора",
                 exercises: [
-                    { name: "Приседания Бро", type: "reps", target: 20, desc: "Опускай таз до параллели с полом, держи спину ровно." },
-                    { name: "Выпады назад попеременно", type: "reps", target: 16, desc: "Делай широкий шаг назад, угол в коленях 90 градусов." },
-                    { name: "Скручивания на пресс", type: "reps", target: 20, desc: "Лежа на спине, плавно поднимай лопатки, напрягая пресс." }
+                    { name: "Приседания Бро", type: "reps", target: 20, desc: "Опускай таз до параллели с полом." },
+                    { name: "Выпады назад попеременно", type: "reps", target: 16, desc: "Делай широкий шаг назад." },
+                    { name: "Скручивания на пресс", type: "reps", target: 20, desc: "Лежа на спине, плавно поднимай лопатки." }
                 ]
             }
         }
     },
     fatburn: {
         name: "Жиросжигание и Рельеф",
+        easy: { label: "Легко (20 мин)", rounds: 2 },
+        medium: { label: "Средне (40 мин)", rounds: 3 },
+        hard: { label: "Жестко (60 мин)", rounds: 4 },
         subCourses: {
             full_body: {
                 name: "Фулл Бади Пот ⚡",
-                desc: "Взрывной комплекс на все тело для максимального жиросжигания",
+                desc: "Взрывной комплекс на все тело для жиросжигания",
                 exercises: [
-                    { name: "Прыжки Джеки (Jumping Jacks)", type: "time", target: 45, desc: "Прыжком расставляй ноги и соединяй руки над головой." },
-                    { name: "Приседания с выпрыгиванием", type: "reps", target: 12, desc: "Опускайся до параллели и взрывайся вверх в прыжке." },
-                    { name: "Взрывные берпи", type: "reps", target: 10, desc: "Упор лежа, отжимание, прыжок вверх с хлопком." }
+                    { name: "Прыжки Джеки", type: "time", target: 45, desc: "Прыжком расставляй ноги и руки." },
+                    { name: "Приседания с выпрыгиванием", type: "reps", target: 12, desc: "Опускайся и взрывайся вверх." },
+                    { name: "Взрывные берпи", type: "reps", target: 10, desc: "Упор лежа, отжимание, прыжок вверх." }
                 ]
             },
             abs_core: {
                 name: "Пресс и Кор 🎯",
-                desc: "Прицельная топка жира на животе и создание стальных кубиков",
+                desc: "Создание стальных кубиков",
                 exercises: [
-                    { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро беги ногами к груди." },
-                    { name: "Велосипед на прессе", type: "reps", target: 20, desc: "Лежа тянись локтем к противоположному колену поочередно." },
-                    { name: "Статическая планка", type: "time", target: 45, desc: "Держи тело ровно в одну линию, пресс напряжен." }
+                    { name: "Упражнение 'Скалолаз'", type: "time", target: 45, desc: "В упоре лежа быстро беги ногами." },
+                    { name: "Велосипед на прессе", type: "reps", target: 20, desc: "Лежа тянись локтем к колену." },
+                    { name: "Статическая планка", type: "time", target: 45, desc: "Держи тело ровно в одну линию." }
                 ]
             }
         }
     },
     posture: {
         name: "Здоровая спина и Осанка",
+        easy: { label: "Легко (20 мин)", rounds: 2 },
+        medium: { label: "Средне (40 мин)", rounds: 3 },
+        hard: { label: "Жестко (60 мин)", rounds: 3 },
         subCourses: {
             back_straight: {
                 name: "Ровная спина Бро 🧘‍♂️",
-                desc: "Раскрытие грудной клетки, укрепление лопаток и выпрямление позвоночника",
+                desc: "Раскрытие грудной клетки и лопаток",
                 exercises: [
-                    { name: "Y-T-W подъемы на животе", type: "reps", target: 12, desc: "Лежа на животе, поднимай руки, изображая буквы Y, T, W." },
-                    { name: "Вращение плечами у стены", type: "reps", target: 20, desc: "Прижмись спиной и локтями к стене, вращай плечи назад." },
-                    { name: "Лодочка со сведением лопаток", type: "reps", target: 15, desc: "Лежа на животе, оторви грудь от пола и своди лопатки." }
+                    { name: "Y-T-W подъемы", type: "reps", target: 12, desc: "Лежа на животе, поднимай руки." },
+                    { name: "Вращение плечами у стены", type: "reps", target: 20, desc: "Прижмись спиной и локтями к стене." },
+                    { name: "Лодочка со сведением лопаток", type: "reps", target: 15, desc: "Лежа на животе, оторви грудь." }
                 ]
             },
             neck_computer: {
                 name: "Шея и Компьютерный синдром 📱",
-                desc: "Снятие зажимов трапеции и шеи после долгой сидячей работы",
+                desc: "Снятие зажимов трапеции после работы",
                 exercises: [
-                    { name: "Упражнение 'Кобра'", type: "time", target: 30, desc: "Лежа на животе, мягко вытягивай грудной отдел вверх." },
-                    { name: "Разгибание бедра на четвереньках", type: "reps", target: 16, desc: "Стоя на четвереньках, поочередно поднимай прямую ногу назад и вверх." },
-                    { name: "Растяжка 'Кошка-Корова'", type: "reps", target: 12, desc: "На четвереньках плавно выгибай спину колесом вверх и вниз." }
+                    { name: "Упражнение 'Кобра'", type: "time", target: 30, desc: "Лежа на животе, мягко вытягивай грудь." },
+                    { name: "Разгибание бедра на четвереньках", type: "reps", target: 16, desc: "Стоя на четвереньках, поднимай ногу." },
+                    { name: "Растяжка 'Кошка-Корова'", type: "reps", target: 12, desc: "На четвереньках плавно выгибай спину." }
                 ]
             }
         }
@@ -81,7 +87,7 @@ const courseDatabase = {
 };
 
 // ==========================================================================
-// 🔧 СОСТОЯНИЕ И ДВИЖОК НЕЗАВИСИМОГО ХРАНЕНИЯ (STORAGE)
+// 🔧 СОСТОЯНИЕ И НЕЗАВИСИМАЯ ПАМЯТЬ КУРСОВ (STORAGE)
 // ==========================================================================
 let water = parseInt(localStorage.getItem('water_today') || '0', 10);
 let waterTarget = parseInt(localStorage.getItem('water_target') || '2000', 10);
@@ -89,268 +95,173 @@ let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 
 let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
 
 let broPrograms = JSON.parse(localStorage.getItem('bro_programs_data') || JSON.stringify({
-    activeCourse: 'none',       
-    activeSubCourse: 'none',    
-    activeLevel: 'medium',      
-    
-    power_arms_chest_step: 0, power_legs_core_step: 0,
-    fatburn_full_body_step: 0, fatburn_abs_core_step: 0,
-    posture_back_straight_step: 0, posture_neck_computer_step: 0,
-    
-    power_arms_chest_date: '', power_legs_core_date: '',
-    fatburn_full_body_date: '', fatburn_abs_core_date: '',
-    posture_back_straight_date: '', posture_neck_computer_date: ''
+    activeCourse: 'none', activeSubCourse: 'none', activeLevel: 'medium',      
+    power_arms_chest_step: 0, power_legs_core_step: 0, fatburn_full_body_step: 0, fatburn_abs_core_step: 0, posture_back_straight_step: 0, posture_neck_computer_step: 0,
+    power_arms_chest_date: '', power_legs_core_date: '', fatburn_full_body_date: '', fatburn_abs_core_date: '', posture_back_straight_date: '', posture_neck_computer_date: ''
 }));
 
-function saveProgramsState() {
-    localStorage.setItem('bro_programs_data', JSON.stringify(broPrograms));
-}
-
+function saveProgramsState() { localStorage.setItem('bro_programs_data', JSON.stringify(broPrograms)); }
 function getFormattedDate(offset = 0) {
-    const d = new Date();
-    d.setDate(d.getDate() + offset);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
+    const d = new Date(); d.setDate(d.getDate() + offset);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 function switchScreen(id, btn) {
     document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active')); 
-    document.getElementById(id).classList.add('active');
+    const el = document.getElementById(id); if (el) el.classList.add('active');
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active')); 
-    btn.classList.add('active');
-    
+    if (btn) btn.classList.add('active');
     if (id === 'screen-calendar') renderHeatmapCalendar();
     if (id === 'screen-workout') renderWorkoutDashboard();
     if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
-
 // ==========================================================================
-// 💧 ЛОГИКА ТРЕКЕРА ВОДЫ
+// 💧 ЛОГИКА ТРЕКЕРА ВОДЫ И ЕДЫ
 // ==========================================================================
 function checkWaterColor() {
     const display = document.getElementById('water-count'); if (!display) return;
-    if (water >= waterTarget) display.style.setProperty('color', '#00b0ff', 'important');
-    else display.style.setProperty('color', '#5288c1', 'important');
+    display.style.setProperty('color', water >= waterTarget ? '#00b0ff' : '#5288c1', 'important');
 }
-
 function addWaterManual() {
-    const input = document.getElementById('input-add-water'); const val = parseInt(input.value, 10); if (!val || val <= 0) return;
+    const input = document.getElementById('input-add-water'); const val = parseInt(input?.value || '0', 10); if (val <= 0) return;
     water += val; document.getElementById('water-count').innerText = water; localStorage.setItem('water_today', water.toString());
-    input.value = ""; checkWaterColor(); syncTodayDataToCalendar(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    if (input) input.value = ""; checkWaterColor(); syncTodayDataToCalendar();
 }
-
 function quickAddWater(amount) {
     water += amount; document.getElementById('water-count').innerText = water; localStorage.setItem('water_today', water.toString());
-    checkWaterColor(); syncTodayDataToCalendar(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    checkWaterColor(); syncTodayDataToCalendar();
 }
-
 function resetWater() {
     water = 0; document.getElementById('water-count').innerText = "0"; localStorage.setItem('water_today', "0");
-    checkWaterColor(); syncTodayDataToCalendar(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+    checkWaterColor(); syncTodayDataToCalendar();
 }
-
-// ==========================================================================
-// 🍎 ЛОГИКА ДНЕВНИКА ПИТАНИЯ
-// ==========================================================================
 function checkCaloriesColor() {
     const d = document.getElementById('calories-current'); if (!d) return;
-    if (caloriesCurrent > caloriesTarget) d.style.setProperty('color', '#f44336', 'important');
-    else d.style.setProperty('color', '#4caf50', 'important');
+    d.style.setProperty('color', caloriesCurrent > caloriesTarget ? '#f44336' : '#4caf50', 'important');
 }
-
 function addCalories() {
-    const i = document.getElementById('input-add-calories'); const v = parseInt(i.value, 10); if (!v || v <= 0) return;
+    const i = document.getElementById('input-add-calories'); const v = parseInt(i?.value || '0', 10); if (v <= 0) return;
     caloriesCurrent += v; document.getElementById('calories-current').innerText = caloriesCurrent; localStorage.setItem('calories_current', caloriesCurrent.toString());
-    i.value = ""; checkCaloriesColor(); syncTodayDataToCalendar(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    if (i) i.value = ""; checkCaloriesColor(); syncTodayDataToCalendar();
 }
-
 function quickAddCalories(amount) {
     caloriesCurrent += amount; document.getElementById('calories-current').innerText = caloriesCurrent; localStorage.setItem('calories_current', caloriesCurrent.toString());
-    checkCaloriesColor(); syncTodayDataToCalendar(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    checkCaloriesColor(); syncTodayDataToCalendar();
 }
-
 function resetCalories() {
     caloriesCurrent = 0; document.getElementById('calories-current').innerText = "0"; localStorage.setItem('calories_current', "0");
-    checkCaloriesColor(); syncTodayDataToCalendar(); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+    checkCaloriesColor(); syncTodayDataToCalendar();
 }
 
 // ==========================================================================
-// 🎯 ЛОГИКА ИМТ И НАУЧНОГО РАСЧЕТА
+// 🎯 ЛОГИКА ИМТ РАСЧЕТА
 // ==========================================================================
 function calculateBMI() {
-    const h = parseFloat(document.getElementById('bmi-height').value); 
-    const w = parseFloat(document.getElementById('bmi-weight').value); 
-    const t = parseFloat(document.getElementById('weight-target').value);
-    const res = document.getElementById('bmi-result'); 
-    if (!h || !w) { if(res) res.style.display = 'none'; return; }
+    const h = parseFloat(document.getElementById('bmi-height')?.value || '0'); 
+    const w = parseFloat(document.getElementById('bmi-weight')?.value || '0'); 
+    const t = parseFloat(document.getElementById('weight-target')?.value || '0');
+    const res = document.getElementById('bmi-result'); if (!h || !w) return;
     
-    localStorage.setItem('user_height', h); localStorage.setItem('user_weight', w); 
-    if (t) localStorage.setItem('user_target_weight', t);
-
+    localStorage.setItem('user_height', h.toString()); localStorage.setItem('user_weight', w.toString()); if (t) localStorage.setItem('user_target_weight', t.toString());
     const bmi = (w / ((h/100) * (h/100))).toFixed(1); 
-    let txt = "", col = "#5288c1";
-    let bmr = Math.round((10 * w) + (6.25 * h) - (5 * 25) + 5); 
-    let normCalories = Math.round(bmr * 1.375); 
-    let targetCal = normCalories; let targetWater = 2000; 
-
-    if (bmi < 18.5) { 
-        txt = "Дефицит массы"; col = "#e5a93b"; targetCal = Math.round(normCalories + 400); targetWater = Math.round((w * 35) + 500); 
-    } else if (bmi >= 18.5 && bmi < 25) { 
-        txt = "Нормальный вес"; col = "#4caf50"; targetCal = normCalories; targetWater = Math.round((w * 35) + 500); 
-    } else { 
-        txt = "Избыточный вес"; col = "#f44336"; targetCal = Math.round(normCalories - 450); targetWater = Math.round((w * 40) + 500); 
-    }
+    let targetCal = Math.round(((10 * w) + (6.25 * h) - 120) * 1.375);
 
     caloriesTarget = targetCal; localStorage.setItem('calories_target', caloriesTarget.toString()); 
     if(document.getElementById('calories-target')) document.getElementById('calories-target').innerText = caloriesTarget;
-    waterTarget = targetWater; localStorage.setItem('water_target', waterTarget.toString());
-    if(document.getElementById('water-target')) document.getElementById('water-target').innerText = waterTarget;
+    waterTarget = 2000; localStorage.setItem('water_target', '2000');
+    if(document.getElementById('water-target')) document.getElementById('water-target').innerText = '2000';
 
     if(res) {
-        res.style.display = 'block'; res.style.color = col;
-        res.innerHTML = `<div>ИМТ: ${bmi} (${txt})</div><div style="font-size:14px; color:#fff; margin-top:6px;">🎯 Цель: <strong>${caloriesTarget} ккал</strong> | 💧 Вода: <strong>${waterTarget} мл</strong></div>`;
-    }
-
-    // ИНТЕРАКТИВНАЯ ШКАЛА ВЕСА
-    const progressContainer = document.getElementById('weight-progress-container');
-    if (progressContainer && t) {
-        progressContainer.style.display = 'block';
-        let percent = 0; const range = 20;
-        if (w > t) {
-            percent = w >= t + range ? 0 : Math.round(((t + range - w) / range) * 100);
-            document.getElementById('weight-motivation-text').innerText = `Бро, осталось скинуть всего ${(w - t).toFixed(1)} кг! 🔥`;
-        } else if (w < t) {
-            percent = w <= t - range ? 0 : Math.round(((w - (t - range)) / range) * 100);
-            document.getElementById('weight-motivation-text').innerText = `Бро, осталось набрать еще ${(t - w).toFixed(1)} кг! 🔥`;
-        } else {
-            percent = 100; document.getElementById('weight-motivation-text').innerText = `Красава, Бро! Цель достигнута! Ты машина! 👑🏆`;
-        }
-        if (percent < 0) percent = 0; if (percent > 100) percent = 100;
-        document.getElementById('weight-progress-bar').style.width = percent + '%';
-        document.getElementById('weight-progress-text').innerText = percent + '%';
+        res.style.display = 'block'; res.innerHTML = `<div>ИМТ: ${bmi}</div><div style="font-size:12px; margin-top:4px;">🎯 Цель: ${caloriesTarget} ккал</div>`;
     }
     checkCaloriesColor(); checkWaterColor();
 }
 
 // ==========================================================================
-// 🏋️‍♂️ УМНЫЙ ДИСПЕТЧЕР КУРСОВ И ТРЕНИРОВОК
+// 🕹️ НАВИГАЦИЯ И УПРАВЛЕНИЕ КУРСАМИ
 // ==========================================================================
-let currentExercises = [], exIndex = 0, totalRounds = 3, currentRound = 1, timerInterval, isTimerRunning = false;
-let currentWorkoutTypeFlag = 'none';
+let currentExercises = [], exIndex = 0, totalRounds = 3, currentRound = 1, timerInterval, isTimerRunning = false, currentWorkoutTypeFlag = 'none';
 
 function selectMainCategory(courseKey) {
-    broPrograms.activeCourse = courseKey;
-    saveProgramsState();
-    renderWorkoutDashboard();
-}
+    broPrograms.activeCourse = courseKey; saveProgramsState();
+    const container = document.getElementById('subcategories-list-container'); if (!container) return;
+    container.innerHTML = ""; 
 
-function backToCategories() {
-    broPrograms.activeCourse = 'none';
-    saveProgramsState();
-    renderWorkoutDashboard();
+    Object.keys(courseDatabase[courseKey].subCourses).forEach(subKey => {
+        const sub = courseDatabase[courseKey].subCourses[subKey];
+        const subCard = document.createElement('div');
+        subCard.className = 'program-card-btn';
+        subCard.style.cssText = 'background:#2c3b47; padding:15px; border-radius:12px; cursor:pointer; border:1px solid rgba(255,255,255,0.05); margin-bottom:10px;';
+        subCard.innerHTML = `<div style="font-weight:bold; color:#5288c1;">${sub.name}</div><div style="font-size:12px; opacity:0.6;">${sub.desc}</div>`;
+        subCard.onclick = () => selectSubCategory(subKey);
+        container.appendChild(subCard);
+    });
+    document.getElementById('workout-categories-view').style.display = 'none';
+    document.getElementById('workout-subcategories-view').style.display = 'block';
 }
-// Шаг Б -> Шаг В: Выбрали конкретный подкурс, открываем выбор времени
 function selectSubCategory(subKey) {
-    broPrograms.activeSubCourse = subKey;
-    saveProgramsState();
-
-    const courseKey = broPrograms.activeCourse;
-    const subData = courseDatabase[courseKey].subCourses[subKey];
-    
-    const levelsTitle = document.getElementById('levels-header-title');
-    if (levelsTitle && subData) {
-        levelsTitle.innerText = `${subData.name}`;
-    }
-
+    broPrograms.activeSubCourse = subKey; saveProgramsState();
     document.getElementById('workout-subcategories-view').style.display = 'none';
     document.getElementById('workout-levels-view').style.display = 'block';
 }
-
-// КНОПКА СТРЕЛОЧКИ «НАЗАД» ДЛЯ ШАГА В
-function backToSubCategories() {
+function selectWorkoutLevel(levelKey) {
+    broPrograms.activeLevel = levelKey; saveProgramsState();
     document.getElementById('workout-levels-view').style.display = 'none';
-    document.getElementById('workout-subcategories-view').style.display = 'block';
+    renderWorkoutDashboard();
 }
-
+function backToCategories() { broPrograms.activeCourse = 'none'; saveProgramsState(); renderWorkoutDashboard(); }
+function backToSubCategories() { document.getElementById('workout-levels-view').style.display = 'none'; document.getElementById('workout-subcategories-view').style.display = 'block'; }
+function backToLevels() { document.getElementById('workout-dashboard-view').style.display = 'none'; document.getElementById('workout-levels-view').style.display = 'block'; }
 function renderWorkoutDashboard() {
     const catsView = document.getElementById('workout-categories-view');
     const dashView = document.getElementById('workout-dashboard-view');
     if (!catsView || !dashView) return;
 
     if (broPrograms.activeCourse === 'none') {
-        catsView.style.display = 'block';
-        dashView.style.display = 'none';
+        catsView.style.display = 'block'; dashView.style.display = 'none';
         document.getElementById('workout-subcategories-view').style.display = 'none';
         document.getElementById('workout-levels-view').style.display = 'none';
     } else if (broPrograms.activeSubCourse === 'none') {
-        catsView.style.display = 'none';
-        dashView.style.display = 'none';
-        selectMainCategory(broPrograms.activeCourse);
+        catsView.style.display = 'none'; dashView.style.display = 'none'; selectMainCategory(broPrograms.activeCourse);
     } else if (broPrograms.activeLevel === 'none') {
-        catsView.style.display = 'none';
-        dashView.style.display = 'none';
-        selectSubCategory(broPrograms.activeSubCourse);
+        catsView.style.display = 'none'; dashView.style.display = 'none'; selectSubCategory(broPrograms.activeSubCourse);
     } else {
-        catsView.style.display = 'none';
-        dashView.style.display = 'block';
-
-        const courseKey = broPrograms.activeCourse;
-        const subKey = broPrograms.activeSubCourse;
-        const levelKey = broPrograms.activeLevel;
-
-        const courseConfig = courseDatabase[courseKey];
-        const subConfig = courseConfig.subCourses[subKey];
-        const levelConfig = courseConfig[levelKey];
+        catsView.style.display = 'none'; dashView.style.display = 'block';
+        const courseKey = broPrograms.activeCourse; const subKey = broPrograms.activeSubCourse; const levelKey = broPrograms.activeLevel;
+        
+        const subConfig = courseDatabase[courseKey].subCourses[subKey];
+        const levelConfig = courseDatabase[courseKey][levelKey];
 
         document.getElementById('active-course-title').innerText = `${subConfig.name}`;
-        document.getElementById('active-course-status').innerText = `Режим: ${levelConfig.label} | ${levelConfig.rounds} круга`;
+        document.getElementById('active-course-status').innerText = `Режим: ${levelConfig.label}`;
 
         const subKeyFull = `${courseKey}_${subKey}`;
         const currentStep = broPrograms[`${subKeyFull}_step`] || 0;
         let progressPercent = Math.round((currentStep / 15) * 100);
         if (progressPercent > 100) progressPercent = 100;
-
+        
         document.getElementById('course-progress-percent').innerText = progressPercent + '%';
         document.getElementById('course-progress-bar').style.width = progressPercent + '%';
-        document.getElementById('course-steps-text').innerText = `Выполнено: ${currentStep} из 15 фитнес-шагов`;
+        document.getElementById('course-steps-text').innerText = `Выполнено: ${currentStep} из 15 шагов`;
 
         const todayStr = getFormattedDate(0);
         const lastWorkoutDate = broPrograms[`${subKeyFull}_date`] || '';
-
         const btnPlan = document.getElementById('btn-start-plan');
         const btnBonus = document.getElementById('btn-start-bonus');
 
         if (lastWorkoutDate === todayStr) {
             document.getElementById('day-action-title').innerText = "🛌 План на сегодня выполнен!";
-            document.getElementById('day-action-desc').innerText = "Красава, Бро! На сегодня этот курс закрыт. Отдыхай и восстанавливай силы. Завтра откроется день отдыха с доп-тренировками!";
-            btnPlan.style.display = 'none';
-            btnBonus.style.display = 'none';
+            document.getElementById('day-action-desc').innerText = "Отдыхай Бро! Завтра откроется день восстановления.";
+            if(btnPlan) btnPlan.style.display = 'none'; if(btnBonus) btnBonus.style.display = 'none';
         } else {
-            const yesterdayStr = getFormattedDate(-1);
-            const isRestDay = (lastWorkoutDate === yesterdayStr);
-
-            if (!isRestDay) {
-                document.getElementById('day-action-title').innerText = "💪 Сегодня по плану: РАБОЧИЙ ДЕНЬ";
-                document.getElementById('day-action-desc').innerText = `Приготовиться к фитнес-шагу №${currentStep + 1}. Тебя ждет уникальный микс упражнений!`;
-                btnPlan.style.display = 'block';
-                btnBonus.style.display = 'none';
-            } else {
-                document.getElementById('day-action-title').innerText = "🛌 Сегодня по плану: ДЕНЬ ВОССТАНОВЛЕНИЯ";
-                document.getElementById('day-action-desc').innerText = "Мышцы сегодня активно растут, Бро! Отдыхай, пей воду и держи калории. Либо бахни внеплановый доп-комплекс:";
-                btnPlan.style.display = 'none';
-                btnBonus.style.display = 'block';
-            }
+            const isRestDay = (lastWorkoutDate === getFormattedDate(-1));
+            document.getElementById('day-action-title').innerText = isRestDay ? "🛌 ДЕНЬ ВОССТАНОВЛЕНИЯ" : "💪 РАБОЧИЙ ДЕНЬ";
+            document.getElementById('day-action-desc').innerText = isRestDay ? "Мышцы растут! Отдыхай или бахни доп:" : "Приготовиться к тренировке!";
+            if(btnPlan) btnPlan.style.display = isRestDay ? 'none' : 'block';
+            if(btnBonus) btnBonus.style.display = isRestDay ? 'block' : 'none';
         }
     }
 }
-
-function backToLevels() {
-    document.getElementById('workout-dashboard-view').style.display = 'none';
-    document.getElementById('workout-levels-view').style.display = 'block';
-}
-
 function resetActiveCourse() {
     if (confirm("Бро, ты уверен, что хочешь полностью обнулить этот подкурс и начать 30-дневный план сначала?")) {
         const courseKey = broPrograms.activeCourse;
@@ -365,6 +276,9 @@ function resetActiveCourse() {
     }
 }
 
+// ==========================================================================
+// 🏋️‍♂️ ПЛЕЕР ТРЕНИРОВОК И КРУГОВЫЕ ЦИКЛЫ
+// ==========================================================================
 function generateWorkoutExercises(courseKey, subKey, isBonus = false) {
     const pool = courseDatabase[courseKey].subCourses[subKey].exercises;
     let shuffled = [...pool].sort(() => 0.5 - Math.random());
@@ -391,281 +305,125 @@ function startBonusWorkout() {
     currentWorkoutTypeFlag = 'bonus';
     launchPlayer();
 }
+
 function launchPlayer() {
     exIndex = 0; currentRound = 1; isTimerRunning = false; clearInterval(timerInterval);
     document.getElementById('workout-dashboard-view').style.display = 'none';
-    document.getElementById('workout-player-container').style.display = 'block';
+    document.getElementById('workout-player-container').style.display = 'block'; 
     showCurrentStep();
 }
 
 function showCurrentStep() {
-    const ex = currentExercises[exIndex]; const btnAction = document.getElementById('btn-action'); clearInterval(timerInterval); isTimerRunning = false;
-    document.getElementById('player-round-info').innerText = `КРУГ ${currentRound} ИЗ ${totalRounds}`; document.getElementById('player-ex-name').innerText = ex.name; document.getElementById('player-ex-desc').innerText = ex.desc;
-    if (ex.type === "reps") { 
-        document.getElementById('player-ex-target').innerText = `${ex.target} РАЗ`; document.getElementById('player-timer-digits').style.display = 'none'; btnAction.innerText = "Выполнено! Далее"; btnAction.className = "btn-success"; 
-    } else { 
-        document.getElementById('player-ex-target').innerText = `ДЕРЖИМ ВРЕМЯ`; document.getElementById('player-timer-digits').style.display = 'block'; document.getElementById('player-timer-digits').innerText = `00:${ex.target}`; btnAction.innerText = "🟢 Запустить таймер"; btnAction.className = "btn-success"; 
-    }
+    const ex = currentExercises[exIndex]; const btnAction = document.getElementById('btn-action'); clearInterval(timerInterval);
+    document.getElementById('player-round-info').innerText = `КРУГ ${currentRound} ИЗ ${totalRounds}`;
+    document.getElementById('player-ex-name').innerText = ex.name; document.getElementById('player-ex-desc').innerText = ex.desc;
+    document.getElementById('player-ex-target').innerText = ex.type === "reps" ? `${ex.target} РАЗ` : `ДЕРЖИМ ВРЕМЯ`;
+    if(btnAction) btnAction.innerText = ex.type === "reps" ? "Выполнено! Далее" : "🟢 Запустить таймер";
 }
 
 function handleActionClick() { const ex = currentExercises[exIndex]; if (ex.type === "reps") { goToNextExercise(); } else { if (!isTimerRunning) { startExerciseTimer(ex.target); } else { goToNextExercise(); } } }
 
 function startExerciseTimer(seconds) {
-    isTimerRunning = true; let timeLeft = seconds; const btnAction = document.getElementById('btn-action'); btnAction.innerText = "Пропустить время"; btnAction.className = "btn-stop"; if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-    timerInterval = setInterval(() => { timeLeft--; document.getElementById('player-timer-digits').innerText = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`; if (timeLeft <= 0) { clearInterval(timerInterval); if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); goToNextExercise(); } }, 1000);
+    isTimerRunning = true; let timeLeft = seconds; const btn = document.getElementById('btn-action'); if(btn) btn.innerText = "Пропустить";
+    timerInterval = setInterval(() => { timeLeft--; if (timeLeft <= 0) { clearInterval(timerInterval); goToNextExercise(); } }, 1000);
 }
 
 function goToNextExercise() {
-    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
     if (exIndex < currentExercises.length - 1) { exIndex++; showCurrentStep(); } 
     else {
-        if (currentRound < totalRounds) { currentRound++; exIndex = 0; alert(`👊 Круг выполнен Бро! Приготовиться к КРУГУ №${currentRound}!`); showCurrentStep(); } 
+        if (currentRound < totalRounds) { currentRound++; exIndex = 0; alert(`Круг №${currentRound}!`); showCurrentStep(); } 
         else {
-            const courseKey = broPrograms.activeCourse;
-            const subKey = broPrograms.activeSubCourse;
-            const subKeyFull = `${courseKey}_${subKey}`;
-            const todayStr = getFormattedDate(0);
-
-            // Сохраняем дату тренировки ЛИЧНО для этого активного подкурса!
+            const courseKey = broPrograms.activeCourse; const subKey = broPrograms.activeSubCourse; const subKeyFull = `${courseKey}_${subKey}`;
             if (currentWorkoutTypeFlag === 'planned') {
-                broPrograms[`${subKeyFull}_step`] += 1;
-                broPrograms[`${subKeyFull}_date`] = todayStr;
-                saveProgramsState();
-                
-                let dayData = JSON.parse(localStorage.getItem(`calendar_day_${todayStr}`) || '{}');
-                dayData.workoutStatus = 'planned';
-                localStorage.setItem(`calendar_day_${todayStr}`, JSON.stringify(dayData));
-            } else {
-                let dayData = JSON.parse(localStorage.getItem(`calendar_day_${todayStr}`) || '{}');
-                dayData.workoutStatus = 'bonus';
-                localStorage.setItem(`calendar_day_${todayStr}`, JSON.stringify(dayData));
+                broPrograms[`${subKeyFull}_step`] += 1; broPrograms[`${subKeyFull}_date`] = getFormattedDate(0); saveProgramsState();
             }
-
-            syncTodayDataToCalendar();
-            exitWorkoutSession();
-            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
-            alert("Бро, поздравляю! Тренировка пройдена на 100%! Ты машина! 🔥🦾");
+            let dayData = JSON.parse(localStorage.getItem(`calendar_day_${getFormattedDate(0)}`) || '{}');
+            dayData.workoutStatus = (currentWorkoutTypeFlag === 'planned') ? 'planned' : 'bonus';
+            localStorage.setItem(`calendar_day_${getFormattedDate(0)}`, JSON.stringify(dayData));
+            syncTodayDataToCalendar(); exitWorkoutSession(); alert("Тренировка пройдена! 🦾");
         }
     }
 }
 
-function exitWorkoutSession() { 
-    clearInterval(timerInterval); 
-    document.getElementById('workout-player-container').style.display = 'none'; 
-    renderWorkoutDashboard();
-}
+function exitWorkoutSession() { clearInterval(timerInterval); document.getElementById('workout-player-container').style.display = 'none'; renderWorkoutDashboard(); }
 
 // ==========================================================================
-// 👑 КАЛЕНДАРЬ ВСЕВЛАСТИЯ С СИСТЕМОЙ КОРОН И КУБКОВ ВОССТАНОВЛЕНИЯ
+// 👑 КАЛЕНДАРЬ И СЕРВИС АВТОСБРОСА СЧЕТЧИКОВ
 // ==========================================================================
-let selectedCalendarDate = null;
-
 function syncTodayDataToCalendar() {
-    const todayKey = getFormattedDate(0);
-    let dayData = JSON.parse(localStorage.getItem(`calendar_day_${todayKey}`) || '{}');
-    
-    dayData.water = water;
-    dayData.calories = caloriesCurrent;
-    dayData.weight = parseFloat(localStorage.getItem('user_weight') || '0');
-    
+    const todayKey = getFormattedDate(0); let dayData = JSON.parse(localStorage.getItem(`calendar_day_${todayKey}`) || '{}');
+    dayData.water = water; dayData.calories = caloriesCurrent; dayData.weight = parseFloat(localStorage.getItem('user_weight') || '0');
     if (!dayData.workoutStatus) {
-        const yesterdayStr = getFormattedDate(-1);
-        // Считаем день отдыха Rest, если вчера делали ХОТЬ ОДИН подкурс
-        const isRest = (
-            broPrograms.power_arms_chest_date === yesterdayStr || 
-            broPrograms.power_legs_core_date === yesterdayStr ||
-            broPrograms.fatburn_full_body_date === yesterdayStr ||
-            broPrograms.fatburn_abs_core_date === yesterdayStr ||
-            broPrograms.posture_back_straight_date === yesterdayStr ||
-            broPrograms.posture_neck_computer_date === yesterdayStr
-        );
-        dayData.workoutStatus = isRest ? 'rest' : 'none';
+        const y = getFormattedDate(-1);
+        dayData.workoutStatus = (broPrograms.power_arms_chest_date === y || broPrograms.power_legs_core_date === y || broPrograms.fatburn_full_body_date === y || broPrograms.fatburn_abs_core_date === y || broPrograms.posture_back_straight_date === y || broPrograms.posture_neck_computer_date === y) ? 'rest' : 'none';
     }
-    
     localStorage.setItem(`calendar_day_${todayKey}`, JSON.stringify(dayData));
 }
 
 function renderHeatmapCalendar() {
-    const grid = document.getElementById('calendar-heatmap');
-    if (!grid) return;
-    grid.innerHTML = "";
-
-    const todayObj = new Date();
-    const currentYear = todayObj.getFullYear();
-    const currentMonth = todayObj.getMonth();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    
+    const grid = document.getElementById('calendar-heatmap'); if (!grid) return; grid.innerHTML = "";
+    const todayObj = new Date(); const daysInMonth = new Date(todayObj.getFullYear(), todayObj.getMonth() + 1, 0).getDate();
     const targetW = parseInt(localStorage.getItem('water_target') || '2000', 10);
     const targetC = parseInt(localStorage.getItem('calories_target') || '2000', 10);
-
-    let crownsCount = 0;
-    let cupsCount = 0;
+    let crowns = 0, cups = 0;
     for (let day = 1; day <= daysInMonth; day++) {
-        const dd = String(day).padStart(2, '0');
-        const mm = String(currentMonth + 1).padStart(2, '0');
-        const dateKey = `${currentYear}-${mm}-${dd}`;
-        
+        const dateKey = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const dayData = JSON.parse(localStorage.getItem(`calendar_day_${dateKey}`) || '{}');
-        
-        const dWater = dayData.water || 0;
-        const dCalories = dayData.calories || 0;
-        const dWeight = dayData.weight || 0;
-        const dStatus = dayData.workoutStatus || 'none';
+        const dWater = dayData.water || 0; const dCalories = dayData.calories || 0; const dStatus = dayData.workoutStatus || 'none';
 
-        // Бытовой скор (макс 3 балла)
         let baseScore = 0;
-        if (dWater >= targetW) baseScore++;
-        if (dCalories > 0 && dCalories <= targetC) baseScore++;
-        if (dWeight > 0) baseScore++;
+        if (dWater >= targetW) baseScore++; if (dCalories > 0 && dCalories <= targetC) baseScore++; if (dayData.weight > 0) baseScore++;
+        let isKing = (baseScore === 3 && (dStatus === 'planned' || dStatus === 'bonus'));
+        let isCup = (baseScore === 3 && dStatus === 'rest');
+        if (isKing) crowns++; if (isCup) cups++;
 
-        let isKing = false;
-        let isCup = false;
-        let scoreLevel = baseScore;
-
-        // ЧИТ-КОД РАЗРАБОТЧИКА: МГНОВЕННЫЙ РАСЧЕТ НАГРАД ЧЕРЕЗ МОДАЛКУ
-        if (baseScore === 3) {
-            if (dStatus === 'planned' || dStatus === 'bonus') {
-                isKing = true;
-                crownsCount++;
-            } else if (dStatus === 'rest') {
-                isCup = true;
-                cupsCount++;
-            } else {
-                scoreLevel = 3; 
-            }
-        } else {
-            if (dStatus === 'planned' || dStatus === 'bonus' || dStatus === 'rest') {
-                scoreLevel++;
-            }
-        }
-
-        const dayBox = document.createElement('div');
-        dayBox.className = 'heatmap-day';
-        dayBox.innerText = day;
-
-        if (isKing) {
-            dayBox.classList.add('level-king');
-            dayBox.innerText = "👑";
-        } else if (isCup) {
-            dayBox.classList.add('level-cup');
-            dayBox.innerText = "🏆";
-        } else {
-            if (scoreLevel > 4) scoreLevel = 4;
-            dayBox.classList.add(`level-${scoreLevel}`);
-        }
-
-        if (day === todayObj.getDate() && currentMonth === todayObj.getMonth() && currentYear === todayObj.getFullYear()) {
-            dayBox.classList.add('today');
-        }
+        const dayBox = document.createElement('div'); dayBox.className = 'heatmap-day'; dayBox.innerText = day;
+        if (isKing) { dayBox.classList.add('level-king'); dayBox.innerText = "👑"; } 
+        else if (isCup) { dayBox.classList.add('level-cup'); dayBox.innerText = "🏆"; } 
+        else { dayBox.classList.add(`level-${baseScore}`); }
+        if (day === todayObj.getDate()) dayBox.classList.add('today');
 
         dayBox.onclick = () => {
             selectedCalendarDate = dateKey;
-            document.getElementById('modal-date-title').innerText = `День Бро: ${dd}.${mm}.${currentYear}`;
+            document.getElementById('modal-date-title').innerText = `День Бро: ${day}`;
             document.getElementById('modal-water').value = dayData.water || "";
             document.getElementById('modal-calories').value = dayData.calories || "";
             document.getElementById('modal-workout-status').value = dStatus;
             document.getElementById('modal-weight').value = dayData.weight || "";
             document.getElementById('calendar-modal').style.display = 'flex';
-            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
         };
-
         grid.appendChild(dayBox);
     }
-
-    if (document.getElementById('stats-crown-count')) document.getElementById('stats-crown-count').innerText = crownsCount;
-    if (document.getElementById('stats-cup-count')) document.getElementById('stats-cup-count').innerText = cupsCount;
+    if (document.getElementById('stats-crown-count')) document.getElementById('stats-crown-count').innerText = crowns;
+    if (document.getElementById('stats-cup-count')) document.getElementById('stats-cup-count').innerText = cups;
 }
 
-// ==========================================================================
-// ⏰ СЕРВИС АВТОМАТИЧЕСКОГО СБРОСА СЧЕТЧИКОВ КАЖДОЕ УТРО
-// ==========================================================================
 function checkDailyReset() {
-    const todayDateStr = getFormattedDate(0);
-    const lastSavedDate = localStorage.getItem('last_saved_date');
-
-    if (lastSavedDate !== todayDateStr) {
-        water = 0;
-        caloriesCurrent = 0;
-        localStorage.setItem('water_today', '0');
-        localStorage.setItem('calories_current', '0');
-        localStorage.setItem('last_saved_date', todayDateStr);
-        syncTodayDataToCalendar();
+    const today = getFormattedDate(0); if (localStorage.getItem('last_saved_date') !== today) {
+        water = 0; caloriesCurrent = 0; localStorage.setItem('water_today', '0'); localStorage.setItem('calories_current', '0');
+        localStorage.setItem('last_saved_date', today); syncTodayDataToCalendar();
     }
 }
-// ==========================================================================
-// 🚀 БЕЗОПАСНЫЙ СТАРТ ПРИЛОЖЕНИЯ (ЖЕЛЕЗОБЕТОННЫЙ ВАРИАНТ)
-// ==========================================================================
+
+// СТАРТ ЗАГРУЗКИ С ЗАЩИТОЙ ОТ СБОЕВ
 window.addEventListener('DOMContentLoaded', () => {
-    // Включаем автосброс счетчиков каждое утро
     checkDailyReset();
-
-    // Безопасное восстановление данных в поля Экрана Параметров
-    const inputHeight = document.getElementById('bmi-height');
-    const inputWeight = document.getElementById('bmi-weight');
-    const inputTargetWeight = document.getElementById('weight-target');
-
-    if (inputHeight) inputHeight.value = localStorage.getItem('user_height') || ''; 
-    if (inputWeight) inputWeight.value = localStorage.getItem('user_weight') || '';
-    if (inputTargetWeight) inputTargetWeight.value = localStorage.getItem('user_target_weight') || '';
-    
-    // Безопасное обновление текстовых счетчиков на Главной
-    const txtCalCurr = document.getElementById('calories-current');
-    const txtCalTarg = document.getElementById('calories-target');
-    const txtWatCurr = document.getElementById('water-count');
-    const txtWatTarg = document.getElementById('water-target');
-
-    if (txtCalCurr) txtCalCurr.innerText = caloriesCurrent; 
-    if (txtCalTarg) txtCalTarg.innerText = caloriesTarget;
-    if (txtWatCurr) txtWatCurr.innerText = water;
-    if (txtWatTarg) txtWatTarg.innerText = waterTarget;
-
-    // Безопасная настройка кнопок всплывающего окна (модалки) календаря
     const modal = document.getElementById('calendar-modal');
-    const btnClose = document.getElementById('btn-modal-close');
-    const btnSave = document.getElementById('btn-modal-save');
-
-    if (btnClose) btnClose.onclick = () => { if (modal) modal.style.display = 'none'; };
-    if (btnSave) {
-        btnSave.onclick = () => {
-            if (!selectedCalendarDate) return;
-
+    if (document.getElementById('btn-modal-close')) document.getElementById('btn-modal-close').onclick = () => modal.style.display = 'none';
+    if (document.getElementById('btn-modal-save')) {
+        document.getElementById('btn-modal-save').onclick = () => {
             const wVal = parseInt(document.getElementById('modal-water')?.value || '0', 10);
             const cVal = parseInt(document.getElementById('modal-calories')?.value || '0', 10);
-            const sVal = document.getElementById('modal-workout-status')?.value || 'none';
+            const sVal = document.getElementById('modal-workout-status').value;
             const weVal = parseFloat(document.getElementById('modal-weight')?.value || '0');
-
-            const updatedData = { water: wVal, calories: cVal, workoutStatus: sVal, weight: weVal };
-            localStorage.setItem(`calendar_day_${selectedCalendarDate}`, JSON.stringify(updatedData));
-
-            const todayKey = getFormattedDate(0);
-            if (selectedCalendarDate === todayKey) {
-                water = wVal; caloriesCurrent = cVal;
-                if (weVal > 0) localStorage.setItem('user_weight', weVal.toString());
-                if (txtWatCurr) txtWatCurr.innerText = water;
-                if (txtCalCurr) txtCalCurr.innerText = caloriesCurrent;
-                localStorage.setItem('water_today', water.toString());
-                localStorage.setItem('calories_current', caloriesCurrent.toString());
-            }
-
-            if (modal) modal.style.display = 'none';
-            
-            // Запускаем перерисовки
-            if (typeof calculateBMI === 'function') calculateBMI();
-            if (typeof renderHeatmapCalendar === 'function') renderHeatmapCalendar();
-            if (typeof renderWorkoutDashboard === 'function') renderWorkoutDashboard();
-            
-            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
-            alert("Данные за день успешно перезаписаны, Бро! 🦾");
+            localStorage.setItem(`calendar_day_${selectedCalendarDate}`, JSON.stringify({ water: wVal, calories: cVal, workoutStatus: sVal, weight: weVal }));
+            modal.style.display = 'none'; calculateBMI(); renderHeatmapCalendar(); renderWorkoutDashboard();
         };
     }
-
-    // Первичный запуск прорисовок и расчетов с защитой от сбоев
+    
     try {
-        if (typeof calculateBMI === 'function') calculateBMI();
-        syncTodayDataToCalendar();
-        if (typeof renderWorkoutDashboard === 'function') renderWorkoutDashboard();
-        if (typeof renderHeatmapCalendar === 'function') renderHeatmapCalendar();
+        calculateBMI(); syncTodayDataToCalendar(); renderWorkoutDashboard(); renderHeatmapCalendar();
     } catch (e) {
-        console.log("Загрузка интерфейса выполнена с предупреждением:", e);
+        console.log("Загрузка интерфейса:", e);
     }
 });
