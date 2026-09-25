@@ -88,18 +88,15 @@ let waterTarget = parseInt(localStorage.getItem('water_target') || '2000', 10);
 let caloriesCurrent = parseInt(localStorage.getItem('calories_current') || '0', 10); 
 let caloriesTarget = parseInt(localStorage.getItem('calories_target') || '2000', 10);
 
-// ПОЛНАЯ НЕЗАВИСИМОСТЬ: Теперь каждый подкурс помнит свой шаг и свою личную дату!
 let broPrograms = JSON.parse(localStorage.getItem('bro_programs_data') || JSON.stringify({
-    activeCourse: 'none',       // Выбранная категория ('power', 'fatburn', 'posture')
-    activeSubCourse: 'none',    // Выбранный подкурс ('arms_chest', 'legs_core' и т.д.)
-    activeLevel: 'medium',      // Выбранное время ('easy', 'medium', 'hard')
+    activeCourse: 'none',       
+    activeSubCourse: 'none',    
+    activeLevel: 'medium',      
     
-    // Память шагов по каждому направлению
     power_arms_chest_step: 0, power_legs_core_step: 0,
     fatburn_full_body_step: 0, fatburn_abs_core_step: 0,
     posture_back_straight_step: 0, posture_neck_computer_step: 0,
     
-    // Память дат по каждому направлению
     power_arms_chest_date: '', power_legs_core_date: '',
     fatburn_full_body_date: '', fatburn_abs_core_date: '',
     posture_back_straight_date: '', posture_neck_computer_date: ''
@@ -127,72 +124,6 @@ function switchScreen(id, btn) {
     if (id === 'screen-calendar') renderHeatmapCalendar();
     if (id === 'screen-workout') renderWorkoutDashboard();
     if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
-}
-// ==========================================================================
-// 🕹️ НОВАЯ ЛОГИКА НАВИГАЦИИ ПО КУРСАМ, НАПРАВЛЕНИЯМ И СЛОЖНОСТИ
-// ==========================================================================
-
-// Шаг А -> Шаг Б: Выбрали главную категорию, строим список подкурсов
-function selectMainCategory(courseKey) {
-    broPrograms.activeCourse = courseKey;
-    saveProgramsState();
-    
-    const container = document.getElementById('subcategories-list-container');
-    if (!container) return;
-    container.innerHTML = ""; // Чистим старые кнопки
-
-    const courseData = courseDatabase[courseKey];
-    document.getElementById('subcategories-header-title').innerText = courseData.name;
-
-    // Генерируем кнопки для каждого подкурса прямо на лету
-    Object.keys(courseData.subCourses).forEach(subKey => {
-        const sub = courseData.subCourses[subKey];
-        const subCard = document.createElement('div');
-        subCard.className = 'program-card-btn';
-        subCard.style.cssText = 'background:#2c3b47; padding:15px; border-radius:12px; cursor:pointer; border:1px solid rgba(255,255,255,0.05);';
-        subCard.innerHTML = `
-            <div style="font-size:16px; font-weight:bold; color:#5288c1;">${sub.name}</div>
-            <div style="font-size:12px; opacity:0.6; margin-top:4px;">${sub.desc}</div>
-        `;
-        subCard.onclick = () => selectSubCategory(subKey);
-        container.appendChild(subCard);
-    });
-
-    document.getElementById('workout-categories-view').style.display = 'none';
-    document.getElementById('workout-subcategories-view').style.display = 'block';
-}
-
-// Шаг Б -> Шаг В: Выбрали конкретный подкурс, открываем выбор времени
-function selectSubCategory(subKey) {
-    broPrograms.activeSubCourse = subKey;
-    saveProgramsState();
-
-    const courseKey = broPrograms.activeCourse;
-    const subData = courseDatabase[courseKey].subCourses[subKey];
-    document.getElementById('levels-header-title').innerText = `${subData.name}`;
-
-    document.getElementById('workout-subcategories-view').style.display = 'none';
-    document.getElementById('workout-levels-view').style.display = 'block';
-}
-
-// Шаг В -> Шаг Г: Выбрали время (Легко/Средне/Жестко), открываем Главный Дашборд
-function selectWorkoutLevel(levelKey) {
-    broPrograms.activeLevel = levelKey;
-    saveProgramsState();
-
-    document.getElementById('workout-levels-view').style.display = 'none';
-    renderWorkoutDashboard();
-}
-
-// КНОПКИ СТРЕЛОЧЕК «НАЗАД» ДЛЯ НАВИГАЦИИ БЕЗ ЛАГОВ
-function backToSubCategories() {
-    document.getElementById('workout-levels-view').style.display = 'none';
-    document.getElementById('workout-subcategories-view').style.display = 'block';
-}
-
-function backToLevels() {
-    document.getElementById('workout-dashboard-view').style.display = 'none';
-    document.getElementById('workout-levels-view').style.display = 'block';
 }
 
 // ==========================================================================
